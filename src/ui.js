@@ -74,7 +74,7 @@
   const LEGACY_TOUCH_CLICK_WINDOW_MS = 350;
   const ORDER_TRASH_CONFIRM_MS = 5000;
   const SAVE_BACKUP_SUFFIX = "_backup_r31";
-  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "r77-20261002-1";
+  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "r78-20261012-1";
   const PWA_AUTO_RELOAD_WINDOW_MS = 15000;
   const PWA_AUTO_RELOAD_SESSION_KEY = "pixelFarmPwaAutoReloaded";
 
@@ -3189,7 +3189,7 @@
     // Stage 6：NPC（走過去交談）
     if (tile.npc) { if (isTouch) { spawnRing(tile.id, true); updateMap(now()); return; } useNpc(tile); updateMap(now()); return; }
 
-    if (tileReadyCrop(tile) && tool !== "inspect" && tool !== "build" && tool !== "clear") {
+    if (tileReadyCrop(tile) && tool === "hand") {
       clearTouchFarmPreview(false);
       spawnRing(tileId, true); moveAndAct(tileId, "harvest"); updateMap(now()); return;
     }

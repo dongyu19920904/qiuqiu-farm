@@ -92,14 +92,23 @@
       }
       const cropId = row.consume && window.CROPS[row.id] ? row.id : "wheat";
       const active = window.activePlotCount(current);
-      const tile = current.map.tiles.find((t) => {
+      const plotTiles = current.map.tiles.filter((t) => t.plotIndex != null && t.plotIndex < active);
+      if (row.type === "water") {
+        const dryCrop = plotTiles.find((t) => {
+          const p = current.plots[t.plotIndex];
+          const progress = p.cropId && window.getCropProgress(current, p, Date.now());
+          return progress && !progress.ready && !progress.wet;
+        });
+        return dryCrop || plotTiles.find((t) => !current.plots[t.plotIndex].cropId)
+          || plotTiles.find((t) => current.plots[t.plotIndex].cropId && window.getCropProgress(current, current.plots[t.plotIndex], Date.now()).ready)
+          || null;
+      }
+      const tile = plotTiles.find((t) => {
         if (t.plotIndex == null || t.plotIndex >= active) return false;
         const p = current.plots[t.plotIndex];
         if (row.type === "plant") return !p.cropId;
-        if (row.type === "water") return p.cropId && !window.getCropProgress(current, p, Date.now()).wet;
         return p.cropId === cropId && window.getCropProgress(current, p, Date.now()).ready;
-      }) || current.map.tiles.find((t) => t.plotIndex != null && t.plotIndex < active && !current.plots[t.plotIndex].cropId)
-        || current.map.tiles.find((t) => t.plotIndex === 0);
+      }) || plotTiles.find((t) => !current.plots[t.plotIndex].cropId) || plotTiles[0];
       return tile;
     }
     return npcTile(q.npcId);
@@ -178,8 +187,16 @@
     if (row && (row.type === "fish" || row.source === "catch")) { visitSite("fishing_dock"); return; }
     if (row && row.type === "care") { visitAnimals(); return; }
     const target = targetFor(q);
-    if (!target) { notify("先到田邊準備下一批收穫。"); return; }
-    if (row && row.type === "water") farm().setTool("water");
+    if (!target) { notify(row && row.type === "water" ? "這批作物都澆過了，等成熟後收成，再種一格來澆水。" : "先到田邊準備下一批收穫。"); return; }
+    if (row && row.type === "water") {
+      const plot = current.plots[target.plotIndex];
+      const ready = plot.cropId && window.getCropProgress(current, plot, Date.now()).ready;
+      if (!plot.cropId || ready) {
+        farm().setTool("hand");
+        if (!plot.cropId && farm().selectSeed) farm().selectSeed("wheat");
+        notify(ready ? "這株已成熟，先收成，再種一格來澆水。" : "先種下小麥，下一步再替它澆水。");
+      } else farm().setTool("water");
+    }
     else if (target.object) farm().setTool("clear");
     else farm().setTool("hand");
     if (row && row.consume && window.CROPS[row.id] && farm().selectSeed) farm().selectSeed(row.id);
