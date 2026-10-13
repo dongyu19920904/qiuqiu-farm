@@ -74,7 +74,7 @@
   const LEGACY_TOUCH_CLICK_WINDOW_MS = 350;
   const ORDER_TRASH_CONFIRM_MS = 5000;
   const SAVE_BACKUP_SUFFIX = "_backup_r31";
-  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "r78-20261012-1";
+  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "r79-20261013-1";
   const PWA_AUTO_RELOAD_WINDOW_MS = 15000;
   const PWA_AUTO_RELOAD_SESSION_KEY = "pixelFarmPwaAutoReloaded";
 
@@ -2957,7 +2957,12 @@
       if (!plot || !plot.cropId) add("plant");
       else {
         const prog = G.getCropProgress(state, plot, now());
-        if (prog.ready) add("harvest");
+        if (prog.ready) {
+          const lessonWater = G.canWaterPlot(state, tile.plotIndex, now()).ok;
+          if (lessonWater && currentTool() === "water") add("water");
+          add("harvest");
+          if (lessonWater && currentTool() !== "water") add("water");
+        }
         else if (!prog.wet) add("water");
       }
     }
@@ -3500,10 +3505,10 @@
     }
     if (tool === "water") {
       if (tile.plotIndex != null && tile.plotIndex < active && state.plots[tile.plotIndex].cropId) {
-        const prog = G.getCropProgress(state, state.plots[tile.plotIndex], now());
-        if (prog.ready) return { invalid: "已成熟，不需澆水" };
-        if (prog.wet) return { invalid: "💧 已是濕土" };
-        return { action: "water" };
+        const eligibility = G.canWaterPlot(state, tile.plotIndex, now());
+        if (eligibility.ok) return { action: "water" };
+        if (eligibility.reason === "ready") return { invalid: "已成熟，不需澆水" };
+        if (eligibility.reason === "already_wet") return { invalid: "💧 已是濕土" };
       }
       return { invalid: "💧 只能澆種了作物的農土" };
     }

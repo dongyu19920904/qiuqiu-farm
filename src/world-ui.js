@@ -94,11 +94,7 @@
       const active = window.activePlotCount(current);
       const plotTiles = current.map.tiles.filter((t) => t.plotIndex != null && t.plotIndex < active);
       if (row.type === "water") {
-        const dryCrop = plotTiles.find((t) => {
-          const p = current.plots[t.plotIndex];
-          const progress = p.cropId && window.getCropProgress(current, p, Date.now());
-          return progress && !progress.ready && !progress.wet;
-        });
+        const dryCrop = plotTiles.find((t) => window.canWaterPlot(current, t.plotIndex, Date.now()).ok);
         return dryCrop || plotTiles.find((t) => !current.plots[t.plotIndex].cropId)
           || plotTiles.find((t) => current.plots[t.plotIndex].cropId && window.getCropProgress(current, current.plots[t.plotIndex], Date.now()).ready)
           || null;
@@ -191,7 +187,7 @@
     if (row && row.type === "water") {
       const plot = current.plots[target.plotIndex];
       const ready = plot.cropId && window.getCropProgress(current, plot, Date.now()).ready;
-      if (!plot.cropId || ready) {
+      if (!window.canWaterPlot(current, target.plotIndex, Date.now()).ok) {
         farm().setTool("hand");
         if (!plot.cropId && farm().selectSeed) farm().selectSeed("wheat");
         notify(ready ? "這株已成熟，先收成，再種一格來澆水。" : "先種下小麥，下一步再替它澆水。");

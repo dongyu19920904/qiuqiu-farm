@@ -140,12 +140,25 @@
     const stage = ready ? 4 : Math.min(3, Math.floor(ratio * 4));
     return { ready, ratio, remainingMs: Math.max(0, growMs - elapsed), stage, wet: isWet(plot) };
   }
-  // 澆水：對已種植、未成熟、本輪尚未澆過的格子澆水（一輪一次）
-  function waterPlot(state, plotIndex, now) {
+  // 第一章的澆水教學不能因 15 秒小麥先成熟而失去可操作目標。
+  function wateringLessonActive(state) {
+    const a = state.adventure;
+    return !!(a && !(a.claimed && a.claimed.c1_homecoming)
+      && a.counts && a.counts.plant >= 3 && a.counts.water < 3
+      && a.byTarget && a.byTarget.talk && a.byTarget.talk.mayor >= 1);
+  }
+  function canWaterPlot(state, plotIndex, now) {
     const plot = state.plots[plotIndex];
     if (!plot || !plot.cropId) return { ok: false, reason: "empty" };
-    if (getCropProgress(state, plot, now).ready) return { ok: false, reason: "ready" };
+    if (getCropProgress(state, plot, now).ready && !wateringLessonActive(state)) return { ok: false, reason: "ready" };
     if (isWet(plot)) return { ok: false, reason: "already_wet" };
+    return { ok: true };
+  }
+  // 澆水：一輪一次；教學期間允許替來不及澆的成熟乾作物補水。
+  function waterPlot(state, plotIndex, now) {
+    const eligibility = canWaterPlot(state, plotIndex, now);
+    if (!eligibility.ok) return eligibility;
+    const plot = state.plots[plotIndex];
     plot.wateredAt = now;
     return { ok: true };
   }
@@ -2279,7 +2292,7 @@
   const GameAPI = {
     rngInt, rngPick, unlockedCrops, isCropUnlocked, unlockedProducts, unlockedForageItems, availableOrderItems,
     growthMultiplier, buildingGrowthAura, buildingMaxLevel, buildingLevel, buildingLevelData, buildingEffect,
-    nextBuildingUpgrade, upgradeBuilding, effectiveGrowMs, isWet, waterPlot,
+    nextBuildingUpgrade, upgradeBuilding, effectiveGrowMs, isWet, canWaterPlot, waterPlot,
     getCropProgress, storageCapacity, storageUsed, addToStorage, ensureDiscoveryState, recordDiscovery, firstDiscoveredAt, addXp,
     achievementBonus, checkAchievements, sellMultiplier, sellUnitValue, buildingSeasonalBonus, buildingOrderXpBonus,
     activePlotCount, plant, harvest, harvestAll, sellItem, sellAll,
