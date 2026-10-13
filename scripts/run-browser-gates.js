@@ -8,6 +8,7 @@ const REQUIRED_BYTES = 2 * 1024 * 1024 * 1024;
 const SCRIPTS = [
   "scripts/test-npc-indicators.js",
   "scripts/test-world-project-art.js",
+  "scripts/test-water-quest-guide.js",
   // Historical scripts assert the replaced R74 sidebar geometry and opening modal.
   // R75 checks the actual new world, real chapter-one play and late-system fixtures.
   "scripts/test-world-rework-e2e.js",
