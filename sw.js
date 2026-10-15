@@ -1,10 +1,14 @@
-const CACHE_VERSION = "r79-20261013-1";
+const CACHE_VERSION = "qiuqiu-20261015-1";
 const CACHE_PREFIX = "pixel-farm-rpg-";
 const HTML_CACHE = CACHE_PREFIX + CACHE_VERSION + "-html";
 const STATIC_CACHE = CACHE_PREFIX + CACHE_VERSION + "-static";
 const VERSION_QUERY = "?v=" + CACHE_VERSION;
 const OFFLINE_URL = versioned("./offline.html");
 const CORE_ASSETS = [
+  versioned("./assets/generated/qiuqiu/truffles-32.png"),
+  versioned("./assets/generated/qiuqiu/truffles-32.json"),
+  versioned("./assets/generated/qiuqiu/animals-48.png"),
+  versioned("./assets/generated/qiuqiu/animals-48.json"),
   "./",
   versioned("./index.html"),
   OFFLINE_URL,

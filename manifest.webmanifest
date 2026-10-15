@@ -1,7 +1,7 @@
 {
-  "name": "阿軒割割陽光農場開源遊戲世界",
-  "short_name": "陽光農場",
-  "description": "種田、料理、釣魚、照顧動物，和鎮民一起修復河畔農場。",
+  "name": "秋秋农场（QiuQiu Farm）",
+  "short_name": "秋秋农场",
+  "description": "秋秋农场：种菜、照顾小刺猬、小猪和鸡鸭，经营温暖的像素农场。",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,13 +10,13 @@
   "theme_color": "#5a9e3f",
   "icons": [
     {
-      "src": "assets/icons/icon-192.png?v=r79-20261013-1",
+      "src": "assets/icons/icon-192.png?v=qiuqiu-20261015-1",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "assets/icons/icon-512.png?v=r79-20261013-1",
+      "src": "assets/icons/icon-512.png?v=qiuqiu-20261015-1",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

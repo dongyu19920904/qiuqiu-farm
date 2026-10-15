@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta property="og:title" content="阿軒割割陽光農場開源遊戲世界">
-<meta property="og:description" content="接下祖母的農場，種田、做料理、釣魚、修復河畔，把收穫帶去和鎮民分享。">
-<meta property="og:url" content="https://mars-tw.github.io/pixel-idle-farm-skill/">
-<meta property="og:image" content="https://mars-tw.github.io/pixel-idle-farm-skill/assets/cover.png">
+<meta property="og:title" content="秋秋农场（QiuQiu Farm）">
+<meta name="description" content="秋秋农场 QiuQiu Farm：种菜、照顾小刺猬、小猪和鸡鸭，经营温暖的像素农场。支持手机、电脑和离线成长。">
+<meta property="og:description" content="种菜、照顾小刺猬、小猪和鸡鸭，经营温暖的像素农场。">
+<meta property="og:url" content="https://dongyu19920904.github.io/qiuqiu-farm/">
+<meta property="og:image" content="https://dongyu19920904.github.io/qiuqiu-farm/assets/cover.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#5a9e3f">
-<link rel="canonical" href="https://mars-tw.github.io/pixel-idle-farm-skill/">
-<link rel="manifest" href="manifest.webmanifest?v=r79-20261013-1">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png?v=r79-20261013-1">
-<title>阿軒割割陽光農場開源遊戲世界</title>
+<link rel="canonical" href="https://dongyu19920904.github.io/qiuqiu-farm/">
+<link rel="manifest" href="manifest.webmanifest?v=qiuqiu-20261015-1">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png?v=qiuqiu-20261015-1">
+<title>秋秋农场（QiuQiu Farm）</title>
 <script>
 (() => {
   "use strict";
@@ -35,7 +36,7 @@
   loadingPreload.as = "image";
   loadingPreload.href = loadingSources[window.FARM_LOADING_SEASON];
   document.head.appendChild(loadingPreload);
-  const VERSION = "r79-20261013-1";
+  const VERSION = "qiuqiu-20261015-1";
   const RELOAD_WINDOW_MS = 15000;
   const SESSION_KEY = "pixelFarmPwaAutoReloaded";
   window.FARM_CACHE_VERSION = VERSION;
@@ -172,38 +173,38 @@
   .ui-icon { display: inline-block; flex: 0 0 auto; width: 32px; height: 32px;
     background-size: contain; background-position: center; background-repeat: no-repeat;
     image-rendering: pixelated; vertical-align: middle; }
-  .i-crop-wheat{background-image:url("assets/generated/r66/native/crop_wheat-32.png?v=r79-20261013-1")}
-  .i-crop-carrot{background-image:url("assets/generated/r66/native/crop_carrot-32.png?v=r79-20261013-1")}
-  .i-crop-tomato{background-image:url("assets/generated/r66/native/crop_tomato-32.png?v=r79-20261013-1")}
-  .i-crop-strawberry{background-image:url("assets/generated/r66/native/crop_strawberry-32.png?v=r79-20261013-1")}
-  .i-crop-corn{background-image:url("assets/generated/r66/native/crop_corn-32.png?v=r79-20261013-1")}
-  .i-crop-pumpkin{background-image:url("assets/generated/r66/native/crop_pumpkin-32.png?v=r79-20261013-1")}
-  .i-crop-radish{background-image:url("assets/generated/r66/native/crop_radish-32.png?v=r79-20261013-1")}
-  .i-crop-bell-pepper{background-image:url("assets/generated/r66/native/crop_bell_pepper-32.png?v=r79-20261013-1")}
-  .i-crop-potato{background-image:url("assets/generated/r66/native/crop_potato-32.png?v=r79-20261013-1")}
-  .i-crop-sunflower{background-image:url("assets/generated/r66/native/crop_sunflower-32.png?v=r79-20261013-1")}
-  .i-crop-grapes{background-image:url("assets/generated/r66/native/crop_grapes-32.png?v=r79-20261013-1")}
-  .i-crop-melon{background-image:url("assets/generated/r66/native/crop_melon-32.png?v=r79-20261013-1")}
-  .i-crop-pea{background-image:url("assets/generated/r66/native/crop_pea-32.png?v=r79-20261013-1")}
-  .i-crop-sweet-potato{background-image:url("assets/generated/r66/native/crop_sweet_potato-32.png?v=r79-20261013-1")}
-  .i-crop-winter-kale{background-image:url("assets/generated/r66/native/crop_winter_kale-32.png?v=r79-20261013-1")}
-  .i-tool-plant{background-image:url("assets/generated/r66/native/tool_plant-32.png?v=r79-20261013-1")}
-  .i-tool-harvest{background-image:url("assets/generated/r66/native/tool_harvest-32.png?v=r79-20261013-1")}
-  .i-tool-water{background-image:url("assets/generated/r66/native/tool_water-32.png?v=r79-20261013-1")}
-  .i-tool-clear{background-image:url("assets/generated/r66/native/tool_clear-32.png?v=r79-20261013-1")}
-  .i-tool-build{background-image:url("assets/generated/r66/native/tool_build-32.png?v=r79-20261013-1")}
-  .i-tool-inspect{background-image:url("assets/generated/r66/native/tool_inspect-32.png?v=r79-20261013-1")}
-  .i-tab-tile{background-image:url("assets/generated/r66/native/tab_tile-32.png?v=r79-20261013-1")}
-  .i-tab-orders{background-image:url("assets/generated/r66/native/tab_orders-32.png?v=r79-20261013-1")}
-  .i-tab-upgrades{background-image:url("assets/generated/r66/native/tab_upgrades-32.png?v=r79-20261013-1")}
-  .i-tab-story{background-image:url("assets/generated/r66/native/tab_story-32.png?v=r79-20261013-1")}
-  .i-tab-journal{background-image:url("assets/generated/r66/native/tab_journal-32.png?v=r79-20261013-1")}
-  .i-system-coin{background-image:url("assets/generated/r66/native/system_coin-32.png?v=r79-20261013-1")}
-  .i-system-xp{background-image:url("assets/generated/r66/native/system_xp-32.png?v=r79-20261013-1")}
-  .i-system-storage{background-image:url("assets/generated/r66/native/system_storage-32.png?v=r79-20261013-1")}
-  .i-system-settings{background-image:url("assets/generated/r66/native/system_settings-32.png?v=r79-20261013-1")}
-  .i-system-help{background-image:url("assets/generated/r66/native/system_help-32.png?v=r79-20261013-1")}
-  .i-system-reset{background-image:url("assets/generated/r66/native/system_reset-32.png?v=r79-20261013-1")}
+  .i-crop-wheat{background-image:url("assets/generated/r66/native/crop_wheat-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-carrot{background-image:url("assets/generated/r66/native/crop_carrot-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-tomato{background-image:url("assets/generated/r66/native/crop_tomato-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-strawberry{background-image:url("assets/generated/r66/native/crop_strawberry-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-corn{background-image:url("assets/generated/r66/native/crop_corn-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-pumpkin{background-image:url("assets/generated/r66/native/crop_pumpkin-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-radish{background-image:url("assets/generated/r66/native/crop_radish-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-bell-pepper{background-image:url("assets/generated/r66/native/crop_bell_pepper-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-potato{background-image:url("assets/generated/r66/native/crop_potato-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-sunflower{background-image:url("assets/generated/r66/native/crop_sunflower-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-grapes{background-image:url("assets/generated/r66/native/crop_grapes-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-melon{background-image:url("assets/generated/r66/native/crop_melon-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-pea{background-image:url("assets/generated/r66/native/crop_pea-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-sweet-potato{background-image:url("assets/generated/r66/native/crop_sweet_potato-32.png?v=qiuqiu-20261015-1")}
+  .i-crop-winter-kale{background-image:url("assets/generated/r66/native/crop_winter_kale-32.png?v=qiuqiu-20261015-1")}
+  .i-tool-plant{background-image:url("assets/generated/r66/native/tool_plant-32.png?v=qiuqiu-20261015-1")}
+  .i-tool-harvest{background-image:url("assets/generated/r66/native/tool_harvest-32.png?v=qiuqiu-20261015-1")}
+  .i-tool-water{background-image:url("assets/generated/r66/native/tool_water-32.png?v=qiuqiu-20261015-1")}
+  .i-tool-clear{background-image:url("assets/generated/r66/native/tool_clear-32.png?v=qiuqiu-20261015-1")}
+  .i-tool-build{background-image:url("assets/generated/r66/native/tool_build-32.png?v=qiuqiu-20261015-1")}
+  .i-tool-inspect{background-image:url("assets/generated/r66/native/tool_inspect-32.png?v=qiuqiu-20261015-1")}
+  .i-tab-tile{background-image:url("assets/generated/r66/native/tab_tile-32.png?v=qiuqiu-20261015-1")}
+  .i-tab-orders{background-image:url("assets/generated/r66/native/tab_orders-32.png?v=qiuqiu-20261015-1")}
+  .i-tab-upgrades{background-image:url("assets/generated/r66/native/tab_upgrades-32.png?v=qiuqiu-20261015-1")}
+  .i-tab-story{background-image:url("assets/generated/r66/native/tab_story-32.png?v=qiuqiu-20261015-1")}
+  .i-tab-journal{background-image:url("assets/generated/r66/native/tab_journal-32.png?v=qiuqiu-20261015-1")}
+  .i-system-coin{background-image:url("assets/generated/r66/native/system_coin-32.png?v=qiuqiu-20261015-1")}
+  .i-system-xp{background-image:url("assets/generated/r66/native/system_xp-32.png?v=qiuqiu-20261015-1")}
+  .i-system-storage{background-image:url("assets/generated/r66/native/system_storage-32.png?v=qiuqiu-20261015-1")}
+  .i-system-settings{background-image:url("assets/generated/r66/native/system_settings-32.png?v=qiuqiu-20261015-1")}
+  .i-system-help{background-image:url("assets/generated/r66/native/system_help-32.png?v=qiuqiu-20261015-1")}
+  .i-system-reset{background-image:url("assets/generated/r66/native/system_reset-32.png?v=qiuqiu-20261015-1")}
   .btn .ui-icon, .side-tab .ui-icon, .pane-head .ui-icon, h2 .ui-icon { margin: -4px 2px -4px -2px; }
   .res-bar { display: flex; gap: 6px; flex-wrap: wrap; align-items: stretch; }
   .res {
@@ -1175,13 +1176,13 @@
     html.mobile-controls-enabled .scene-action-bar { bottom: 172px; }
   }
 </style>
-<link rel="stylesheet" href="src/world.css?v=r79-20261013-1">
+<link rel="stylesheet" href="src/world.css?v=qiuqiu-20261015-1">
 </head>
 <body class="r68-loading">
-<div class="startup-loading" id="startupLoading" data-season="spring" data-audit="r68-loading" role="status" aria-live="polite" aria-busy="true" aria-label="陽光農場載入中">
+<div class="startup-loading" id="startupLoading" data-season="spring" data-audit="r68-loading" role="status" aria-live="polite" aria-busy="true" aria-label="秋秋农场載入中">
   <div class="startup-loading-art" id="startupLoadingArt" aria-hidden="true"></div>
   <div class="startup-loading-copy">
-    <strong>陽光農場</strong>
+    <strong>秋秋农场</strong>
     <span>四季晨光正在甦醒</span>
     <div class="startup-loading-progress" aria-hidden="true"></div>
   </div>
@@ -1233,7 +1234,7 @@
 </script>
 <div class="wrap">
   <header>
-    <div class="title" title="阿軒割割陽光農場開源遊戲世界">陽光農場 <small>阿軒割割・開源遊戲世界</small></div>
+    <div class="title" title="秋秋农场（QiuQiu Farm）">秋秋农场 <small>QiuQiu Farm</small></div>
     <div class="res-bar" id="resBar"><!-- 資源列由 JS 渲染 --></div>
   </header>
 
@@ -1312,7 +1313,7 @@
           <div class="building-upgrade-list" id="buildingUpgrades"></div>
         </div>
         <div class="side-pane sel" data-pane="story">
-          <div class="pane-head">陽光農場手札</div>
+          <div class="pane-head">秋秋农场手札</div>
           <div id="adventurePanel"></div>
           <details class="legacy-story"><summary>農務紀錄與祖母信箋</summary><div id="storyPanel"></div></details>
         </div>
@@ -1332,8 +1333,8 @@
     <button class="btn small ghost" id="resetBtn"><span class="ui-icon i-system-reset" aria-hidden="true"></span>重置存檔</button>
   </div>
 
-  <footer class="series-footer" aria-label="阿軒的小遊戲系列">
-    阿軒的小遊戲系列
+  <footer class="series-footer" aria-label="秋秋农场 · 原作 mars-tw">
+    秋秋农场 · 原作 mars-tw
     <a href="https://mars-tw.github.io/web-card-game-skill/templates/card-battle/" target="_blank" rel="noopener">卡牌對戰</a>
     <a href="https://mars-tw.github.io/tower-defense-skill/" target="_blank" rel="noopener">無盡塔防</a>
     <a href="https://mars-tw.github.io/ashes-convoy/" target="_blank" rel="noopener">灰燼護航</a>
@@ -1399,12 +1400,12 @@
   </div>
 </div>
 
-<script src="src/config.js?v=r79-20261013-1"></script>
-<script src="src/game.js?v=r79-20261013-1"></script>
-<script src="src/adventure.js?v=r79-20261013-1"></script>
-<script src="src/state.js?v=r79-20261013-1"></script>
-<script src="src/atlas.js?v=r79-20261013-1"></script>
-<script src="src/world-ui.js?v=r79-20261013-1"></script>
-<script src="src/ui.js?v=r79-20261013-1"></script>
+<script src="src/config.js?v=qiuqiu-20261015-1"></script>
+<script src="src/game.js?v=qiuqiu-20261015-1"></script>
+<script src="src/adventure.js?v=qiuqiu-20261015-1"></script>
+<script src="src/state.js?v=qiuqiu-20261015-1"></script>
+<script src="src/atlas.js?v=qiuqiu-20261015-1"></script>
+<script src="src/world-ui.js?v=qiuqiu-20261015-1"></script>
+<script src="src/ui.js?v=qiuqiu-20261015-1"></script>
 </body>
 </html>

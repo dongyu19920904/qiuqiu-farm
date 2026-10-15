@@ -74,7 +74,7 @@
   const LEGACY_TOUCH_CLICK_WINDOW_MS = 350;
   const ORDER_TRASH_CONFIRM_MS = 5000;
   const SAVE_BACKUP_SUFFIX = "_backup_r31";
-  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "r79-20261013-1";
+  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "qiuqiu-20261015-1";
   const PWA_AUTO_RELOAD_WINDOW_MS = 15000;
   const PWA_AUTO_RELOAD_SESSION_KEY = "pixelFarmPwaAutoReloaded";
 
@@ -1977,9 +1977,9 @@
     const letterPct = CHAPTER5_LETTER_ORDER.length ? Math.round(letterDone / CHAPTER5_LETTER_ORDER.length * 100) : 0;
     const ch5AllDone = CHAPTER5_LETTER_ORDER.length > 0 && letterDone >= CHAPTER5_LETTER_ORDER.length && !!mail.replied;
     const kicker = doneCount === 0 ? "序章" : ch5AllDone ? "第五章" : ch4AllDone ? "第五章" : ch3AllDone ? "第四章" : ch2AllDone ? "第三章" : ch1Done ? "第二章" : "第一章";
-    const title = cur ? cur.title : "陽光農場的新篇章";
+    const title = cur ? cur.title : "秋秋农场的新篇章";
     const copy = cur ? cur.desc
-      : "阿軒割割陽光農場開源遊戲世界重新熱鬧了起來。東林已通，繼續開墾田地、迎接更多動物與市集訂單，讓這座農場成為玩家共創的 RPG 世界。";
+      : "秋秋农场（QiuQiu Farm）重新熱鬧了起來。東林已通，繼續開墾田地、迎接更多動物與市集訂單，讓這座農場成為玩家共創的 RPG 世界。";
     const quests = compactRowsHtml("story-main", QUEST_ORDER.map((id) => questRow(id, completed, cur)), 4);
     // 第二章：序章 6/6 後才顯示，獨立完成度（不影響主面板 0/6 讀值）
     const ch2Html = ch1Done ? `
@@ -2574,14 +2574,16 @@
         baseX = tile.x + 0.5; baseY = tile.y + 1.15;
       }
       animals.forEach((a, i) => {
+        const activity = G.animalActivity(a, t);
+        const motionTime = activity.motionTime;
         const seed = (strHash(a.id) % 1000) / 1000;        // 每隻獨立相位/速度
         const ph = seed * Math.PI * 2, sp = 0.00035 + seed * 0.00025;
-        const rx = Math.sin(t * sp + ph) * 1.1 + Math.sin(t * sp * 0.5 + ph * 2) * 0.35;
-        const ry = Math.cos(t * sp * 0.8 + ph) * 0.45;
+        const rx = Math.sin(motionTime * sp + ph) * 1.1 + Math.sin(motionTime * sp * 0.5 + ph * 2) * 0.35;
+        const ry = Math.cos(motionTime * sp * 0.8 + ph) * 0.45;
         const spread = (i - (animals.length - 1) / 2) * 0.7; // 多隻橫向錯開
         const cx = (baseX + spread + rx) * TILE, baselineY = (baseY + ry) * TILE;
-        const vx = Math.cos(t * sp + ph);                  // x 速度方向
-        const moving = Math.abs(vx) > 0.45;
+        const vx = Math.cos(motionTime * sp + ph);                  // x 速度方向
+        const moving = !activity.sleeping && Math.abs(vx) > 0.45;
         const status = G.animalStatus(state, a, t);
         const col = Math.floor(t / 320) % 2 === 0 ? "a" : "b";
         // 移動中沿用基礎 walk 幀；靜止時開心用 animals_care 開心姿態，其餘用基礎 idle 幀
@@ -2589,11 +2591,16 @@
         const baseSheet = adef.sheet || "animals";
         const careSheet = adef.careSheet || "animals_care";
         const sheet = (!moving && status === "happy") ? careSheet : baseSheet;
-        const frame = a.type + "_" + (moving ? "walk_" : (status === "happy" ? "happy_" : "idle_")) + col;
-        const el = addObjectPx(obDyn, sheet, frame, cx, baselineY, TILE * 0.82, "shadowed", 0, "animal");
+        const eating = adef.pet && t - a.lastFedAt < 3000;
+        const frame = a.type + "_" + (eating ? "eating_" : activity.sleeping ? "sleep_" : moving ? "walk_" : (status === "happy" ? "happy_" : "idle_")) + col;
+        const size = TILE * 0.82 * (a.type === "pig" && !G.animalGrowth(a, t).adult ? 0.78 : 1);
+        const el = addObjectPx(obDyn, sheet, frame, cx, baselineY, size, "shadowed", 0, "animal");
         if (el) {
           el.dataset.animalId = a.id; el.dataset.animalType = a.type;
           el.dataset.homeId = home.id; el.dataset.status = status;
+          el.dataset.sleeping = String(activity.sleeping);
+          el.dataset.frame = frame;
+          el.title = adef.name + "・" + (activity.sleeping ? "睡觉中" : ANIMAL_STATUS_LABEL[status]) + "・亲密度 " + G.animalAffinity(state, a, t).toFixed(0);
           if (vx < 0) el.style.transform = "scaleX(-1)"; // 朝左翻轉（源圖朝右）
         }
         addStatusIcon(cx, baselineY - TILE * 1.6, status);
@@ -3072,14 +3079,15 @@
           if (tile && tile.structureId) useStructure(tile);
           hideObjectBubble();
         }
-        if (action === "upgrade") {
+        if (action === "upgrade" || action === "animals") {
           const tile = G.getTileById(state, bld.tileId);
           if (tile) {
             selectedTileId = tile.id;
             state.interaction.selectedTileId = tile.id;
             const panel = document.querySelector(".side-panel");
             if (panel) panel.classList.remove("panes-collapsed");
-            switchTab("tile");
+            if (window.FarmWorld) window.FarmWorld.openPanel("tile");
+            else switchTab("tile");
             renderTileContext();
           }
           hideObjectBubble();
@@ -3089,6 +3097,7 @@
     };
     const isHome = G.buildingEffect(bld).unlockAnimal;
     add(isHome ? "collect" : "use", isHome ? "🧺" : "●", isHome ? "收集" : "使用", true);
+    if (isHome) add("animals", "🐾", "动物", true);
     add("upgrade", "⬆", "升級", true);
     box.hidden = false;
     placeSceneOverlay(box, elementViewportPoint(anchorEl, 0.08));
@@ -3110,10 +3119,10 @@
     const prog = G.animalProgress(state, a, t);
     const canFeed = Object.keys(def.feedCost || {}).every((k) => (state.storage.items[k] || 0) >= def.feedCost[k]) && t - (a.lastFedAt || 0) >= window.CARE_COOLDOWN_MS;
     const buttons = [
-      { action: "collect", icon: "🧺", label: "收集", enabled: prog.ready },
+      ...(def.product ? [{ action: "collect", icon: "🧺", label: "收集", enabled: prog.ready }] : []),
       { action: "feed", icon: "🌾", label: "餵食", enabled: canFeed },
       { action: "water", icon: "💧", label: "澆水", enabled: t - (a.lastWateredAt || 0) >= window.CARE_COOLDOWN_MS },
-      { action: "groom", icon: "🧹", label: "梳理", enabled: t - (a.lastGroomedAt || 0) >= window.CARE_COOLDOWN_MS },
+      { action: "groom", icon: def.pet ? "💛" : "🧹", label: def.pet ? "抚摸" : "梳理", enabled: t - (a.lastGroomedAt || 0) >= window.CARE_COOLDOWN_MS },
     ];
     box.innerHTML = "";
     buttons.forEach((cfg) => {
@@ -3142,9 +3151,9 @@
     else if (action === "groom") r = G.groomAnimal(state, animalId, now());
     if (!r || !r.ok) { toast("現在不能執行"); renderSceneActionsForSelection(); return; }
     if (action === "collect") { playAction("carry"); playSound("coin"); spawnVfx(tileId, "product_pop"); toast("收集 " + (r.added || 0) + " " + itemName(r.product)); }
-    if (action === "feed") { playAction("sow"); playSound("feed"); spawnVfx(tileId, "feed_bits", { sheet: "care_vfx" }); toast("餵食 +" + itemName(r.product)); G.advanceStory(state, "care_animal", now()); }
+    if (action === "feed") { playAction("sow"); playSound("feed"); spawnVfx(tileId, "feed_bits", { sheet: "care_vfx" }); toast(r.product ? "餵食 +" + itemName(r.product) : "吃饱啦・亲密度 " + r.affinity.toFixed(0)); G.advanceStory(state, "care_animal", now()); }
     if (action === "water") { playAction("water"); playSound("water"); spawnVfx(tileId, "water_splash", { sheet: "care_vfx" }); toast("澆水"); G.advanceStory(state, "care_animal", now()); }
-    if (action === "groom") { playAction("build"); playSound("groom"); spawnVfx(tileId, "groom_sparkle", { sheet: "care_vfx" }); toast("梳理"); G.advanceStory(state, "care_animal", now()); }
+    if (action === "groom") { playAction("build"); playSound("groom"); spawnVfx(tileId, "groom_sparkle", { sheet: "care_vfx" }); toast(window.ANIMALS[a.type].pet ? "抚摸・亲密度 " + r.affinity.toFixed(0) : "梳理"); G.advanceStory(state, "care_animal", now()); }
     hideObjectBubble();
     afterChange(true);
   }
@@ -3435,7 +3444,7 @@
       // 告示牌：推進序章任務
       const adv = G.advanceStory(state, "read_sign");
       const q = window.QUESTS[adv.completed === "intro_reopen_farm" ? "plant_wheat" : (state.story.questId || "intro_reopen_farm")];
-      toast("📖 告示牌：" + (q ? q.title : "陽光農場的近況"));
+      toast("📖 告示牌：" + (q ? q.title : "秋秋农场的近況"));
       renderStory(); renderQuestDock(); updateMap(now());
     } else if (st.effect === "well") {
       let n = 0;
@@ -3781,6 +3790,9 @@
   const ANIMAL_STATUS_EMOJI = { happy: "😊", hungry: "🍽️", thirsty: "💧", needs_groom: "🧹" };
   const ANIMAL_STATUS_LABEL = { happy: "開心", hungry: "飢餓", thirsty: "口渴", needs_groom: "待梳理" };
   function renderBuildingContext(box, tile) {
+    // Animal actions rebuild their buttons synchronously; keep the original click
+    // inside this panel even after its target has been detached by afterChange().
+    box.onclick = (event) => event.stopPropagation();
     const b = state.buildings.find((x) => x.id === tile.buildingId);
     const def = window.BUILDINGS[b.type];
     const effect = G.buildingEffect(b);
@@ -3802,16 +3814,16 @@
         html += `
           <div class="animal-row">
             <span class="a-ic">${adef.emoji}</span>
-            <span class="a-body"><b>${adef.name}</b> → ${itemEmoji(adef.product)}
+            <span class="a-body"><b>${adef.name}</b> ${adef.product ? "→ " + itemEmoji(adef.product) : "・农场小伙伴"}
               <div class="a-prog"><div class="a-fill" style="width:${(prog.ratio * 100).toFixed(0)}%"></div></div>
-              <span class="bo-cost">${prog.ready ? "✅ 可收集" : "⏳ " + fmtTime(prog.remainingMs)}</span>
+              <span class="bo-cost">${prog.companion ? "💛 长久陪伴" : prog.growing ? "🐷 幼年・" + fmtTime(prog.remainingMs) + "后成年" : prog.ready ? "✅ 可收集" : "⏳ " + fmtTime(prog.remainingMs)}</span>
               <div class="a-affinity" title="親密度 ${affinity.toFixed(0)}/100"><div class="a-affinity-fill" style="width:${affinity.toFixed(0)}%"></div></div>
               <span class="bo-cost">${ANIMAL_STATUS_EMOJI[status]} ${ANIMAL_STATUS_LABEL[status]}・親密度 ${affinity.toFixed(0)}</span></span>
             <span class="a-actions-col">
-              <button class="btn buy small acol" data-id="${a.id}" ${prog.ready ? "" : "disabled"}>收集</button>
+              ${adef.product ? `<button class="btn buy small acol" data-id="${a.id}" ${prog.ready ? "" : "disabled"}>收集</button>` : ""}
               <button class="btn ghost small afeed" data-id="${a.id}" ${canFeed ? "" : "disabled"}>餵食</button>
               <button class="btn ghost small awater" data-id="${a.id}" ${canWater ? "" : "disabled"}>澆水</button>
-              <button class="btn ghost small agroom" data-id="${a.id}" ${canGroom ? "" : "disabled"}>梳理</button>
+              <button class="btn ghost small agroom" data-id="${a.id}" ${canGroom ? "" : "disabled"}>${adef.pet ? "抚摸" : "梳理"}</button>
             </span>
           </div>`;
       });
@@ -3820,6 +3832,7 @@
       if (animals.length < cap) {
         html += (effect.unlockAnimal || []).map((animalType) => {
           const adef = window.ANIMALS[animalType];
+          if (adef.maxCount && state.animals.filter((a) => a.type === animalType).length >= adef.maxCount) return "";
           if (state.level >= adef.unlockLevel) {
             return `<button class="btn buy small abuy" data-bid="${b.id}" data-type="${animalType}">＋ 買一隻${adef.name}（🪙${adef.cost}）</button>`;
           }
@@ -3847,7 +3860,7 @@
       if (r.ok) {
         playAction("sow"); playSound("feed"); spawnVfx(tile.id, "feed_bits", { sheet: "care_vfx" });
         const extra = r.collectedFirst && r.collectedFirst.added ? "（另收 " + r.collectedFirst.added + " 份已成熟的）" : "";
-        toast("🌾 餵食 → +1 " + itemName(r.product) + extra + "・親密度 " + r.affinity.toFixed(0));
+        toast((r.product ? "🌾 餵食 → +1 " + itemName(r.product) + extra : "🌾 吃饱啦") + "・親密度 " + r.affinity.toFixed(0));
         G.advanceStory(state, "care_animal", now());
         afterChange(true); renderTileContext();
       } else if (r.reason === "cooldown") toast("剛餵過，牠還吃得很飽（稍後再來）");
@@ -3866,7 +3879,7 @@
       const r = G.groomAnimal(state, btn.dataset.id, now());
       if (r.ok) {
         playAction("build"); playSound("groom"); spawnVfx(tile.id, "groom_sparkle", { sheet: "care_vfx" });
-        toast("🧹 梳理 → 親密度 " + r.affinity.toFixed(0));
+        toast((window.ANIMALS[state.animals.find((a) => a.id === btn.dataset.id).type].pet ? "💛 抚摸" : "🧹 梳理") + " → 親密度 " + r.affinity.toFixed(0));
         G.advanceStory(state, "care_animal", now());
         afterChange(true); renderTileContext();
       } else if (r.reason === "cooldown") toast("這隻剛梳理過，等一下再來");

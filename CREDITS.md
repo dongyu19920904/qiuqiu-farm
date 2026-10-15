@@ -1,5 +1,13 @@
 # Credits
 
+## 秋秋农场新增内容（2026-10-15）
+
+秋秋农场（QiuQiu Farm）基于 mars-tw 的《阳光农场》R79，上游提交 `a22d9517f573a9b9fc37041eabfd5a56a651b66a`。原始许可证、署名、素材和工具说明完整保留如下。
+
+`assets/generated/qiuqiu/` 的刺猬/小猪为本次内建 `image_gen` 新生成的项目素材，原 `animals-48.png` 仅作风格参考，未更换或重绘任何原版精灵。准确模型版本未披露，不声称为特定版本 API。源图、完整提示词、处理参数与 SHA-256 位于 `source/provenance.json`；`scripts/process-qiuqiu-animals.js` 负责确定性裁切、48px 打包、二值透明和有限色阶。新增素材随本项目 MIT 许可提供。
+
+调研过 DustDFG / OpenGameArt（CC BY-SA 4.0）刺猬和 Tnypixels / itch.io（CC0）小猪；本版未下载或使用这些第三方素材，详细比较见 docs/PLAN.md。
+
 本文件盤點《阿軒割割陽光農場開源遊戲世界》的素材、字型、圖示與第三方開發工具。最後更新日期：2026-10-02（R77）。
 
 ## 視覺素材與 AI 揭露

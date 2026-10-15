@@ -39,7 +39,7 @@
     // 隨機訂單一開局就要蛋、或還沒摸過品質機制就被要求交優質品。直售/餵食不受此檢查影響。
     const set = {};
     for (const a of state.animals || []) {
-      const def = ANIMALS[a.type]; if (!def) continue;
+      const def = ANIMALS[a.type]; if (!def || !def.product) continue;
       for (const q of QUALITY_TIERS) {
         const id = q === "normal" ? def.product : def.product + "_" + q;
         if ((state.stats.collected[id] || 0) > 0) set[id] = true;
@@ -548,6 +548,7 @@
     wool_good: [1, 2], wool_premium: [1, 1],
     honey_good: [1, 3], honey_premium: [1, 2],
     duck_egg_good: [1, 4], duck_egg_premium: [1, 2],
+    truffle: [1, 3], truffle_good: [1, 2], truffle_premium: [1, 1],
     forest_herb: [2, 4], glow_mushroom: [1, 3], wild_berry: [1, 3], river_mint: [1, 3],
     mooncap_spore: [1, 2], amber_resin: [1, 2], forest_chestnut: [1, 2], frost_cherry: [1, 2],
   };
@@ -959,7 +960,7 @@
   function addAnimal(state, buildingId, animalType, now) {
     // Stage 7 照護欄位：affinity 是「上次照護當下的已收藏值」，實際親密度依經過時間現算（見 animalAffinity）。
     const a = { id: "a_" + animalType + "_" + (state.animals.length + 1), type: animalType, homeId: buildingId, lastProducedAt: now,
-      affinity: 0, lastCaredAt: now, lastFedAt: 0, lastWateredAt: 0, lastGroomedAt: 0, bestAffinity: 0 };
+      adoptedAt: now, affinity: 0, lastCaredAt: now, lastFedAt: 0, lastWateredAt: 0, lastGroomedAt: 0, bestAffinity: 0 };
     state.animals.push(a);
     return a;
   }
@@ -967,15 +968,41 @@
     if (!isAnimalUnlocked(state, animalType)) return { ok: false, reason: "locked" };
     const home = (state.buildings || []).find((b) => b.id === buildingId);
     if (!home) return { ok: false, reason: "no_home" };
+    const def = ANIMALS[animalType];
+    if (!(buildingEffect(home).unlockAnimal || []).includes(animalType)) return { ok: false, reason: "wrong_home" };
+    if (def.maxCount && state.animals.filter((a) => a.type === animalType).length >= def.maxCount) return { ok: false, reason: "max_count" };
     if (animalsInHome(state, buildingId).length >= animalCapacity(state, buildingId)) return { ok: false, reason: "full" };
     const cost = ANIMALS[animalType].cost;
     if (state.coins < cost) return { ok: false, reason: "no_coins" };
     state.coins -= cost;
     return { ok: true, animal: addAnimal(state, buildingId, animalType, now) };
   }
+  function animalGrowth(animal, now) {
+    const duration = ANIMALS[animal.type].matureMs || 0;
+    const adoptedAt = Number.isFinite(animal.adoptedAt) ? animal.adoptedAt : animal.lastProducedAt;
+    const elapsed = Math.max(0, now - adoptedAt);
+    return { adult: elapsed >= duration, ratio: duration ? Math.min(1, elapsed / duration) : 1, remainingMs: Math.max(0, duration - elapsed) };
+  }
+  function productionStart(animal) {
+    const def = ANIMALS[animal.type];
+    const adoptedAt = Number.isFinite(animal.adoptedAt) ? animal.adoptedAt : animal.lastProducedAt;
+    return def.matureMs ? Math.max(animal.lastProducedAt, adoptedAt + def.matureMs) : animal.lastProducedAt;
+  }
+  // Stable, per-animal rest cycle. Motion time freezes for the entire sleeping interval.
+  function animalActivity(animal, now) {
+    if (!ANIMALS[animal.type].rests) return { sleeping: false, motionTime: now };
+    const period = 120000, active = 85000;
+    const offset = Array.from(animal.id).reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 0) % period;
+    const time = now + offset, phase = time % period;
+    return { sleeping: phase >= active && now - animal.lastCaredAt > 8000,
+      motionTime: now - Math.floor(time / period) * (period - active) - Math.max(0, phase - active) };
+  }
   function animalProgress(state, animal, now) {
     const def = ANIMALS[animal.type];
-    const elapsed = Math.max(0, now - animal.lastProducedAt);
+    if (!def.product) return { ready: false, ratio: 0, remainingMs: 0, companion: true };
+    const growth = animalGrowth(animal, now);
+    if (!growth.adult) return { ready: false, ratio: growth.ratio, remainingMs: growth.remainingMs, growing: true };
+    const elapsed = Math.max(0, now - productionStart(animal));
     return { ready: elapsed >= def.produceMs, ratio: Math.min(1, elapsed / def.produceMs), remainingMs: Math.max(0, def.produceMs - elapsed) };
   }
   // 收集當下的親密度決定這次產物品質（tier）；品質品項 id 為 baseProduct 或 baseProduct_good/_premium
@@ -983,12 +1010,15 @@
     const a = (state.animals || []).find((x) => x.id === animalId);
     if (!a) return { ok: false, reason: "gone" };
     const def = ANIMALS[a.type];
-    const cycles = Math.floor((now - a.lastProducedAt) / def.produceMs);
+    if (!def.product) return { ok: false, reason: "companion" };
+    if (!animalGrowth(a, now).adult) return { ok: false, reason: "growing" };
+    const start = productionStart(a);
+    const cycles = Math.floor((now - start) / def.produceMs);
     if (cycles <= 0) return { ok: false, reason: "not_ready" };
     const tier = qualityTierFor(animalAffinity(state, a, now));
     const productId = qualityProductId(def.product, tier);
     const { added, lost } = addToStorage(state, productId, cycles);
-    a.lastProducedAt += cycles * def.produceMs;
+    a.lastProducedAt = start + cycles * def.produceMs;
     state.stats.collected[productId] = (state.stats.collected[productId] || 0) + added;
     if (added > 0) recordDiscovery(state, productId, now);
     if (added > 0) checkAchievements(state);
@@ -1021,7 +1051,7 @@
     const def = ANIMALS[a.type];
     for (const k of Object.keys(def.feedCost)) if ((state.storage.items[k] || 0) < def.feedCost[k]) return { ok: false, reason: "no_feed" };
     let collectedFirst = null;
-    if (Math.floor((now - a.lastProducedAt) / def.produceMs) > 0) collectedFirst = collectAnimal(state, animalId, now);
+    if (animalProgress(state, a, now).ready) collectedFirst = collectAnimal(state, animalId, now);
     for (const k of Object.keys(def.feedCost)) {
       state.storage.items[k] -= def.feedCost[k];
       if (state.storage.items[k] <= 0) delete state.storage.items[k];
@@ -1030,6 +1060,8 @@
     a.lastFedAt = now; a.lastCaredAt = now;
     a.affinity = Math.min(AFFINITY_MAX, curAffinity + CARE_GAIN.feed);
     a.bestAffinity = Math.max(a.bestAffinity || 0, a.affinity); // Stage 11 Journal 依賴此欄位，勿刪
+    // Companions and piglets enjoy care without fabricating a product or resetting their age.
+    if (!def.product || !animalGrowth(a, now).adult) return { ok: true, affinity: a.affinity, added: 0, lost: 0, collectedFirst };
     const tier = qualityTierFor(a.affinity); // 餵食後立即以新親密度結算這份產物的品質
     const productId = qualityProductId(def.product, tier);
     const { added, lost } = addToStorage(state, productId, 1);
@@ -2270,7 +2302,9 @@
     summary.products = {};
     for (const a of (state.animals || [])) {
       const def = ANIMALS[a.type];
-      const cycles = Math.min(500, Math.floor((offlineNow - a.lastProducedAt) / def.produceMs));
+      if (!def.product || !animalGrowth(a, offlineNow).adult) continue;
+      const start = productionStart(a);
+      const cycles = Math.min(500, Math.floor((offlineNow - start) / def.produceMs));
       if (cycles <= 0) continue;
       const tier = qualityTierFor(animalAffinity(state, a, offlineNow));
       const productId = qualityProductId(def.product, tier);
@@ -2279,7 +2313,7 @@
       summary.lost += lost;
       state.stats.collected[productId] = (state.stats.collected[productId] || 0) + added;
       if (added > 0) recordDiscovery(state, productId, offlineNow);
-      a.lastProducedAt += cycles * def.produceMs;
+      a.lastProducedAt = start + cycles * def.produceMs;
     }
 
     summary.forageReady = offlineForageRefreshes(state, last, offlineNow);
@@ -2328,7 +2362,7 @@
     currentSeason, updateSeason, recordSeasonReached, evaluateLetters, readLetter, replyLetter,
     allChapter5LettersRead, chapter5ReadCount, harvestedSeasonCount, hasCollectedDuckEgg,
     // Stage 7：動物照護（親密度 / 品質分級）
-    animalAffinity, qualityTierFor, qualityProductId, animalStatus, waterAnimal, groomAnimal,
+    animalAffinity, qualityTierFor, qualityProductId, animalStatus, waterAnimal, groomAnimal, animalGrowth, animalActivity,
     isQualityItem, hasCollectedQuality,
   };
   if (typeof window !== "undefined") Object.assign(window, GameAPI, { Game: GameAPI });

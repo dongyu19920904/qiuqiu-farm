@@ -508,7 +508,8 @@
     // Stage 7：舊存檔的動物物件補齊照護欄位（新蓋的已經有，這裡對舊資料是 no-op）
     // Stage 11：bestAffinity 用舊 affinity 值當合理預設（沒有歷史資料，只能用現值墊底）
     merged.animals = (merged.animals || []).map((a) => Object.assign(
-      { affinity: 0, lastCaredAt: a.lastProducedAt || 0, lastFedAt: 0, lastWateredAt: 0, lastGroomedAt: 0, bestAffinity: a.affinity || 0 }, a));
+      { affinity: 0, lastCaredAt: a.lastProducedAt || 0, lastFedAt: 0, lastWateredAt: 0, lastGroomedAt: 0, bestAffinity: a.affinity || 0 }, a,
+      { adoptedAt: Number.isFinite(a.adoptedAt) && a.adoptedAt >= 0 ? a.adoptedAt : a.lastProducedAt || def.lastSeenAt }));
     // 確保 plots 數量足夠對應所有 soil 磚
     if (merged.plots.length < C.GAME.maxPlots) {
       while (merged.plots.length < C.GAME.maxPlots) merged.plots.push({ id: "p" + String(merged.plots.length + 1).padStart(2, "0"), cropId: null, plantedAt: 0 });

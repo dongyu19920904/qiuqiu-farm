@@ -1,10 +1,12 @@
 {
-  "name": "pixel-idle-farm",
+  "name": "qiuqiu-farm",
   "version": "0.1.12",
-  "appVersion": "r79-20261013-1",
-  "description": "純原生網頁像素放置農場遊戲 — Claude Code Skill。零依賴 HTML/CSS/JS，localStorage 存檔，時間差離線收益。",
+  "appVersion": "qiuqiu-20261015-1",
+  "description": "秋秋农场（QiuQiu Farm）— 保留阳光农场像素世界，照顾刺猬、小猪与鸡鸭的网页版农场。",
   "type": "commonjs",
   "scripts": {
+    "test:qiuqiu": "node scripts/test-qiuqiu-animals.js",
+    "test:qiuqiu:e2e": "node scripts/test-qiuqiu-e2e.js",
     "test": "node scripts/test-version-chain.js && node scripts/test-guards.js && node scripts/test-economy.js && node scripts/test-systems.js && node scripts/test-adventure.js && node scripts/test-world-migration.js && node scripts/test-r74-building-upgrades.js && node scripts/test-ui-smoke.js && node scripts/validate-v3-atlas.js && node scripts/validate-v4-atlas.js && python tools/generate-r66-ui.py --check && node scripts/test-r66-ui-art.js && python tools/process-r68-visuals.py && node scripts/test-r68-visuals.js",
     "test:world": "node scripts/test-adventure.js && node scripts/test-world-rework-e2e.js",
     "test:water-guide": "node scripts/test-water-quest-guide.js",
@@ -51,7 +53,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mars-tw/pixel-idle-farm-skill"
+    "url": "https://github.com/dongyu19920904/qiuqiu-farm"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

@@ -2,6 +2,16 @@
   "version": "4.0.0",
   "generatedBy": "process-v4-atlas.js (gpt-image-2 v4 源圖 + 程序化地形)",
   "sheets": {
+    "product_quality_qiuqiu": {
+      "image": "assets/generated/qiuqiu/truffles-32.png",
+      "map": "assets/generated/qiuqiu/truffles-32.json",
+      "meta": { "w": 96, "h": 32, "frameW": 32, "frameH": 32, "cols": 3, "rows": 1 }
+    },
+    "animals_qiuqiu": {
+      "image": "assets/generated/qiuqiu/animals-48.png",
+      "map": "assets/generated/qiuqiu/animals-48.json",
+      "meta": { "w": 192, "h": 192, "frameW": 48, "frameH": 48, "cols": 4, "rows": 4 }
+    },
     "terrain": {
       "image": "assets/generated/v4/terrain-organic-32.png",
       "map": "assets/generated/v4/terrain-organic-32.json",

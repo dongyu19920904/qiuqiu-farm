@@ -150,7 +150,7 @@ console.log("\n== 5c. Stage 7.1：同一建築有多種 unlockAnimal 時都能�
   const st = S.defaultState(T0);
   st.level = 5; st.coins = 9999;
   const barn = st.buildings.find((b) => b.type === "barn");
-  assert(JSON.stringify(C.BUILDINGS.barn.effect.unlockAnimal) === JSON.stringify(["cow", "sheep"]), "畜舍設定同時解鎖牛與羊");
+  assert(["cow", "sheep"].every((type) => C.BUILDINGS.barn.effect.unlockAnimal.includes(type)), "畜舍設定仍同時解鎖牛與羊（允许新增动物）");
   assert(G.isAnimalUnlocked(st, "cow") && G.isAnimalUnlocked(st, "sheep"), "牛與羊在 Lv5 都判定為已解鎖");
   const buyCow = G.buyAnimal(st, barn.id, "cow", T0);
   const buySheep = G.buyAnimal(st, barn.id, "sheep", T0 + 1000);

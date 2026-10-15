@@ -387,7 +387,7 @@
       });
     }
     paintMinimap(s, tileSize);
-    const location = s.player.x >= 17 ? "東林・溪畔採集地" : s.player.y >= 9 ? "河畔・復興計畫" : "陽光農場・祖母的田";
+    const location = s.player.x >= 17 ? "東林・溪畔採集地" : s.player.y >= 9 ? "河畔・復興計畫" : "秋秋农场・祖母的田";
     if (el("worldLocation").textContent !== location) el("worldLocation").textContent = location;
   }
   function paintFringe(s, size, world) {

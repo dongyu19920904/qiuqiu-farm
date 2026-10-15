@@ -253,6 +253,7 @@ function buildProducts() {
     wool:  { name: "羊毛", emoji: "🧶", sellValue: 24, source: "sheep" },
     honey: { name: "蜂蜜", emoji: "🍯", sellValue: 15, source: "bee" },
     duck_egg: { name: "鴨蛋", emoji: "🥚", sellValue: 9, source: "duck", qualitySheet: "product_quality_duck" },
+    truffle: { name: "松露", emoji: "🍄", sellValue: 20, source: "pig", qualitySheet: "product_quality_qiuqiu" },
   };
   const out = {};
   for (const bid of Object.keys(base)) {
@@ -439,12 +440,12 @@ const BUILDINGS = {
                  desc: "解鎖雞，生產雞蛋（Lv1 每座 3 隻；全場最多 2 座）" },
   barn:        { id: "barn", name: "畜舍", emoji: "🛖", unlockLevel: 5,
                  levels: [
-                   { cost: { coins: 420, wood: 10, stone: 4 }, effect: { unlockAnimal: ["cow", "sheep"], capacity: 4 }, effectLabel: "可住 4 隻牛羊" },
-                   { cost: { coins: 760, wood: 14, stone: 6 }, effect: { unlockAnimal: ["cow", "sheep"], capacity: 5 }, effectLabel: "可住 5 隻牛羊" },
-                   { cost: { coins: 1800, wood: 22, stone: 10 }, effect: { unlockAnimal: ["cow", "sheep"], capacity: 6 }, effectLabel: "可住 6 隻牛羊" },
+                   { cost: { coins: 420, wood: 10, stone: 4 }, effect: { unlockAnimal: ["cow", "sheep", "hedgehog", "pig"], capacity: 4 }, effectLabel: "可住 4 隻動物" },
+                   { cost: { coins: 760, wood: 14, stone: 6 }, effect: { unlockAnimal: ["cow", "sheep", "hedgehog", "pig"], capacity: 5 }, effectLabel: "可住 5 隻動物" },
+                   { cost: { coins: 1800, wood: 22, stone: 10 }, effect: { unlockAnimal: ["cow", "sheep", "hedgehog", "pig"], capacity: 6 }, effectLabel: "可住 6 隻動物" },
                  ],
                  maxCount: 2,
-                 desc: "解鎖牛與羊（Lv1 每座 4 隻；全場最多 2 座）" },
+                 desc: "刺猬 Lv1、小猪 Lv3、牛羊 Lv5；共用容量（Lv1 每座 4 隻；全場最多 2 座）" },
   beeBox:      { id: "beeBox", name: "蜂箱", emoji: "🐝", unlockLevel: 6,
                  levels: [
                    { cost: { coins: 320, wood: 6 }, effect: { unlockAnimal: ["bee"], capacity: 2, growthAura: 0.92 }, effectLabel: "可住 2 群蜂・成長 ×0.92" },
@@ -497,6 +498,8 @@ const BUILDING_ORDER = ["compostHeap", "silo", "chickenCoop", "barn", "memory_ga
 // ===== MVP2：動物（蓋家 → 計時生產 → 收集 → 入訂單/賣出；可餵食加速）=====
 // produceMs 生產週期、feedCost 餵食成本（用作物加速、立即產出）、unlockLevel 解鎖等級
 const ANIMALS = {
+  hedgehog: { id: "hedgehog", name: "小刺猬", emoji: "🦔", product: null, home: "barn", unlockLevel: 1, cost: 25, feedCost: { wheat: 1 }, sheet: "animals_qiuqiu", careSheet: "animals_qiuqiu", pet: true, maxCount: 1, rests: true },
+  pig: { id: "pig", name: "小猪", emoji: "🐷", product: "truffle", produceMs: 25 * 60 * 1000, matureMs: 2 * 60 * 60 * 1000, home: "barn", unlockLevel: 3, cost: 80, feedCost: { wheat: 2 }, sheet: "animals_qiuqiu", careSheet: "animals_qiuqiu", pet: true, rests: true },
   chicken: { id: "chicken", name: "雞",  emoji: "🐔", product: "egg",   produceMs: 6 * 60 * 1000,  home: "chickenCoop", unlockLevel: 3, cost: 40,  feedCost: { wheat: 2 } },
   cow:     { id: "cow",     name: "牛",  emoji: "🐄", product: "milk",  produceMs: 20 * 60 * 1000, home: "barn",        unlockLevel: 5, cost: 220, feedCost: { carrot: 2 } },
   sheep:   { id: "sheep",   name: "羊",  emoji: "🐑", product: "wool",  produceMs: 30 * 60 * 1000, home: "barn",        unlockLevel: 5, cost: 180, feedCost: { carrot: 3 } },
@@ -588,7 +591,7 @@ const STATIONS = {
   order_board: { id: "order_board", name: "訂單看板", frame: "order_board",  action: "station", effect: "orders", desc: "走過去查看市集訂單" },
   storage:     { id: "storage",     name: "倉庫木箱", frame: "storage_crate", action: "carry",   effect: "sell",   desc: "走過去賣出所有庫存" },
   mailbox:     { id: "mailbox",     name: "信箱",     frame: "mailbox",       action: "station", effect: "mail",   desc: "走過去看信件與任務" },
-  sign:        { id: "sign",        name: "告示牌",   frame: "order_board",   action: "station", effect: "story",  desc: "走過去閱讀陽光農場告示" },
+  sign:        { id: "sign",        name: "告示牌",   frame: "order_board",   action: "station", effect: "story",  desc: "走過去閱讀秋秋农场告示" },
   well:        { id: "well",        name: "水井",     frame: "well",          action: "water",   effect: "well",   desc: "走過去汲水替全部乾土澆水" },
 };
 // 放在草地磚（須為 grass、不堵障礙唯一通道、不與 STRUCTURES footprint 重疊）：
@@ -766,7 +769,7 @@ const NPC_SIDE_QUESTS = {
 
 // ===== 故事任務（地圖驅動：信箱/告示觸發、目標在地圖上有標記）=====
 const QUESTS = {
-  intro_reopen_farm: { id: "intro_reopen_farm", title: "回到阿軒割割陽光農場",
+  intro_reopen_farm: { id: "intro_reopen_farm", title: "回到秋秋农场",
     desc: "先走到告示牌或信箱，看看開源農場的第一張任務。", next: "plant_wheat",
     trigger: "read_sign", marker: { kind: "station", type: "sign" } },
   plant_wheat:       { id: "plant_wheat", title: "種下第一批小麥",
@@ -845,7 +848,7 @@ const LETTERS = [
       "孩子，若你讀到這封信，表示第一批作物已經從土裡回到倉庫，也回到晨光鎮人的餐桌上。",
       "你祖父第一次牽著我的手播種時，整塊田還硬得像睡著的石頭，我們也是從幾把小麥開始，慢慢聽見土地吐氣。",
       "不要急著把荒蕪看成失敗，荒蕪有時只是等一個願意彎腰的人。",
-      "你肯回來，我就知道陽光農場還記得家的方向。"
+      "你肯回來，我就知道秋秋农场還記得家的方向。"
     ],
   },
   {

@@ -1,0 +1,2 @@
+# Matches the upstream R68 manifest generator provenance and cache hash.
+Pillow==12.2.0

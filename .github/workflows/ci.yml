@@ -30,6 +30,8 @@ jobs:
         run: node scripts/test-economy.js
       - name: MVP2 系統測試（地圖/動物/建築/產品訂單）
         run: node scripts/test-systems.js
+      - name: 秋秋农场刺猬与小猪规则/存档回归
+        run: npm run test:qiuqiu
       - name: R75 復興主線、料理、釣魚、重複委託與存檔
         run: node scripts/test-adventure.js
       - name: R76 世界場址與野餐居民存檔回歸
@@ -68,6 +70,8 @@ jobs:
         run: node scripts/test-world-project-art.js
       - name: 世界主畫面、四視口、真 UI 第一章、後段互動與防重複結算
         run: npm run test:e2e
+      - name: 秋秋农场桌面/手机领养、照护、精灵与刷新存档
+        run: npm run test:qiuqiu:e2e
 
   deploy:
     name: 部署 GitHub Pages

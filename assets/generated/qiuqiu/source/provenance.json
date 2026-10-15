@@ -1,0 +1,174 @@
+{
+  "generator": "Codex built-in image_gen",
+  "model": "ChatGPT / gpt-image (exact model version undisclosed)",
+  "license": "MIT; original newly generated project art, see CREDITS.md",
+  "reference": "assets/generated/v4/animals-48.png (style reference only; original unchanged)",
+  "prompt": "Use case: stylized-concept. Asset type: production pixel sprite atlas for QiuQiu Farm. Image 1 is STYLE REFERENCE ONLY, do not edit or reproduce its animals. Create a NEW transparent sprite sheet, 4 columns by 4 rows, every cell same size and aligned grid. Exactly 16 isolated animal sprites, no text, no frames, no props, no background, generous clear padding per cell. Match reference cozy 48x48 native pixel RPG shading, fine dark brown outline, earthy colors, slight top-down three-quarter side view facing RIGHT, feet baseline consistent. Row 1: one cute brown small hedgehog, idle eyes open; sniff nose lowered; walking legs forward/back; opposite walking leg pose. Row 2: SAME hedgehog, happy eyes smiling; happy ears perked; sleeping curled ball eyes closed; sleeping curled relaxed pose. Row 3: one cute round pink piglet, idle; sniff; walking visibly alternating legs pose A; opposite walking legs pose B. Row 4: SAME pig, happy; happy ears perked; sleeping lying eyes closed; sleeping lying relaxed. All cells show the full animal with no clipping. Sharp pixel clusters, not smooth vector shapes. Anatomically consistent, strong silhouettes, distinct limb poses in walking frames. No chicken cow sheep bee from reference. 1024x1024 square atlas if possible.",
+  "masterSHA256": "21ae72342ee1007d435ad319eeaa006122479cc6661b83d7f09c7797833e530f",
+  "atlasSHA256": "1ae8450690a5ae62ebd59d5d73c021d64d6e3997994fa752c3401faea74bd0b1",
+  "frameMapSHA256": "3ae1145cb83ae48438f598e9e421d2fd706f1a18b13beb245568a1d047432521",
+  "sourceBounds": [
+    {
+      "type": "hedgehog",
+      "pose": "idle_a",
+      "source": [
+        43,
+        103,
+        256,
+        218
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "idle_b",
+      "source": [
+        348,
+        110,
+        258,
+        211
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "walk_a",
+      "source": [
+        662,
+        98,
+        252,
+        218
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "walk_b",
+      "source": [
+        977,
+        103,
+        248,
+        219
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "happy_a",
+      "source": [
+        43,
+        401,
+        256,
+        220
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "happy_b",
+      "source": [
+        351,
+        395,
+        247,
+        227
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "sleep_a",
+      "source": [
+        672,
+        408,
+        237,
+        219
+      ]
+    },
+    {
+      "type": "hedgehog",
+      "pose": "sleep_b",
+      "source": [
+        977,
+        414,
+        248,
+        213
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "idle_a",
+      "source": [
+        43,
+        699,
+        249,
+        207
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "idle_b",
+      "source": [
+        359,
+        729,
+        247,
+        179
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "walk_a",
+      "source": [
+        663,
+        700,
+        260,
+        202
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "walk_b",
+      "source": [
+        973,
+        710,
+        252,
+        197
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "happy_a",
+      "source": [
+        46,
+        975,
+        246,
+        205
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "happy_b",
+      "source": [
+        358,
+        963,
+        240,
+        217
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "sleep_a",
+      "source": [
+        654,
+        1013,
+        269,
+        163
+      ]
+    },
+    {
+      "type": "pig",
+      "pose": "sleep_b",
+      "source": [
+        960,
+        1040,
+        259,
+        141
+      ]
+    }
+  ],
+  "truffleMasterSHA256": "44470810dc001cea0f26a066c469b266f91e5ed1a8ae14fb3f914abe0e5f342b",
+  "truffleAtlasSHA256": "2d0bcbf6f2a957ab2f6c8982f2619d625e9e387450fcf24e8a221433373463d0"
+}
