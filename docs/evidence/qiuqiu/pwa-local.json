@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-10-15T16:30:39.980Z",
+  "url": "http://127.0.0.1:64260/qiuqiu-farm/?swtest=1",
+  "https": false,
+  "status": 200,
+  "version": "qiuqiu-20261015-1",
+  "offlineReload": true,
+  "animalSaveRestored": [
+    "chicken",
+    "hedgehog",
+    "pig"
+  ],
+  "animalAndTruffleAtlas": true,
+  "pageErrors": [],
+  "fixture": "isolated Lv3 / 300 coins, includes hedgehog and pig; not a player save",
+  "environment": "local secure context"
+}

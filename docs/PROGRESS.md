@@ -20,7 +20,12 @@
 - `test:qiuqiu` 通过：领养/住宅/单只上限、照护/冷却、成长/生产边界、离线结算、迁移、鸡蛋、睡眠停步/唤醒、图集帧。
 - `test:qiuqiu:e2e` 通过：1440×900、390×844、320×568；真实建筑入口购买两动物，实际点击/触控照护、按钮可见性、透明度/非空/步态差异、刷新恢复，零脚本及资源错误。
 - 原 `test:e2e` 全部通过：NPC 标记/32 图标、R76 素材、桌面/手机浇水指引；R75 四视口真实主线 370 项通过，覆盖种植、浇水、收获、料理、钓鱼、订单与刷新恢复。
-- 原规则、经济、迁移、UI mock、atlas 与 R66 检查通过。完整 `npm test` 最后 R68 重建因系统 Pillow 11.3 与上游 12.2 元数据哈希差异暂失败；已恢复原素材并以独立 D 盘 Pillow 12.2 复验中，依赖固定见 requirements-test.txt。
+- 完整 `npm test` 通过，包括规则、经济、迁移、UI mock、atlas、R66 与 R68 的 94 项检查。系统 Pillow 11.3 的元数据哈希差异已通过独立 D 盘 Pillow 12.2 解决；原素材未变，依赖固定见 requirements-test.txt。
+- GitHub Actions 规则、真实浏览器、新动物 E2E、Pages 部署全部成功：[验收运行 38766383641](https://github.com/dongyu19920904/qiuqiu-farm/actions/runs/38766383641)。部署提交 `b9dca9895231066d2c3eb32c62585d87690075b6`。
+- 线上默认 HTTPS 入口已实际通过桌面/390px/320px 的领养、照护、刷新恢复和零资源/脚本错误检查，截图已更新为公网实测。
+- 本地 PWA 使用原 `?swtest=1` 入口验证：service worker 激活，完全断网刷新后鸡/刺猬/猪与两个新增 atlas 正常；证据 `docs/evidence/qiuqiu/pwa-local.json`。
+- 公网首次 PWA 安装的预缓存请求在当前网络下等待超过 180 秒，仍处 installing，未出现 404 或脚本错误；因此**不声称公网首次断网启动通过**。同代码本地完整断网通过，联网游玩及离线时间成长通过；保留原版缓存策略，未为此重写 PWA。
+- 312 个原素材文件（除新增 sheet 注册的 v4 manifest）Git blob 与上游完全一致；云端无原文件删除。
 - 图像证据 `docs/evidence/qiuqiu/{desktop,mobile,small}.png`：明确注入 Lv3/300 金币/小麦15 的隔离测试存档，不是通关记录。
 
 ## 本地提交与续做
@@ -33,8 +38,12 @@
 
 缓存包装器将运行临时数据放在 D 盘。Playwright 对应 Chromium 1228 下载缓慢，真实本地测试复用已缓存 headless shell 1234（临时 preload 仅指定 executablePath，不改断言）。CI 使用官方配套 Chromium。共享缓存/诊断日志位于 `D:\CodexCache`。
 
-## 正在收尾
+## 交付与剩余外部条件
 
-发布当前代码，等待 Actions test/e2e/deploy；线上 HTTPS、资源、动物交互、刷新与 PWA 检查；补完整 npm test 结果；关闭任务服务器并清理运行临时目录。
+已上线：<https://dongyu19920904.github.io/qiuqiu-farm/>。阶段代码与最后验收记录均已提交；最后纯文档/证据同步使用 `[skip ci]`，不重复部署已验证的相同 runtime。
 
-DNS 依赖用户操作，本版允许明确步骤交付；暂不提前绑定，保持默认 Pages 可直接游玩。
+自定义域名依赖 DNS，当前记录不存在。本版允许明确配置步骤交付；暂不提前绑定，保持默认 Pages 可直接游玩。后续添加 `qiuqiu CNAME dongyu19920904.github.io`，按 DEPLOYMENT.md 绑定并验证证书。
+
+公网首次完整离线缓存的额外检查尚未通过，后续可在网络较好时等待缓存激活再断网复验；这与已通过的离线时间成长不同。
+
+任务本地服务器已关闭，包装器运行临时目录已清理；共享 npm/Playwright/Pillow 缓存及脱敏诊断日志留在 D 盘。清理失败克隆目录的命令曾被自动审批拒绝（blocked by policy），未绕过；随后只读复核两个目标目录均已不存在。

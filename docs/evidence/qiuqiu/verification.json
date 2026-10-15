@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-16 Asia/Shanghai",
+  "release": "qiuqiu-20261015-1",
+  "upstreamCommit": "a22d9517f573a9b9fc37041eabfd5a56a651b66a",
+  "deploymentCommit": "b9dca9895231066d2c3eb32c62585d87690075b6",
+  "actions": "https://github.com/dongyu19920904/qiuqiu-farm/actions/runs/38766383641",
+  "actionsConclusion": "success",
+  "url": "https://dongyu19920904.github.io/qiuqiu-farm/",
+  "npmTest": "pass, including R68 94 assertions with Pillow 12.2.0",
+  "originalBrowserGates": "pass, including R75 370 assertions",
+  "qiuqiuRules": "pass",
+  "localAndProductionViewports": ["1440x900", "390x844", "320x568"],
+  "productionAdoptionCareAndReload": "pass; isolated test fixture, not a player save",
+  "productionPageAndResourceErrors": [],
+  "localPwaOfflineReload": "pass; see pwa-local.json",
+  "productionPwaFirstInstall": "unverified; precache requests still pending after 180 seconds on this connection",
+  "originalAssetFilesUnchanged": 312,
+  "deletedUpstreamFiles": [],
+  "customDomain": "qiuqiu.aibioo.cn",
+  "dns": "NXDOMAIN; exact CNAME and binding steps in docs/DEPLOYMENT.md"
+}
