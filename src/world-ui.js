@@ -476,7 +476,7 @@
     if (q && q.npcId === npcId) return q.canClaim ? "东西都备好了？我在这里等你，带来一起看看吧。" : q.description;
     if (npcId === "child") return current.adventure.claimed.c3_harvest_picnic ? "我把野餐合照收好了。下次再带你新种的东西来！" : "河边要是有桌子，我想带小花和点心来。你也会来吗？";
     if (npcId === "merchant") return "新鲜作物可以交订单。留一点给自己的餐篮，河边很快会需要它们。";
-    if (npcId === "elder") return "下田时别忘了鸡舍。添水、梳毛、喂食，牠们都记得你。";
+    if (npcId === "elder") return "下田时别忘了鸡舍。添水、梳毛、喂食，它们都记得你。";
     return fallback;
   }
   window.FarmWorld = { prepare, refresh, tick, renderObjective, renderPanels, paintWorld, welcome, openKitchen, openMarket, openSeedBag, openProjects, visitSite, speak, openPanel, markerTile, dialogue };

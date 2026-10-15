@@ -74,7 +74,7 @@
   const LEGACY_TOUCH_CLICK_WINDOW_MS = 350;
   const ORDER_TRASH_CONFIRM_MS = 5000;
   const SAVE_BACKUP_SUFFIX = "_backup_r31";
-  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "qiuqiu-20261016-zh-hans-1";
+  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "qiuqiu-20261016-zh-hans-2";
   const PWA_AUTO_RELOAD_WINDOW_MS = 15000;
   const PWA_AUTO_RELOAD_SESSION_KEY = "pixelFarmPwaAutoReloaded";
 
@@ -3863,7 +3863,7 @@
         toast((r.product ? "🌾 喂食 → +1 " + itemName(r.product) + extra : "🌾 吃饱啦") + "・亲密度 " + r.affinity.toFixed(0));
         G.advanceStory(state, "care_animal", now());
         afterChange(true); renderTileContext();
-      } else if (r.reason === "cooldown") toast("刚喂过，牠还吃得很饱（稍后再来）");
+      } else if (r.reason === "cooldown") toast("刚喂过，它还吃得很饱（稍后再来）");
       else toast("饲料不足（需作物）");
     });
     box.querySelectorAll(".awater").forEach((btn) => btn.onclick = () => {

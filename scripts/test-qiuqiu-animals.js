@@ -44,6 +44,7 @@ const originalOrder = JSON.stringify(oldOrder);
 const narrative = G.orderNarrative(restored, oldOrder);
 assert.equal(narrative.offer,"镇长需要小麦，请帮忙送到农场看板。");
 assert.equal(narrative.thanks,"谢谢你！");
+assert.equal(C.simplifyLegacyText("記得餵牠"),"记得喂它");
 assert.equal(JSON.stringify(oldOrder),originalOrder,"Rendering a legacy order must not rewrite save data");
 assert.equal(restored.animals.find(a => a.type === "pig").adoptedAt, T);
 assert.equal(restored.animals.find(a => a.type === "hedgehog").affinity, hedgehog.affinity);

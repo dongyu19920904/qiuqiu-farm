@@ -1,7 +1,7 @@
 {
   "name": "qiuqiu-farm",
   "version": "0.1.12",
-  "appVersion": "qiuqiu-20261016-zh-hans-1",
+  "appVersion": "qiuqiu-20261016-zh-hans-2",
   "description": "秋秋农场（QiuQiu Farm）— 保留阳光农场像素世界，照顾刺猬、小猪与鸡鸭的网页版农场。",
   "type": "commonjs",
   "scripts": {
