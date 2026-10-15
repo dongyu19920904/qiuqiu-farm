@@ -9,7 +9,7 @@
 
 ## 自定义域名已绑定（2026-10-16）
 
-用户已添加 DNS。复核 `qiuqiu.aibioo.cn CNAME dongyu19920904.github.io` 正确，已在仓库 Pages 中绑定该子域名。正在等待 GitHub 证书签发并验证 HTTPS；完成证据见 PROGRESS.md。
+用户已添加 DNS。复核 `qiuqiu.aibioo.cn CNAME dongyu19920904.github.io` 正确，仓库 Pages 已绑定该子域名，GitHub 证书已批准，强制 HTTPS 已启用。真实浏览器在新域名通过桌面、390px、320px 的加载、领养、互动与刷新存档检查；完整证据见 PROGRESS.md。
 
 在 `aibioo.cn` 的 DNS 服务商添加**仅此子域名**：
 

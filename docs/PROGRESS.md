@@ -42,7 +42,7 @@
 
 已上线：<https://dongyu19920904.github.io/qiuqiu-farm/>。阶段代码与最后验收记录均已提交；最后纯文档/证据同步使用 `[skip ci]`，不重复部署已验证的相同 runtime。
 
-2026-10-16 域名跟进：用户已添加 DNS，复核 `qiuqiu CNAME dongyu19920904.github.io` 生效；已完成 Pages 域名绑定，并将 canonical、分享地址和 README 主入口更新为 `https://qiuqiu.aibioo.cn/`。HTTPS 证书与新域名根路径的游戏/存档正在验证。旧 origin 的本地存档不会自动迁移，旧标签保持不动，可从设置导出后在新地址导入。
+2026-10-16 域名跟进已完成：`qiuqiu CNAME dongyu19920904.github.io` 生效；Pages 已绑定，证书 approved，强制 HTTPS 已启用。主入口为 <https://qiuqiu.aibioo.cn/>；canonical、分享地址、README 已同步。新域名的桌面、390px、320px 实际领养、照护、刷新恢复通过，零脚本/资源错误。元数据部署提交 `235428f64ddb42f42ac78150217111b4e0330350`，Actions [38771984315](https://github.com/dongyu19920904/qiuqiu-farm/actions/runs/38771984315) 的规则、浏览器和部署任务均成功。TLS、canonical 与旧地址重定向证据见 `docs/evidence/qiuqiu/domain.json`。旧 origin 的本地存档不会自动迁移，旧标签保持不动，可从设置导出后在新地址导入；当前标签自动连接超时，未读取、清除或自动迁移用户存档。
 
 公网首次完整离线缓存的额外检查尚未通过，后续可在网络较好时等待缓存激活再断网复验；这与已通过的离线时间成长不同。
 

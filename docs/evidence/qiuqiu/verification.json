@@ -5,7 +5,9 @@
   "deploymentCommit": "b9dca9895231066d2c3eb32c62585d87690075b6",
   "actions": "https://github.com/dongyu19920904/qiuqiu-farm/actions/runs/38766383641",
   "actionsConclusion": "success",
-  "url": "https://dongyu19920904.github.io/qiuqiu-farm/",
+  "url": "https://qiuqiu.aibioo.cn/",
+  "initialDeploymentUrl": "https://dongyu19920904.github.io/qiuqiu-farm/",
+  "customDomainEvidence": "docs/evidence/qiuqiu/domain.json",
   "npmTest": "pass, including R68 94 assertions with Pillow 12.2.0",
   "originalBrowserGates": "pass, including R75 370 assertions",
   "qiuqiuRules": "pass",
@@ -17,5 +19,5 @@
   "originalAssetFilesUnchanged": 312,
   "deletedUpstreamFiles": [],
   "customDomain": "qiuqiu.aibioo.cn",
-  "dns": "NXDOMAIN; exact CNAME and binding steps in docs/DEPLOYMENT.md"
+  "dns": "CNAME confirmed on 2026-10-16; custom domain bound and HTTPS enforced"
 }

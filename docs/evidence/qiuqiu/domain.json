@@ -1,0 +1,22 @@
+{
+  "url": "https://qiuqiu.aibioo.cn/",
+  "title": "秋秋农场（QiuQiu Farm）",
+  "canonical": "https://qiuqiu.aibioo.cn/",
+  "ogUrl": "https://qiuqiu.aibioo.cn/",
+  "ogImage": "https://qiuqiu.aibioo.cn/assets/cover.png",
+  "version": "qiuqiu-20261015-1",
+  "atlas": true,
+  "tls": {
+    "issuer": "YR2",
+    "protocol": "TLS 1.3",
+    "subjectName": "qiuqiu.aibioo.cn",
+    "validFrom": 1792079282,
+    "validTo": 1799855281
+  },
+  "legacyRedirect": "https://qiuqiu.aibioo.cn/",
+  "verifiedAt": "2026-10-15T16:53:14.040Z",
+  "pageErrors": [],
+  "badResources": [],
+  "dns": "qiuqiu.aibioo.cn CNAME dongyu19920904.github.io",
+  "httpsEnforced": true
+}
