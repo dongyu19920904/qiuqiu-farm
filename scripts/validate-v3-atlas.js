@@ -84,7 +84,7 @@ function main() {
     for (const id of Object.keys(frames)) {
       const f = frames[id];
       if (f.x < 0 || f.y < 0 || f.x + f.w > meta.w || f.y + f.h > meta.h)
-        fail(`${key}.${id}: 座標出界 (${f.x},${f.y},${f.w},${f.h}) / ${meta.w}x${meta.h}`);
+        fail(`${key}.${id}: 座标出界 (${f.x},${f.y},${f.w},${f.h}) / ${meta.w}x${meta.h}`);
       if (NEED_ANCHOR.has(key) && (!Array.isArray(f.anchor) || f.anchor.length !== 2))
         fail(`${key}.${id}: 缺 anchor`);
     }
@@ -100,17 +100,17 @@ function main() {
       const crop = C.CROPS[cid];
       if (crop.sheet || crop.emojiOnly) continue; // R47+ 新作物走 v4/emoji，v3 舊 HUD sheet 不承載
       for (const s of stages)
-        if (!cropMap[cid + "_" + s]) fail(`renderer: crops 缺遊戲作物 frame「${cid}_${s}」`);
+        if (!cropMap[cid + "_" + s]) fail(`renderer: crops 缺游戏作物 frame「${cid}_${s}」`);
     }
     const propMap = JSON.parse(fs.readFileSync(path.join(V3, "props-stations.json"), "utf8")).frames;
     const buildingFrame = { chickenCoop: "chicken_coop", barn: "barn", beeBox: "compost_heap", silo: "storage_crate", compostHeap: "compost_heap", duckPen: "chicken_coop", greenhouse: "compost_heap" };
-    for (const t of Object.keys(buildingFrame)) if (!propMap[buildingFrame[t]]) fail(`renderer: props 缺建築 frame「${buildingFrame[t]}」`);
+    for (const t of Object.keys(buildingFrame)) if (!propMap[buildingFrame[t]]) fail(`renderer: props 缺建筑 frame「${buildingFrame[t]}」`);
     // tree 為 Stage 4 障礙，改用 v4 structures:oak 呈現（不在 v3 props）；其餘障礙沿用 v3 props
-    for (const o of Object.keys(C.OBSTACLES)) if (o !== "tree" && !propMap[o]) fail(`renderer: props 缺障礙 frame「${o}」`);
+    for (const o of Object.keys(C.OBSTACLES)) if (o !== "tree" && !propMap[o]) fail(`renderer: props 缺障碍 frame「${o}」`);
     for (const sid of Object.keys(C.STATIONS)) {
-      const st = C.STATIONS[sid]; if ((st.sheet || "props") === "props" && !propMap[st.frame]) fail(`renderer: props 缺站點 frame「${st.frame}」`);
+      const st = C.STATIONS[sid]; if ((st.sheet || "props") === "props" && !propMap[st.frame]) fail(`renderer: props 缺站点 frame「${st.frame}」`);
     }
-  } catch (e) { warn("renderer 解析檢查略過：" + e.message); }
+  } catch (e) { warn("renderer 解析检查略过：" + e.message); }
 
   done();
 }

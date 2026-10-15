@@ -110,7 +110,7 @@ async function assertModalButtons(page, tag) {
   // 離線摘要 modal（直接開啟展示層驗可點性）
   await page.evaluate(() => {
     document.getElementById("offlineBody").innerHTML =
-      '<div class="ml">你離開的 180 分鐘：離線收益 <span class="v">+42 金</span></div>' +
+      '<div class="ml">你离开的 180 分钟：离线收益 <span class="v">+42 金</span></div>' +
       '<div class="ml">作物成熟 <span class="v">4 株</span></div>';
     document.getElementById("offlineModal").classList.add("show");
   });
@@ -315,7 +315,7 @@ async function runViewport(browser, base, config) {
       });
       assert(Number.isFinite(inset.inline) && Math.abs(inset.inline - inset.expected) <= 2,
         `${config.name} 旋轉 ${config.rotateTo.width}x${config.rotateTo.height} 後 inset 重測（inline=${inset.inline}, 實測=${inset.expected}）`);
-      await assertClickableBanner(page, `${config.name} 旋轉後`);
+      await assertClickableBanner(page, `${config.name} 旋转后`);
     }
     const realErrors = errors.filter((e) => !e.includes("test"));
     assert(realErrors.length === 0, `${config.name} 無 pageerror` + (realErrors.length ? `：${realErrors.join(" | ")}` : ""));

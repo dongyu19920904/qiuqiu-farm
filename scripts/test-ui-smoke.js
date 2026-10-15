@@ -58,9 +58,9 @@ const store = {};
 const sandbox = {
   console,
   Math, Date, JSON, Object, Array, String, Number, Boolean, parseInt, parseFloat, isNaN, Infinity,
-  setTimeout: (fn) => { try { fn(); } catch (e) { console.error("setTimeout fn 拋錯:", e.message); failed++; } return 0; },
+  setTimeout: (fn) => { try { fn(); } catch (e) { console.error("setTimeout fn 抛错:", e.message); failed++; } return 0; },
   clearTimeout: () => {},
-  setInterval: (fn) => { try { fn(); } catch (e) { console.error("setInterval fn 拋錯:", e.message); failed++; } return 0; }, // 跑一次當作一個 tick
+  setInterval: (fn) => { try { fn(); } catch (e) { console.error("setInterval fn 抛错:", e.message); failed++; } return 0; }, // 跑一次當作一個 tick
   clearInterval: () => {},
   confirm: () => true,
   Image: class { set src(v) { this._src = v; if (this.onload) this.onload(); } },

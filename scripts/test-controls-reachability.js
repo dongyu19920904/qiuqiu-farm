@@ -173,7 +173,7 @@ async function assertSettingsSeriesLinks(page, tag) {
   assert(await links.count() === 3, `${tag} 設定內載入 3 條系列連結`);
   for (let i = 0; i < 3; i++) {
     await links.nth(i).scrollIntoViewIfNeeded();
-    assertReachable(`${tag} 系列連結 ${i + 1}`, await controlMetrics(page, `#settingsSeriesLinks a:nth-child(${i + 1})`));
+    assertReachable(`${tag} 系列链接 ${i + 1}`, await controlMetrics(page, `#settingsSeriesLinks a:nth-child(${i + 1})`));
   }
   await page.locator("#settingsOk").click();
   await page.waitForFunction(() => !document.querySelector(".modal.show"));
@@ -191,7 +191,7 @@ async function assertBuildingUpgradeControls(page, tag) {
     const selector = `#buildingUpgrades .building-upgrade-btn[data-building-id="${id}"]`;
     const button = page.locator(selector);
     await button.scrollIntoViewIfNeeded();
-    assertReachable(`${tag} ${id} 建物卡升級鈕`, await controlMetrics(page, selector));
+    assertReachable(`${tag} ${id} 建物卡升级钮`, await controlMetrics(page, selector));
   }
   await page.evaluate(() => {
     const panel = document.querySelector(".side-panel");
@@ -203,12 +203,12 @@ async function assertBuildingUpgradeControls(page, tag) {
     const bubble = document.getElementById("objectBubble");
     return bubble && !bubble.hidden && bubble.querySelector('[data-action="upgrade"]');
   });
-  assertReachable(`${tag} 建物泡泡升級入口`, await controlMetrics(page, '#objectBubble [data-action="upgrade"]'));
+  assertReachable(`${tag} 建物泡泡升级入口`, await controlMetrics(page, '#objectBubble [data-action="upgrade"]'));
   await page.locator('#objectBubble [data-action="upgrade"]').click();
   await page.waitForFunction(() => document.querySelector('#tileContext .building-upgrade-btn[data-building-id="b_coop"]'));
   const contextSelector = '#tileContext .building-upgrade-btn[data-building-id="b_coop"]';
   await page.locator(contextSelector).scrollIntoViewIfNeeded();
-  assertReachable(`${tag} 磚資訊建物升級鈕`, await controlMetrics(page, contextSelector));
+  assertReachable(`${tag} 砖信息建物升级钮`, await controlMetrics(page, contextSelector));
 }
 
 async function assertNonModalNoOverlap(page, tag) {
@@ -404,8 +404,8 @@ async function runViewport(browser, base, config) {
       expectsMobileControls ? "#mobileControls button" : "",
     ].filter(Boolean).join(",");
     assertReachable(config.name, await controlMetrics(page, selector));
-    await assertNonModalNoOverlap(page, `${config.name} 主場景`);
-    await assertModal(page, `${config.name} 主場景`, { programmaticOpen: expectsMobileControls });
+    await assertNonModalNoOverlap(page, `${config.name} 主场景`);
+    await assertModal(page, `${config.name} 主场景`, { programmaticOpen: expectsMobileControls });
 
     if (config.evidence) {
       fs.mkdirSync(EVIDENCE, { recursive: true });
@@ -413,8 +413,8 @@ async function runViewport(browser, base, config) {
     }
 
     await page.locator(".side-tabs").scrollIntoViewIfNeeded();
-    assertReachable(`${config.name} 側欄 tabs`, await controlMetrics(page, ".side-tabs button"));
-    await assertNonModalNoOverlap(page, `${config.name} 側欄分頁`);
+    assertReachable(`${config.name} 侧栏 tabs`, await controlMetrics(page, ".side-tabs button"));
+    await assertNonModalNoOverlap(page, `${config.name} 侧栏分页`);
     if (expectsMobileControls) {
       await page.locator(".toolbar").scrollIntoViewIfNeeded();
       assertReachable(`${config.name} 底部工具列`, await controlMetrics(page, ".toolbar button"));
@@ -447,7 +447,7 @@ async function run() {
     console.log("== farm R68 控制與選單守門 ==");
     const viewportFilter = String(process.env.CONTROLS_VIEWPORT || "").trim();
     const selectedViewports = viewportFilter ? VIEWPORTS.filter((config) => config.name.includes(viewportFilter)) : VIEWPORTS;
-    if (!selectedViewports.length) throw new Error(`找不到控制守門視口：${viewportFilter}`);
+    if (!selectedViewports.length) throw new Error(`找不到控制守门视口：${viewportFilter}`);
     for (const config of selectedViewports) await runViewport(browser, base, config);
     if (!viewportFilter) {
       assert(reachableControlsChecked === EXPECTED_REACHABLE_CONTROLS,

@@ -902,17 +902,17 @@ console.log("\n== 16. Stage 11.1：Farm Journal（journalSummary 唯讀彙總層
     `東林採集完成度可回報 1/${Object.keys(C.FORAGE_ITEMS).length}`);
   assert(j2b.completion.crops.total === Object.keys(C.CROPS).length, "作物圖鑑完成度 total 會隨 R15 新作物玉米更新");
   const berryDetail = j2b.forage.find((f) => f.id === "wild_berry");
-  assert(berryDetail.firstDiscoveredAt === T0 + 2222 && berryDetail.source.includes("東林野莓叢") && berryDetail.usage.some((u) => u.includes("鎮民委託")),
+  assert(berryDetail.firstDiscoveredAt === T0 + 2222 && berryDetail.source.includes("东林野莓丛") && berryDetail.usage.some((u) => u.includes("镇民委托")),
     "收藏冊詳情資料含首次發現時間、來源與用途");
   const hiddenDeep = j2b.forage.find((f) => f.id === "mooncap_spore");
-  assert(hiddenDeep.discovered === false && hiddenDeep.sourceHint.includes("東林深處") && hiddenDeep.firstDiscoveredAt === 0,
+  assert(hiddenDeep.discovered === false && hiddenDeep.sourceHint.includes("东林深处") && hiddenDeep.firstDiscoveredAt === 0,
     "未發現的深處採集物只提供來源提示，不提供首次發現時間");
 
   const stHarvest = S.defaultState(T0);
   G.plant(stHarvest, 0, "wheat", T0);
   G.harvest(stHarvest, 0, T0 + C.CROPS.wheat.growMs);
   const wheatDetail = G.journalSummary(stHarvest, T0).crops.find((c) => c.id === "wheat");
-  assert(wheatDetail.discovered && wheatDetail.firstDiscoveredAt === T0 + C.CROPS.wheat.growMs && wheatDetail.usage.includes("市集訂單"),
+  assert(wheatDetail.discovered && wheatDetail.firstDiscoveredAt === T0 + C.CROPS.wheat.growMs && wheatDetail.usage.includes("市集订单"),
     "作物收成會寫入首次發現時間，詳情用途含市集訂單");
 
   // NPC 名錄：只有互動過的 NPC met=true，總數對得上 NPCS 設定數量
@@ -1242,8 +1242,8 @@ console.log("\n== 19. R48: grandma letters, crops3, festival stall ==");
 
 console.log("\n== 20. R51 P0: content quick wins ==");
 {
-  assert(C.SEASON_ORDER_BIAS.春.name === "豌豆芽市" && C.SEASON_ORDER_BIAS.夏.name === "河岸甜椒週"
-    && C.SEASON_ORDER_BIAS.秋.name === "葡萄栗子合單" && C.SEASON_ORDER_BIAS.冬.name === "霜葉鍋物",
+  assert(C.SEASON_ORDER_BIAS.春.name === "豌豆芽市" && C.SEASON_ORDER_BIAS.夏.name === "河岸甜椒周"
+    && C.SEASON_ORDER_BIAS.秋.name === "葡萄栗子合单" && C.SEASON_ORDER_BIAS.冬.name === "霜叶锅物",
     "P0-1 四季訂單偏壓具名內容已註冊");
 
   const sideLetterSt = S.defaultState(T0);

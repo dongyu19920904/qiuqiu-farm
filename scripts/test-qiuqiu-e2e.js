@@ -23,6 +23,8 @@ async function main() {
       const context = await browser.newContext({viewport:{width:device.width,height:device.height},isMobile:mobile,hasTouch:mobile,serviceWorkers:"block"});
       try {
         const seed = S.defaultState(Date.now()); seed.level=3; seed.xp=C.xpForLevel(3); seed.coins=300; seed.storage.items.wheat=15; seed.tutorialDone=true;
+        // An existing Traditional Chinese save must display in Simplified Chinese without changing its history.
+        seed.story.dialogueLog=[{name:"鎮長",line:"農場重新開張，謝謝你照顧動物。"}];
         await context.addInitScript(({key,seed}) => { if (!sessionStorage.getItem("qiuqiu-fixture")) { localStorage.setItem(key,JSON.stringify(seed));sessionStorage.setItem("qiuqiu-fixture","1"); } }, {key:C.GAME.saveKey,seed});
         const page = await context.newPage(), errors=[], missing=[];
         page.on("pageerror",e=>errors.push(e.message)); page.on("response",r=>{if(r.status()>=400)missing.push(r.url());});
@@ -30,6 +32,15 @@ async function main() {
         assert.match(await page.title(), /秋秋农场/);
         const begin = page.locator("#worldBegin"); await begin.waitFor({state:"visible"}); await begin.click();
         const close = page.locator("#worldDialogue:not([hidden]) button"); if(await close.isVisible())await close.click();
+        assert.equal(await page.locator("html").getAttribute("lang"),"zh-Hans");
+        await page.evaluate(()=>__farm.refresh());
+        assert.match(await page.locator("#storyPanel").textContent(),/镇长/);
+        assert.match(await page.locator("#storyPanel").textContent(),/农场重新开张，谢谢你照顾动物。/);
+        assert.equal(await page.evaluate(()=>__farm.state().story.dialogueLog[0].name),"鎮長");
+        await page.locator("#settingsBtn").click();
+        assert.match(await page.locator("#settingsModal").innerText(),/导出存档/);
+        assert.match(await page.locator("#settingsModal").innerText(),/离线/);
+        await page.locator("#settingsOk").click();
         const barn=await page.evaluate(()=>__farm.state().buildings.find(b=>b.type==="barn"));
         await page.evaluate((tile)=>__farm.focusTile(tile),barn.tileId);
         const click=async locator=>mobile?locator.tap():locator.click();
@@ -70,6 +81,7 @@ async function main() {
         await page.evaluate(()=>__farm.safeSaveNow());
         await page.reload();await page.waitForFunction(()=>window.__farm&&window.Atlas?.isReady()&&!document.querySelector("#startupLoading"));
         const restored=await page.evaluate(()=>__farm.state().animals);
+        assert.equal(await page.evaluate(()=>__farm.state().story.dialogueLog[0].line),seed.story.dialogueLog[0].line);
         assert.equal(restored.find(a=>a.id===p.id).adoptedAt,p.adoptedAt);
         assert.ok(restored.find(a=>a.id===h.id).affinity>0);assert.ok(restored.find(a=>a.id===p.id).lastGroomedAt>0);
         await page.evaluate(tile=>__farm.focusTile(tile),barn.tileId);

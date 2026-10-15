@@ -128,10 +128,10 @@ function server() {
 // 像素檢查：每 frame 統計 alpha 覆蓋率 + 邊緣環 alpha 比例
 async function pixelCheck(manifest) {
   let chromium;
-  try { ({ chromium } = require("playwright")); } catch { warn("無 playwright，略過像素級空白/觸邊檢查"); return; }
+  try { ({ chromium } = require("playwright")); } catch { warn("无 playwright，略过像素级空白/触边检查"); return; }
   let browser;
   try { browser = await chromium.launch(); }
-  catch (e) { warn("無法啟動 chromium（" + e.message.split("\n")[0] + "），略過像素級檢查"); return; }
+  catch (e) { warn("无法启动 chromium（" + e.message.split("\n")[0] + "），略过像素级检查"); return; }
   const s = await server(); const port = s.address().port;
   const page = await browser.newPage();
   const qualityStats = {};
@@ -167,13 +167,13 @@ async function pixelCheck(manifest) {
       }
       return out;
     }, { url, frames: map.frames, meta: map.meta, want: [...need] });
-    if (stats.error) { fail(`${key}: 像素檢查載入失敗 ${sheet.image}`); continue; }
+    if (stats.error) { fail(`${key}: 像素检查加载失败 ${sheet.image}`); continue; }
     qualityStats[key] = stats;
     for (const id of need) {
       const st = stats[id]; if (!st) continue; // 缺 frame 由結構檢查負責
-      if (st.empty || st.cover < 0.012) fail(`${key}.${id}: 空白幀（覆蓋率 ${(st.cover * 100).toFixed(1)}%）`);
-      if (["crops", "crops2", "crops3", "crops4"].includes(key) && st.edge > 0.06) fail(`${key}.${id}: 作物觸碰格邊被裁切（邊緣 ${(st.edge * 100).toFixed(0)}%）`);
-      else if (st.edge > 0.18) warn(`${key}.${id}: 內容貼近格邊（邊緣 ${(st.edge * 100).toFixed(0)}%）`);
+      if (st.empty || st.cover < 0.012) fail(`${key}.${id}: 空白帧（覆盖率 ${(st.cover * 100).toFixed(1)}%）`);
+      if (["crops", "crops2", "crops3", "crops4"].includes(key) && st.edge > 0.06) fail(`${key}.${id}: 作物触碰格边被裁切（边缘 ${(st.edge * 100).toFixed(0)}%）`);
+      else if (st.edge > 0.18) warn(`${key}.${id}: 内容贴近格边（边缘 ${(st.edge * 100).toFixed(0)}%）`);
     }
   }
   // P0 action-sheet guard: full bodies must remain at walk-sheet scale. This catches
@@ -186,11 +186,11 @@ async function pixelCheck(manifest) {
     for (const id of range(rows, 6)) {
       const st = actions[id]; if (!st) continue;
       if (st.bboxH < walkRef.bboxH * 0.9)
-        fail(`${actionKey}.${id}: 全身高度 ${st.bboxH}px，低於 walk 基準 ${walkRef.bboxH}px 的 90%`);
+        fail(`${actionKey}.${id}: 全身高度 ${st.bboxH}px，低于 walk 基准 ${walkRef.bboxH}px 的 90%`);
       if (st.bottom < walkRef.bottom - 2)
-        fail(`${actionKey}.${id}: 腳底 baseline ${st.bottom}px，高於 walk 基準 ${walkRef.bottom}px 超過 2px`);
+        fail(`${actionKey}.${id}: 脚底 baseline ${st.bottom}px，高于 walk 基准 ${walkRef.bottom}px 超过 2px`);
       if (id.startsWith("idle_") && st.cover > 0.45)
-        fail(`${actionKey}.${id}: idle 覆蓋率 ${(st.cover * 100).toFixed(1)}%，疑似巨臉/近景`);
+        fail(`${actionKey}.${id}: idle 覆盖率 ${(st.cover * 100).toFixed(1)}%，疑似巨脸/近景`);
     }
   }
   await browser.close(); s.close();
@@ -215,12 +215,12 @@ async function main() {
     if (meta.frameH && meta.h % meta.frameH !== 0) fail(`${key}: meta.h ${meta.h} 不能被 frameH ${meta.frameH} 整除`);
     for (const id of REQUIRED[key]) {
       if (!frames[id]) { fail(`${key}: 缺 frame「${id}」`); continue; }
-      if (frames[id].empty) fail(`${key}.${id}: frame 標記為空（empty）`);
+      if (frames[id].empty) fail(`${key}.${id}: frame 标记为空（empty）`);
     }
     for (const id of Object.keys(frames)) {
       const f = frames[id];
       if (f.x < 0 || f.y < 0 || f.x + f.w > meta.w || f.y + f.h > meta.h)
-        fail(`${key}.${id}: 座標出界 (${f.x},${f.y},${f.w},${f.h}) / ${meta.w}x${meta.h}`);
+        fail(`${key}.${id}: 座标出界 (${f.x},${f.y},${f.w},${f.h}) / ${meta.w}x${meta.h}`);
       if (NEED_ANCHOR.has(key) && (!Array.isArray(f.anchor) || f.anchor.length !== 2))
         fail(`${key}.${id}: 缺 anchor`);
     }
@@ -242,20 +242,20 @@ async function main() {
         cropMaps[sheetKey] = JSON.parse(fs.readFileSync(path.join(ROOT, sheet.map), "utf8")).frames;
       }
       for (const s of stages)
-        if (!cropMaps[sheetKey][cid + "_" + s]) fail(`renderer: ${sheetKey} 缺遊戲作物 frame「${cid}_${s}」`);
+        if (!cropMaps[sheetKey][cid + "_" + s]) fail(`renderer: ${sheetKey} 缺游戏作物 frame「${cid}_${s}」`);
     }
     const bMap = JSON.parse(fs.readFileSync(path.join(V4, "buildings.json"), "utf8")).frames;
-    for (const s of (C.STRUCTURES || [])) if (s.sheet === "buildings" && !bMap[s.frame]) fail(`renderer: buildings 缺結構 frame「${s.frame}」`);
+    for (const s of (C.STRUCTURES || [])) if (s.sheet === "buildings" && !bMap[s.frame]) fail(`renderer: buildings 缺结构 frame「${s.frame}」`);
     const propMap = JSON.parse(fs.readFileSync(path.join(ROOT, "assets/generated/v3/props-stations.json"), "utf8")).frames;
     for (const sid of Object.keys(C.STATIONS)) {
       const st = C.STATIONS[sid]; const sheet = st.sheet || "props";
-      if (sheet === "props" && !propMap[st.frame]) fail(`renderer: props 缺站點 frame「${st.frame}」`);
+      if (sheet === "props" && !propMap[st.frame]) fail(`renderer: props 缺站点 frame「${st.frame}」`);
     }
     // 障礙：tree 用 structures:oak，其餘用 props 同名
     const structMap = JSON.parse(fs.readFileSync(path.join(V4, "structures-nature.json"), "utf8")).frames;
     for (const o of Object.keys(C.OBSTACLES)) {
       if (o === "tree") { if (!structMap.oak) fail("renderer: structures 缺 tree 用的 frame「oak」"); }
-      else if (!propMap[o]) fail(`renderer: props 缺障礙 frame「${o}」`);
+      else if (!propMap[o]) fail(`renderer: props 缺障碍 frame「${o}」`);
     }
     // Stage 7：品質分級圖示 / 動物 happy+eating 幀，config 實際用到的都要能解析
     const qualMaps = {};
@@ -267,7 +267,7 @@ async function main() {
         if (!sheet) { fail(`renderer: product_quality 缺 sheet「${sheetKey}」`); continue; }
         qualMaps[sheetKey] = JSON.parse(fs.readFileSync(path.join(ROOT, sheet.map), "utf8")).frames;
       }
-      if (!qualMaps[sheetKey][fid]) fail(`renderer: ${sheetKey} 缺產品 frame「${fid}」（${pid}）`);
+      if (!qualMaps[sheetKey][fid]) fail(`renderer: ${sheetKey} 缺产品 frame「${fid}」（${pid}）`);
     }
     const animalMaps = {};
     const animalFrames = (sheetKey) => {
@@ -287,11 +287,11 @@ async function main() {
       if (!base) { fail(`renderer: animals 缺 sheet「${baseKey}」`); continue; }
       if (!care) { fail(`renderer: animals_care 缺 sheet「${careKey}」`); continue; }
       for (const suffix of ["idle_a", "idle_b", "walk_a", "walk_b"])
-        if (!base[aid + "_" + suffix]) fail(`renderer: ${baseKey} 缺動物 frame「${aid}_${suffix}」`);
+        if (!base[aid + "_" + suffix]) fail(`renderer: ${baseKey} 缺动物 frame「${aid}_${suffix}」`);
       for (const suffix of ["happy_a", "happy_b", "eating_a", "eating_b"])
-        if (!care[aid + "_" + suffix]) fail(`renderer: ${careKey} 缺動物 frame「${aid}_${suffix}」`);
+        if (!care[aid + "_" + suffix]) fail(`renderer: ${careKey} 缺动物 frame「${aid}_${suffix}」`);
     }
-  } catch (e) { warn("renderer 解析檢查略過：" + e.message); }
+  } catch (e) { warn("renderer 解析检查略过：" + e.message); }
 
   await pixelCheck(manifest);
   done();

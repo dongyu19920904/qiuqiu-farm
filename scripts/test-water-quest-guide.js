@@ -66,7 +66,7 @@ async function runCase(browser, base, mobile, kind) {
     };
 
     assert.equal(await page.locator("#questDock").getAttribute("data-quest"), "c1_homecoming");
-    assert.match(await page.locator("#questDock").innerText(), /澆水農地/);
+    assert.match(await page.locator("#questDock").innerText(), /浇水农地/);
     await page.evaluate(() => {
       const s = window.__farm.state();
       const mature = s.map.tiles.find((tile) => tile.plotIndex === 0);

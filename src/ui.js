@@ -42,7 +42,7 @@
   let perfLowFrames = 0;
   let perfStableFrames = 0;
   let perfAutoLow = false;
-  let perfLastDowngradeReason = "尚未降級";
+  let perfLastDowngradeReason = "尚未降级";
   const perfEventHistory = [];
   let pwaRegistration = null;
   let pwaWaitingWorker = null;
@@ -74,7 +74,7 @@
   const LEGACY_TOUCH_CLICK_WINDOW_MS = 350;
   const ORDER_TRASH_CONFIRM_MS = 5000;
   const SAVE_BACKUP_SUFFIX = "_backup_r31";
-  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "qiuqiu-20261015-1";
+  const PWA_CACHE_VERSION = window.FARM_CACHE_VERSION || "qiuqiu-20261016-zh-hans-1";
   const PWA_AUTO_RELOAD_WINDOW_MS = 15000;
   const PWA_AUTO_RELOAD_SESSION_KEY = "pixelFarmPwaAutoReloaded";
 
@@ -112,11 +112,11 @@
     return (n / 1e6).toFixed(1) + "M";
   }
   function fmtDate(ms) {
-    if (!ms) return "尚未發現";
+    if (!ms) return "尚未发现";
     try {
-      return new Date(ms).toLocaleString("zh-TW", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+      return new Date(ms).toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
     } catch (e) {
-      return "已記錄";
+      return "已记录";
     }
   }
   function toast(msg) {
@@ -556,7 +556,7 @@
     quickIds.slice(0, 5).forEach((id) => quick.appendChild(seedChip(window.CROPS[id], seasonUnlocked, sId, true)));
     const more = document.createElement("div");
     more.className = "seed more" + (seedDrawerOpen ? " sel" : "");
-    more.title = "全部種子";
+    more.title = "全部种子";
     more.innerHTML = `<span class="se">${seedDrawerOpen ? "×" : "+"}</span><span class="sn">全部</span>`;
     more.onclick = () => {
       if (window.FarmWorld) { window.FarmWorld.openSeedBag(); return; }
@@ -569,7 +569,7 @@
         if (scene && typeof scene.scrollIntoView === "function") {
           try { scene.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) { scene.scrollIntoView(); }
         }
-        onceHint("seed_drawer", "🌱 種子欄可左右捲動看全部；再點×收起");
+        onceHint("seed_drawer", "🌱 种子栏可左右卷动看全部；再点×收起");
       }
     };
     quick.appendChild(more);
@@ -601,7 +601,7 @@
       : { matches: false };
     const panel = (typeof document.querySelector === "function") ? document.querySelector(".side-panel") : null;
     document.querySelectorAll(".side-tab").forEach((b) => {
-      if (!b.getAttribute || !b.getAttribute("aria-label")) b.setAttribute && b.setAttribute("aria-label", "切換到" + (b.textContent || "").trim() + "分頁");
+      if (!b.getAttribute || !b.getAttribute("aria-label")) b.setAttribute && b.setAttribute("aria-label", "切换到" + (b.textContent || "").trim() + "分页");
       b.onclick = () => {
         if (hasOpenModal()) return;
         if (window.FarmWorld && panel) {
@@ -638,7 +638,7 @@
   }
   function sideListMoreHtml(key, total, shown) {
     if (total <= shown) return "";
-    return `<button type="button" class="btn ghost small side-list-more" data-list-more="${escapeHtml(key)}" aria-label="顯示更多項目">顯示更多 ${total - shown}</button>`;
+    return `<button type="button" class="btn ghost small side-list-more" data-list-more="${escapeHtml(key)}" aria-label="显示更多项目">显示更多 ${total - shown}</button>`;
   }
   function compactRowsHtml(key, rows, limit) {
     const all = (rows || []).filter(Boolean);
@@ -667,7 +667,7 @@
     btn.type = "button";
     btn.className = "btn ghost small side-list-more";
     btn.dataset.listMore = key;
-    btn.textContent = "顯示更多 " + (total - shown);
+    btn.textContent = "显示更多 " + (total - shown);
     btn.onclick = () => { sideListExpanded[key] = true; renderFn(); };
     container.appendChild(btn);
   }
@@ -776,7 +776,7 @@
   }
   function onPlotClick(i) {
     const t = now();
-    if (i >= G.activePlotCount(state)) { toast("🔒 升級「開墾農地」解鎖更多格"); return; }
+    if (i >= G.activePlotCount(state)) { toast("🔒 升级「开垦农地」解锁更多格"); return; }
     const plot = state.plots[i];
     const rect = plotEls[i].getBoundingClientRect();
     const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
@@ -784,27 +784,27 @@
 
     // 工具路由：查看 / 澆水 / 清除·建造（農地不適用）
     if (tool === "inspect") {
-      if (!plot.cropId) { toast("🟫 空農地，選「👆手」種植"); return; }
+      if (!plot.cropId) { toast("🟫 空农地，选「👆手」种植"); return; }
       const prog = G.getCropProgress(state, plot, t); const crop = window.CROPS[plot.cropId];
-      toast(`${crop.emoji} ${crop.name}・${prog.ready ? "✅ 可收成" : "⏳ " + fmtTime(prog.remainingMs)}${prog.wet ? "・💧濕土加速中" : ""}`);
+      toast(`${crop.emoji} ${crop.name}・${prog.ready ? "✅ 可收成" : "⏳ " + fmtTime(prog.remainingMs)}${prog.wet ? "・💧湿土加速中" : ""}`);
       return;
     }
     if (tool === "water") {
       const r = G.waterPlot(state, i, t);
       if (r.ok) { playAction("water"); playSound("water"); screenBurst(cx, cy, ["\ud83d\udca7"], { count: 7, distance: 36, className: "water-drop-particle" }); floatText(cx, cy, "💧", "#bfe6f7"); afterChange(false); }
-      else if (r.reason === "empty") toast("💧 只有種了作物的乾土需要澆水");
-      else if (r.reason === "ready") toast("已成熟，不需澆水");
-      else if (r.reason === "already_wet") toast("💧 這格已是濕土");
+      else if (r.reason === "empty") toast("💧 只有种了作物的干土需要浇水");
+      else if (r.reason === "ready") toast("已成熟，不需浇水");
+      else if (r.reason === "already_wet") toast("💧 这格已是湿土");
       return;
     }
-    if (tool === "clear" || tool === "build") { toast("這裡是農地，「" + window.TOOLS[tool].name + "」請用在右下方擴張地圖"); return; }
+    if (tool === "clear" || tool === "build") { toast("这里是农地，「" + window.TOOLS[tool].name + "」请用在右下方扩张地图"); return; }
 
     // hand（預設）：種植 / 收成
     if (!plot.cropId) {
       const r = G.plant(state, i, selectedSeed, t);
       if (!r.ok) {
-        if (r.reason === "no_coins") toast("🪙 金幣不足，先賣點作物");
-        else if (r.reason === "locked_crop") toast("🔒 此作物尚未解鎖");
+        if (r.reason === "no_coins") toast("🪙 金币不足，先卖点作物");
+        else if (r.reason === "locked_crop") toast("🔒 此作物尚未解锁");
         return;
       }
       playAction("sow");
@@ -812,14 +812,14 @@
       afterChange(true);
     } else {
       const prog = G.getCropProgress(state, plot, t);
-      if (!prog.ready) { toast("⏳ 還要 " + fmtTime(prog.remainingMs)); return; }
+      if (!prog.ready) { toast("⏳ 还要 " + fmtTime(prog.remainingMs)); return; }
       const crop = window.CROPS[plot.cropId];
       const r = G.harvest(state, i, t);
       if (r.ok) {
         playAction("harvest");
         playSound("harvest"); playSound("coin"); screenBurst(cx, cy, [crop.emoji], { count: Math.min(12, 5 + r.added), distance: 58 }); flyCoinsToHud(cx, cy, 4); harvestComboText(cx, cy);
         floatText(cx, cy, "+" + r.added + " " + crop.emoji, "#dff5c8");
-        if (r.lost > 0) toast("📦 倉庫滿了，損失 " + r.lost + " " + crop.name);
+        if (r.lost > 0) toast("📦 仓库满了，损失 " + r.lost + " " + crop.name);
         if (r.leveled > 0) { levelUpFx(plotEls[i]); playSound("level"); toast("🎉 升到 Lv " + state.level + "！"); }
         afterChange(true);
       }
@@ -842,15 +842,15 @@
     pendingTrashUntil = now() + ORDER_TRASH_CONFIRM_MS;
     pendingTrashTimer = setTimeout(() => clearPendingOrderTrash(orderId, true), ORDER_TRASH_CONFIRM_MS);
     renderOrders();
-    toast("⚠️ 要丟棄這張訂單嗎？5 秒內按「確認丟棄」");
+    toast("⚠️ 要丢弃这张订单吗？5 秒内按「确认丢弃」");
   }
   function renderOrders() {
     const box = $("orders"); box.innerHTML = "";
     if (pendingTrashOrderId && !state.orders.some((order) => order.id === pendingTrashOrderId)) clearPendingOrderTrash();
     const streakMul = 1 + Math.min(window.ORDER_STREAK_CAP, state.orderStreak * window.ORDER_STREAK_BONUS);
     $("streakHint").innerHTML = state.orderStreak > 0
-      ? `<span class="streak-badge">🔥 連單 ${state.orderStreak}（獎金 ×${streakMul.toFixed(2)}）</span>` : "";
-    if (state.orders.length === 0) { box.innerHTML = `<div style="font-size:12px;color:var(--ink-soft)">尚無訂單…</div>`; return; }
+      ? `<span class="streak-badge">🔥 连单 ${state.orderStreak}（奖金 ×${streakMul.toFixed(2)}）</span>` : "";
+    if (state.orders.length === 0) { box.innerHTML = `<div style="font-size:12px;color:var(--ink-soft)">尚无订单…</div>`; return; }
     const ordered = state.orders.slice().sort((a, b) => {
       const ca = G.canFulfill(state, a) ? 1 : 0;
       const cb = G.canFulfill(state, b) ? 1 : 0;
@@ -877,7 +877,7 @@
       el.innerHTML = `
         <div class="o-rarity" style="background:${rarity.color}"></div>
         <div class="o-body">
-          ${isFestival ? `<div class="festival-tag">🏮四季物產</div>` : ""}
+          ${isFestival ? `<div class="festival-tag">🏮四季物产</div>` : ""}
           ${narrative ? `<div class="o-client" data-audit="order-npc">${narrative.npcName}｜${narrative.npcTitle}</div>
           <div class="o-flavor">${narrative.offer}</div>` : ""}
           <div class="o-wants">${wantsHtml}</div>
@@ -887,25 +887,25 @@
         <div class="o-actions">
           ${confirmingTrash
             ? `<button class="btn ghost small trash-cancel">保留</button>
-          <button class="btn small trash-confirm">確認丟棄</button>`
+          <button class="btn small trash-confirm">确认丢弃</button>`
             : `<button class="btn buy small ful" ${can ? "" : "disabled"}>交付</button>
-          <button class="btn ghost small trash">丟棄</button>`}
+          <button class="btn ghost small trash">丢弃</button>`}
         </div>`;
       const fulfill = el.querySelector(".ful");
       if (fulfill) fulfill.onclick = () => {
           const r = G.fulfillOrder(state, o.id, now());
-          if (r.ok) { clearPendingOrderTrash(); G.advanceStory(state, "deliver"); orderCompleteFx(el, r.coins); playSound("order"); playSound("coin"); toast((narrative ? narrative.npcName + "：「" + narrative.thanks + "」 +" : "📜 訂單完成！+") + fmtNum(r.coins) + " 🪙" + (r.streakMul > 1 ? " (×" + r.streakMul.toFixed(2) + ")" : "")); afterChange(true); renderOrders(); }
-          else toast("作物不足，無法交付");
+          if (r.ok) { clearPendingOrderTrash(); G.advanceStory(state, "deliver"); orderCompleteFx(el, r.coins); playSound("order"); playSound("coin"); toast((narrative ? narrative.npcName + "：「" + narrative.thanks + "」 +" : "📜 订单完成！+") + fmtNum(r.coins) + " 🪙" + (r.streakMul > 1 ? " (×" + r.streakMul.toFixed(2) + ")" : "")); afterChange(true); renderOrders(); }
+          else toast("作物不足，无法交付");
         };
       const trash = el.querySelector(".trash");
       if (trash) trash.onclick = () => requestOrderTrash(o.id);
       const cancelTrash = el.querySelector(".trash-cancel");
-      if (cancelTrash) cancelTrash.onclick = () => { clearPendingOrderTrash(o.id, true); toast("已保留訂單"); };
+      if (cancelTrash) cancelTrash.onclick = () => { clearPendingOrderTrash(o.id, true); toast("已保留订单"); };
       const confirmTrash = el.querySelector(".trash-confirm");
       if (confirmTrash) confirmTrash.onclick = () => {
         if (pendingTrashOrderId !== o.id || pendingTrashUntil <= now()) { clearPendingOrderTrash(o.id, true); return; }
         clearPendingOrderTrash(o.id);
-        G.trashOrder(state, o.id, now()); toast("🗑️ 已確認丟棄（連單中斷）"); afterChange(true); renderOrders();
+        G.trashOrder(state, o.id, now()); toast("🗑️ 已确认丢弃（连单中断）"); afterChange(true); renderOrders();
       };
       box.appendChild(el);
     });
@@ -943,16 +943,16 @@
       <span class="bu-icon" aria-hidden="true">${def.emoji}</span>
       <div class="bu-main">
         <div class="bu-title">${escapeHtml(buildingInstanceName(building))} <span class="bu-level">Lv ${level}/${max}</span>
-          ${next ? `<span class="afford-badge ${affordable ? "" : "miss"}">${affordable ? "可負擔" : "資源不足"}</span>` : ""}
+          ${next ? `<span class="afford-badge ${affordable ? "" : "miss"}">${affordable ? "可负担" : "资源不足"}</span>` : ""}
         </div>
-        <span class="bu-meter" aria-label="建物等級 ${level} / ${max}">${steps}</span>
+        <span class="bu-meter" aria-label="建物等级 ${level} / ${max}">${steps}</span>
         <div class="bu-effect"><b>目前</b> ${escapeHtml(current.effectLabel || def.desc || "")}</div>
-        <div class="bu-effect bu-next">${next ? `<b>下一級</b> ${escapeHtml(next.effectLabel || "效果提升")}` : "✓ 已達最高效果"}</div>
+        <div class="bu-effect bu-next">${next ? `<b>下一级</b> ${escapeHtml(next.effectLabel || "效果提升")}` : "✓ 已达最高效果"}</div>
       </div>
       ${next
-        ? `<button type="button" class="btn buy small building-upgrade-btn" data-building-id="${escapeHtml(building.id)}" aria-label="升級${escapeHtml(buildingInstanceName(building))}到 Lv ${next.level}" ${affordable ? "" : "disabled"}>升到 Lv ${next.level}</button>`
-        : `<span class="u-maxed">✓ 滿級</span>`}
-      ${next ? `<div class="bu-costs"><span class="bu-cost-label">升級成本</span>${buildingCostChipsHtml(next.cost)}</div>` : ""}
+        ? `<button type="button" class="btn buy small building-upgrade-btn" data-building-id="${escapeHtml(building.id)}" aria-label="升级${escapeHtml(buildingInstanceName(building))}到 Lv ${next.level}" ${affordable ? "" : "disabled"}>升到 Lv ${next.level}</button>`
+        : `<span class="u-maxed">✓ 满级</span>`}
+      ${next ? `<div class="bu-costs"><span class="bu-cost-label">升级成本</span>${buildingCostChipsHtml(next.cost)}</div>` : ""}
     </section>`;
   }
   function performBuildingUpgrade(buildingId, anchorEl) {
@@ -966,9 +966,9 @@
       renderTileContext();
       updateMap(now());
     } else if (r.reason === "cost") {
-      toast("升級資源不足");
+      toast("升级资源不足");
       renderUpgrades(); renderTileContext();
-    } else if (r.reason === "maxed") toast("這棟建物已滿級");
+    } else if (r.reason === "maxed") toast("这栋建物已满级");
   }
   function bindBuildingUpgradeButtons(root) {
     (root || document).querySelectorAll(".building-upgrade-btn").forEach((btn) => {
@@ -982,7 +982,7 @@
       .sort((a, b) => ((b.b.builtAt || 0) - (a.b.builtAt || 0)) || a.index - b.index).map((entry) => entry.b);
     box.innerHTML = buildings.length
       ? buildings.map((b) => buildingUpgradeCardHtml(b, false)).join("")
-      : `<div class="building-upgrade-empty">在草地放置建物後，這裡會出現它的等級與升級路線。</div>`;
+      : `<div class="building-upgrade-empty">在草地放置建物后，这里会出现它的等级与升级路线。</div>`;
     bindBuildingUpgradeButtons(box);
   }
   function renderUpgrades() {
@@ -1009,7 +1009,7 @@
         </div>
         ${next
           ? `<button class="btn buy small" ${state.coins >= next.cost ? "" : "disabled"}>🪙 ${fmtNum(next.cost)}</button>`
-          : `<span class="u-maxed">✓ 滿級</span>`}`;
+          : `<span class="u-maxed">✓ 满级</span>`}`;
       if (next) {
         el.querySelector("button").onclick = () => {
           const r = G.buyUpgrade(state, key);
@@ -1018,7 +1018,7 @@
             toast(def.icon + " " + def.name + " → Lv " + r.level);
             if (key === "plotCount") buildFarm();
             afterChange(true); renderUpgrades(); renderSeeds();
-          } else if (r.reason === "no_coins") toast("🪙 金幣不足");
+          } else if (r.reason === "no_coins") toast("🪙 金币不足");
         };
       }
       box.appendChild(el);
@@ -1119,7 +1119,7 @@
     const ids = G.evaluateLetters(state, t);
     if (ids.length && notify) {
       const first = letterById(ids[0]);
-      toast("📬 " + (first && first.from ? first.from : "信箱") + "寄來一封信…");
+      toast("📬 " + (first && first.from ? first.from : "信箱") + "寄来一封信…");
       mailArriveFx(); playSound("mail");
       const mailbox = stationTileOf("mailbox");
       if (mailbox) focusCameraOnTile(mailbox);
@@ -1148,11 +1148,11 @@
     if (!G.replyLetter) return;
     const r = G.replyLetter(state);
     if (r.ok) {
-      toast(r.wasReplied ? "📮 回信已放在信箱裡" : "📮 你把回信放進祖母留下的信箱");
-      if (r.collectibleId === "seed_pouch") toast("🌱 取得收藏：祖母的種子布袋");
+      toast(r.wasReplied ? "📮 回信已放在信箱里" : "📮 你把回信放进祖母留下的信箱");
+      if (r.collectibleId === "seed_pouch") toast("🌱 取得收藏：祖母的种子布袋");
       renderLettersModal(); renderStory(); renderJournal(); updateMailBadges(); renderQuestDock(); scheduleSave();
     } else {
-      toast("還有信沒有讀完");
+      toast("还有信没有读完");
     }
   }
   function seasonEventCardHtml() {
@@ -1166,7 +1166,7 @@
       if (m.any) return m.any.map(itemName).join("或");
       return "材料不足";
     }).join("、");
-    const stateText = status.claimed ? "本季已完成" : status.canClaim ? "可完成" : "需要：" + (missing || "物資不足");
+    const stateText = status.claimed ? "本季已完成" : status.canClaim ? "可完成" : "需要：" + (missing || "物资不足");
     return `
       <section class="season-event-card ${status.claimed ? "done" : ""}" data-audit="season-event" data-event-id="${ev.id}" data-season="${escapeHtml(ev.season || "春")}">
         <div>
@@ -1187,10 +1187,10 @@
         renderLettersModal();
         afterChange(true);
       } else if (r.reason === "requirements") {
-        toast("季節事件需要的物資不足");
+        toast("季节事件需要的物资不足");
         renderLettersModal();
       } else if (r.reason === "claimed") {
-        toast("本季已完成這件事");
+        toast("本季已完成这件事");
         renderLettersModal();
       }
     };
@@ -1214,7 +1214,7 @@
       return `<button type="button" class="letter-list-item ${selectedLetterId === l.id ? "sel" : ""} ${isUnlocked ? "" : "locked"}" data-letter-id="${l.id}" ${isUnlocked ? "" : "disabled"}>
         <span>${isUnlocked ? (isRead ? "✓" : "●") : "🔒"}</span>
         <b>${idx + 1}. ${escapeHtml(l.title)}</b>
-        <em>${isUnlocked ? escapeHtml(l.season || "四季") : "尚未送達"}</em>
+        <em>${isUnlocked ? escapeHtml(l.season || "四季") : "尚未送达"}</em>
       </button>`;
     }).join("");
     const paper = selectedUnlocked ? `
@@ -1224,9 +1224,9 @@
         ${letterBodyHtml(selected)}
       </article>` : `
       <article class="letter-paper locked" data-audit="letter-paper">
-        <div class="letter-meta">信箱還在等農場甦醒</div>
-        <h3>尚未送達的信</h3>
-        <p>修好更多地方、照顧動物、迎接四季與豐年祭，鎮長就會把祖母留下的信交到你手上。</p>
+        <div class="letter-meta">信箱还在等农场苏醒</div>
+        <h3>尚未送达的信</h3>
+        <p>修好更多地方、照顾动物、迎接四季与丰年祭，镇长就会把祖母留下的信交到你手上。</p>
       </article>`;
     box.innerHTML = `
       ${seasonEventCardHtml()}
@@ -1235,8 +1235,8 @@
         <div class="letters-reader">
           ${paper}
           <div class="letters-footer">
-            <span>${CHAPTER5_LETTER_ORDER.filter((id) => read[id]).length}/${CHAPTER5_LETTER_ORDER.length} 已讀${mail.replied ? " · 已回信" : ""}</span>
-            <button type="button" class="btn buy small" id="letterReplyBtn" ${allRead && !mail.replied ? "" : "disabled"}>寫下回信</button>
+            <span>${CHAPTER5_LETTER_ORDER.filter((id) => read[id]).length}/${CHAPTER5_LETTER_ORDER.length} 已读${mail.replied ? " · 已回信" : ""}</span>
+            <button type="button" class="btn buy small" id="letterReplyBtn" ${allRead && !mail.replied ? "" : "disabled"}>写下回信</button>
           </div>
         </div>
       </div>`;
@@ -1265,14 +1265,14 @@
   function bridgeMaterialRowsHtml(compact) {
     if (!G.bridgeMaterialStatus) return "";
     const st = G.bridgeMaterialStatus(state);
-    const names = { wood: "木材", stone: "石頭" };
+    const names = { wood: "木材", stone: "石头" };
     const rows = Object.keys(st.cost).map((k) => {
       const ready = (st.missing[k] || 0) <= 0;
       const src = (st.sources[k] || []).map((s) => window.OBSTACLES[s.object].name).filter((v, i, arr) => arr.indexOf(v) === i).join("、");
       return `<div class="bm-row ${ready ? "ready" : "miss"}" data-material="${k}" data-missing="${st.missing[k]}">
         <span>${window.MATERIALS[k].emoji} ${names[k] || window.MATERIALS[k].name}</span>
         <b>${st.have[k]}/${st.cost[k]}${ready ? " 完成" : " 缺 " + st.missing[k]}</b>
-        ${compact ? "" : `<span class="bm-src">${ready ? "已備齊" : "來源：" + (src || "已無可清障礙")}</span>`}
+        ${compact ? "" : `<span class="bm-src">${ready ? "已备齐" : "来源：" + (src || "已无可清障碍")}</span>`}
       </div>`;
     }).join("");
     return `<div class="bridge-materials" data-audit="bridge-materials" data-ready="${st.ready}">${rows}</div>`;
@@ -1285,7 +1285,7 @@
       const done = (st.found[k] || 0) >= st.wants[k];
       return `<div class="bm-row ${done ? "ready" : "miss"}" data-forage-item="${k}">
         <span>${def.emoji} ${def.name}</span><b>${st.found[k] || 0}/${st.wants[k]}</b>
-        ${compact ? "" : `<span class="bm-src">${done ? "已採樣" : "東林採集點"}</span>`}
+        ${compact ? "" : `<span class="bm-src">${done ? "已采样" : "东林采集点"}</span>`}
       </div>`;
     }).join("");
     return `<div class="bridge-materials forage-status" data-audit="forage-status" data-ready="${st.collectedAll}">${rows}</div>`;
@@ -1293,7 +1293,7 @@
   function eastDeepCostRowsHtml(compact) {
     if (!G.eastDeepStatus) return "";
     const st = G.eastDeepStatus(state);
-    const label = { coins: "金幣", wood: "木材", stone: "石頭", compost: "堆肥" };
+    const label = { coins: "金币", wood: "木材", stone: "石头", compost: "堆肥" };
     const icon = { coins: "🪙" };
     const rows = Object.keys(st.cost).map((k) => {
       const have = st.have[k] || 0;
@@ -1302,36 +1302,36 @@
       return `<div class="bm-row ${ready ? "ready" : "miss"}" data-deep-cost="${k}" data-missing="${st.missing[k]}">
         <span>${icon[k] || (mat && mat.emoji) || ""} ${label[k] || (mat && mat.name) || k}</span>
         <b>${have}/${st.cost[k]}${ready ? " 完成" : " 缺 " + st.missing[k]}</b>
-        ${compact ? "" : `<span class="bm-src">${ready ? "已備齊" : "清障與經營取得"}</span>`}
+        ${compact ? "" : `<span class="bm-src">${ready ? "已备齐" : "清障与经营取得"}</span>`}
       </div>`;
     }).join("");
     return `<div class="bridge-materials deep-status" data-audit="east-deep-cost" data-ready="${st.ready}" data-unlocked="${st.unlocked}">${rows}</div>`;
   }
   function questActionText(cur) {
-    if (!cur) return "自由經營：繼續種植、接訂單、照顧動物。";
-    if (cur.id === "intro_reopen_farm") return "主動作：點金色箭頭旁的告示牌，走過去閱讀。";
-    if (cur.id === "plant_wheat") return "主動作：選手工具，點空農土種下小麥。";
-    if (cur.id === "first_water") return "主動作：走到水井，或選澆水工具點麥田。";
-    if (cur.id === "first_harvest") return "主動作：等小麥成熟，點麥田走過去收成。";
-    if (cur.id === "first_delivery") return "主動作：走到訂單看板，交付 2 小麥新手訂單。";
-    if (cur.id === "clear_old_path") return "主動作：選清除工具，點金色箭頭標示的樹樁。";
+    if (!cur) return "自由经营：继续种植、接订单、照顾动物。";
+    if (cur.id === "intro_reopen_farm") return "主动作：点金色箭头旁的告示牌，走过去阅读。";
+    if (cur.id === "plant_wheat") return "主动作：选手工具，点空农土种下小麦。";
+    if (cur.id === "first_water") return "主动作：走到水井，或选浇水工具点麦田。";
+    if (cur.id === "first_harvest") return "主动作：等小麦成熟，点麦田走过去收成。";
+    if (cur.id === "first_delivery") return "主动作：走到订单看板，交付 2 小麦新手订单。";
+    if (cur.id === "clear_old_path") return "主动作：选清除工具，点金色箭头标示的树桩。";
     if (cur.id === "repair_bridge") {
       const st = G.bridgeMaterialStatus ? G.bridgeMaterialStatus(state) : null;
-      return st && st.ready ? "主動作：材料已齊，點斷橋走過去修復。" : "主動作：跟著金色箭頭清障，補齊修橋材料。";
+      return st && st.ready ? "主动作：材料已齐，点断桥走过去修复。" : "主动作：跟着金色箭头清障，补齐修桥材料。";
     }
-    if (cur.id === "explore_new_area") return "主動作：過橋走到東林古樹。";
-    if (cur.id === "discover_east_forage") return "主動作：前往東林採集點，先辨認可採的藥草或菇木。";
-    if (cur.id === "collect_east_forage") return "主動作：各採一份東林藥草與螢光菇。";
-    if (cur.id === "report_east_forage") return "主動作：回到商人身邊交付東林樣品。";
-    if (cur.id === "learn_animal_care") return "主動作：找老農班伯交談。";
-    if (cur.id === "feed_care_animal") return "主動作：走到雞舍，餵食、澆水或梳理動物。";
-    if (cur.id === "raise_affinity_happy") return "主動作：持續照護同一隻動物到開心。";
-    if (cur.id === "collect_quality_product") return "主動作：親密度高時收集優質或頂級產物。";
-    if (cur.id === "deliver_quality_order") return "主動作：把優質產物賣到市集或交付訂單。";
-    if (cur.id === "prepare_four_seasons") return "主動作：春夏秋冬各收成至少一種作物。";
-    if (cur.id === "welcome_ducks") return "主動作：照顧鴨舍並收集一枚鴨蛋。";
-    if (cur.id === "finish_festival_order") return "主動作：完成一張豐年祭四季物產訂單。";
-    return "主動作：" + cur.desc;
+    if (cur.id === "explore_new_area") return "主动作：过桥走到东林古树。";
+    if (cur.id === "discover_east_forage") return "主动作：前往东林采集点，先辨认可采的药草或菇木。";
+    if (cur.id === "collect_east_forage") return "主动作：各采一份东林药草与萤光菇。";
+    if (cur.id === "report_east_forage") return "主动作：回到商人身边交付东林样品。";
+    if (cur.id === "learn_animal_care") return "主动作：找老农班伯交谈。";
+    if (cur.id === "feed_care_animal") return "主动作：走到鸡舍，喂食、浇水或梳理动物。";
+    if (cur.id === "raise_affinity_happy") return "主动作：持续照护同一只动物到开心。";
+    if (cur.id === "collect_quality_product") return "主动作：亲密度高时收集优质或顶级产物。";
+    if (cur.id === "deliver_quality_order") return "主动作：把优质产物卖到市集或交付订单。";
+    if (cur.id === "prepare_four_seasons") return "主动作：春夏秋冬各收成至少一种作物。";
+    if (cur.id === "welcome_ducks") return "主动作：照顾鸭舍并收集一枚鸭蛋。";
+    if (cur.id === "finish_festival_order") return "主动作：完成一张丰年祭四季物产订单。";
+    return "主动作：" + cur.desc;
   }
   function renderQuestDock() {
     const box = $("questDock"); if (!box) return;
@@ -1339,7 +1339,7 @@
     if (G.syncStoryProgress) G.syncStoryProgress(state);
     const cur = G.currentQuest(state);
     const targetId = G.questMarkerTile ? G.questMarkerTile(state, now()) : null;
-    const title = cur ? cur.title : "自由經營";
+    const title = cur ? cur.title : "自由经营";
     const action = questActionText(cur);
     const isFestivalQuest = cur && cur.id === "finish_festival_order";
     box.dataset.quest = cur ? cur.id : "free";
@@ -1347,14 +1347,14 @@
     box.classList.toggle("festival", !!isFestivalQuest);
     box.classList.toggle("expanded", questDockExpanded);
     box.innerHTML = `<div class="qd-body">
-        <div class="qd-title"><span>📍</span><span>${title}</span><span class="qd-summary">${action}</span>${isFestivalQuest ? `<em class="festival-tag">🏮四季物產</em>` : ""}</div>
+        <div class="qd-title"><span>📍</span><span>${title}</span><span class="qd-summary">${action}</span>${isFestivalQuest ? `<em class="festival-tag">🏮四季物产</em>` : ""}</div>
         <div class="qd-action">${action}</div>
         ${cur && cur.id === "repair_bridge" ? bridgeMaterialRowsHtml(true) : ""}
         ${cur && (cur.id === "collect_east_forage") ? forageRowsHtml(true) : ""}
       </div>
       <div class="qd-actions">
-        <button class="qd-meta qd-toggle" data-audit="quest-dock-toggle" aria-label="${questDockExpanded ? "收合任務詳情" : "展開任務詳情"}">${questDockExpanded ? "收" : "詳"}</button>
-        <button class="qd-meta qd-go" data-audit="quest-dock-go" aria-label="${targetId ? "前往目前任務目標" : "目前任務沒有可前往目標"}" ${targetId ? "" : "disabled"}>${targetId ? "前往" : "探索"}</button>
+        <button class="qd-meta qd-toggle" data-audit="quest-dock-toggle" aria-label="${questDockExpanded ? "收合任务详情" : "展开任务详情"}">${questDockExpanded ? "收" : "详"}</button>
+        <button class="qd-meta qd-go" data-audit="quest-dock-go" aria-label="${targetId ? "前往目前任务目标" : "目前任务没有可前往目标"}" ${targetId ? "" : "disabled"}>${targetId ? "前往" : "探索"}</button>
       </div>`;
     const toggle = box.querySelector(".qd-toggle");
     if (toggle) toggle.onclick = (ev) => { ev.stopPropagation(); questDockExpanded = !questDockExpanded; renderQuestDock(); };
@@ -1381,7 +1381,7 @@
         <div class="setting-title">${escapeHtml(title)}</div>
         <div class="setting-desc">${escapeHtml(desc)}</div>
       </div>
-      <button class="setting-toggle" data-audit="setting-toggle" data-setting-key="${escapeHtml(key)}" data-enabled="${enabled ? "true" : "false"}" aria-label="${escapeHtml(title)}${enabled ? "已開啟" : "已關閉"}">${enabled ? "開啟" : "關閉"}</button>
+      <button class="setting-toggle" data-audit="setting-toggle" data-setting-key="${escapeHtml(key)}" data-enabled="${enabled ? "true" : "false"}" aria-label="${escapeHtml(title)}${enabled ? "已打开" : "已关闭"}">${enabled ? "打开" : "关闭"}</button>
     </div>`;
   }
   function soundVolumeHtml(volume, enabled) {
@@ -1389,7 +1389,7 @@
     return `<div class="setting-row" data-audit="setting-sound-volume">
       <div>
         <div class="setting-title">音量</div>
-        <div class="setting-desc">調整種植、收成、澆水、餵食、升級與 UI 確認音效。</div>
+        <div class="setting-desc">调整种植、收成、浇水、喂食、升级与 UI 确认音效。</div>
       </div>
       <label class="setting-slider" aria-label="音效音量">
         <input type="range" min="0" max="100" step="5" value="${pct}" data-audit="sound-volume" ${enabled ? "" : "disabled"}>
@@ -1398,13 +1398,13 @@
     </div>`;
   }
   function performanceModeHtml(mode) {
-    const labels = { auto: "自動", high: "高", low: "低" };
+    const labels = { auto: "自动", high: "高", low: "低" };
     const desc = mode === "auto"
-      ? `自動監測 FPS，低於 45fps 會節流地圖刷新並降級天氣動畫。現在 ${document.documentElement.classList.contains("perf-low") ? "低階" : "高階"}。`
-      : (mode === "high" ? "鎖定完整地圖刷新、天氣動畫與視覺密度。" : "鎖定低頻地圖刷新與低密度天氣動畫，降低耗電與卡頓。");
+      ? `自动监测 FPS，低于 45fps 会节流地图刷新并降级天气动画。现在 ${document.documentElement.classList.contains("perf-low") ? "低级" : "高端"}。`
+      : (mode === "high" ? "锁定完整地图刷新、天气动画与视觉密度。" : "锁定低频地图刷新与低密度天气动画，降低耗电与卡顿。");
     return `<div class="setting-row" data-audit="setting-performance">
       <div>
-        <div class="setting-title">效能模式</div>
+        <div class="setting-title">性能模式</div>
         <div class="setting-desc" data-audit="performance-desc">${escapeHtml(desc)}</div>
       </div>
       <div class="setting-mode-group">
@@ -1416,23 +1416,23 @@
     const labels = { small: "小", medium: "中", large: "大" };
     return `<div class="setting-row" data-audit="setting-text-size">
       <div>
-        <div class="setting-title">文字大小</div>
-        <div class="setting-desc">調整主要 UI 文字尺寸，適合手機長時間遊玩。</div>
+        <div class="setting-title">文本大小</div>
+        <div class="setting-desc">调整主要 UI 文本尺寸，适合手机长时间游玩。</div>
       </div>
       <div class="setting-mode-group">
-        ${["small", "medium", "large"].map((m) => `<button class="setting-mode ${size === m ? "sel" : ""}" data-audit="text-size-mode" data-text-size="${m}" aria-label="文字大小${labels[m]}">${labels[m]}</button>`).join("")}
+        ${["small", "medium", "large"].map((m) => `<button class="setting-mode ${size === m ? "sel" : ""}" data-audit="text-size-mode" data-text-size="${m}" aria-label="文本大小${labels[m]}">${labels[m]}</button>`).join("")}
       </div>
     </div>`;
   }
   function pwaVersionHtml() {
     const waiting = !!pwaWaitingWorker || !!(pwaRegistration && pwaRegistration.waiting);
-    const status = pwaUpdateStatus || (typeof navigator !== "undefined" && "serviceWorker" in navigator ? "可手動檢查更新。" : "此瀏覽器不支援離線安裝。");
+    const status = pwaUpdateStatus || (typeof navigator !== "undefined" && "serviceWorker" in navigator ? "可手动检查更新。" : "此浏览器不支持离线安装。");
     return `<div class="setting-row" data-audit="setting-pwa">
       <div>
         <div class="setting-title">版本 ${escapeHtml(PWA_CACHE_VERSION)}</div>
         <div class="setting-desc" id="pwaUpdateStatus" data-audit="pwa-update-status">${escapeHtml(status)}</div>
       </div>
-      <button class="setting-toggle" id="pwaCheckBtn" data-audit="pwa-check" aria-label="${waiting ? "套用新版本" : "檢查 PWA 更新"}">${waiting ? "套用更新" : "檢查更新"}</button>
+      <button class="setting-toggle" id="pwaCheckBtn" data-audit="pwa-check" aria-label="${waiting ? "套用新版本" : "检查 PWA 更新"}">${waiting ? "套用更新" : "检查更新"}</button>
     </div>`;
   }
   function performanceTierLabel(tier) {
@@ -1440,7 +1440,7 @@
   }
   function fmtPerfEventTime(ms) {
     try {
-      return new Date(ms).toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      return new Date(ms).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     } catch (e) {
       return "--:--:--";
     }
@@ -1449,7 +1449,7 @@
     const entry = {
       type,
       at: now(),
-      reason: reason || (type === "downgrade" ? "效能自動降級" : "效能恢復"),
+      reason: reason || (type === "downgrade" ? "性能自动降级" : "性能恢复"),
     };
     if (type === "downgrade") perfLastDowngradeReason = entry.reason;
     perfEventHistory.unshift(entry);
@@ -1457,7 +1457,7 @@
     updatePerformanceDiagnostics();
   }
   function performanceHistoryHtml() {
-    if (!perfEventHistory.length) return `<div class="perf-history-empty" data-audit="performance-history-empty">本次遊玩尚無降級或恢復事件。</div>`;
+    if (!perfEventHistory.length) return `<div class="perf-history-empty" data-audit="performance-history-empty">本次游玩尚无降级或恢复事件。</div>`;
     return `<div class="perf-history" data-audit="performance-history">${perfEventHistory.map((ev) =>
       `<div class="perf-history-row" data-kind="${escapeHtml(ev.type)}"><b>${fmtPerfEventTime(ev.at)}</b><span>${escapeHtml(ev.reason)}</span></div>`
     ).join("")}</div>`;
@@ -1466,8 +1466,8 @@
     const info = performanceInfo();
     return `<div class="setting-row" data-audit="setting-performance-diagnostics">
       <div>
-        <div class="setting-title">效能診斷</div>
-        <div class="setting-desc" id="performanceDiagnostics" data-audit="performance-diagnostics">FPS ${Math.round(info.avgFps)}｜實際 ${performanceTierLabel(info.tier)}｜最近降級：${escapeHtml(info.lastDowngradeReason)}</div>
+        <div class="setting-title">性能诊断</div>
+        <div class="setting-desc" id="performanceDiagnostics" data-audit="performance-diagnostics">FPS ${Math.round(info.avgFps)}｜实际 ${performanceTierLabel(info.tier)}｜最近降级：${escapeHtml(info.lastDowngradeReason)}</div>
         ${performanceHistoryHtml()}
       </div>
     </div>`;
@@ -1478,24 +1478,24 @@
   function saveManagerHtml() {
     const hasBackup = typeof localStorage !== "undefined" && !!localStorage.getItem(backupSaveKey());
     return `<div class="save-manager" data-audit="save-manager">
-      <div class="save-manager-title">存檔管家</div>
-      <textarea class="save-code" id="saveCodeBox" data-audit="save-code" placeholder="匯出後會產生代碼；匯入時貼上代碼。"></textarea>
+      <div class="save-manager-title">存档管家</div>
+      <textarea class="save-code" id="saveCodeBox" data-audit="save-code" placeholder="导出后会产生代码；导入时粘贴代码。"></textarea>
       <div class="save-actions">
-        <button class="btn ghost" id="exportSaveBtn" data-audit="save-export">匯出存檔</button>
-        <button class="btn buy" id="importSaveBtn" data-audit="save-import">匯入存檔</button>
-        <button class="btn ghost" id="restoreBackupBtn" data-audit="save-restore" ${hasBackup ? "" : "disabled"}>還原備份</button>
+        <button class="btn ghost" id="exportSaveBtn" data-audit="save-export">导出存档</button>
+        <button class="btn buy" id="importSaveBtn" data-audit="save-import">导入存档</button>
+        <button class="btn ghost" id="restoreBackupBtn" data-audit="save-restore" ${hasBackup ? "" : "disabled"}>还原备份</button>
       </div>
       <div class="save-status" id="saveStatus" data-audit="save-status"></div>
     </div>`;
   }
   function settingsSeriesLinksHtml() {
     return `<section class="settings-series" data-audit="settings-series" aria-labelledby="settingsSeriesTitle">
-      <div class="settings-series-title" id="settingsSeriesTitle">🪧 其他遊戲</div>
-      <div class="settings-series-copy">離開農場前，也可以逛逛阿軒的小遊戲系列。</div>
+      <div class="settings-series-title" id="settingsSeriesTitle">🪧 其他游戏</div>
+      <div class="settings-series-copy">离开农场前，也可以逛逛阿轩的小游戏系列。</div>
       <div class="settings-series-links" id="settingsSeriesLinks">
-        <a href="https://mars-tw.github.io/web-card-game-skill/templates/card-battle/" target="_blank" rel="noopener">卡牌對戰</a>
-        <a href="https://mars-tw.github.io/tower-defense-skill/" target="_blank" rel="noopener">無盡塔防</a>
-        <a href="https://mars-tw.github.io/ashes-convoy/" target="_blank" rel="noopener">灰燼護航</a>
+        <a href="https://mars-tw.github.io/web-card-game-skill/templates/card-battle/" target="_blank" rel="noopener">卡牌对战</a>
+        <a href="https://mars-tw.github.io/tower-defense-skill/" target="_blank" rel="noopener">无尽塔防</a>
+        <a href="https://mars-tw.github.io/ashes-convoy/" target="_blank" rel="noopener">灰烬护航</a>
       </div>
     </section>`;
   }
@@ -1530,10 +1530,10 @@
       if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
         try { await navigator.clipboard.writeText(code); } catch (e) {}
       }
-      setSaveStatus("已匯出存檔代碼並嘗試複製。", true);
+      setSaveStatus("已导出存档代码并尝试拷贝。", true);
       return code;
     } catch (e) {
-      setSaveStatus("匯出失敗，請稍後再試。", false);
+      setSaveStatus("导出失败，请稍后再试。", false);
       return null;
     }
   }
@@ -1548,11 +1548,11 @@
       if (!saved || saved.ok === false) throw new Error("save_failed");
       Object.keys(state).forEach((k) => delete state[k]);
       Object.assign(state, migrated);
-      setSaveStatus("匯入成功，正在重新載入。", true);
+      setSaveStatus("导入成功，正在重新加载。", true);
       setTimeout(() => window.location.reload(), 80);
       return true;
     } catch (e) {
-      setSaveStatus("匯入失敗：代碼無效或資料不相容，原存檔未覆蓋。", false);
+      setSaveStatus("导入失败：代码无效或数据不兼容，原存档未覆盖。", false);
       return false;
     }
   }
@@ -1565,11 +1565,11 @@
       if (!saved || saved.ok === false) throw new Error("save_failed");
       Object.keys(state).forEach((k) => delete state[k]);
       Object.assign(state, migrated);
-      setSaveStatus("備份已還原，正在重新載入。", true);
+      setSaveStatus("备份已还原，正在重新加载。", true);
       setTimeout(() => window.location.reload(), 80);
       return true;
     } catch (e) {
-      setSaveStatus("還原失敗：找不到可用備份。", false);
+      setSaveStatus("还原失败：找不到可用备份。", false);
       return false;
     }
   }
@@ -1597,7 +1597,7 @@
   function updatePerformanceDiagnostics() {
     const box = $("performanceDiagnostics"); if (!box) return;
     const info = performanceInfo();
-    box.textContent = `FPS ${Math.round(info.avgFps)}｜實際 ${performanceTierLabel(info.tier)}｜最近降級：${info.lastDowngradeReason}`;
+    box.textContent = `FPS ${Math.round(info.avgFps)}｜实际 ${performanceTierLabel(info.tier)}｜最近降级：${info.lastDowngradeReason}`;
     const history = (typeof document.querySelector === "function")
       ? document.querySelector('[data-audit="performance-history"], [data-audit="performance-history-empty"]')
       : null;
@@ -1643,14 +1643,14 @@
         else { perfLowFrames = 0; perfStableFrames = 0; }
         if (!perfAutoLow && perfLowFrames >= 30) {
           perfAutoLow = true;
-          const reason = `FPS ${Math.round(perfAvgFps)} 低於 45，已節流地圖刷新並降低天氣動畫密度`;
+          const reason = `FPS ${Math.round(perfAvgFps)} 低于 45，已节流地图刷新并降低天气动画密度`;
           applyPerformanceMode();
           recordPerformanceEvent("downgrade", reason);
           renderSettingsPanel();
         }
         if (perfAutoLow && perfStableFrames >= 120) {
           perfAutoLow = false;
-          const reason = `FPS ${Math.round(perfAvgFps)} 回穩，已恢復高品質`;
+          const reason = `FPS ${Math.round(perfAvgFps)} 回稳，已恢复高品质`;
           applyPerformanceMode();
           recordPerformanceEvent("restore", reason);
           renderSettingsPanel();
@@ -1666,7 +1666,7 @@
   function showPwaUpdatePrompt(worker) {
     const box = $("pwaUpdate"); if (!box || !worker) return;
     pwaWaitingWorker = worker;
-    pwaUpdateStatus = "新版本已下載，可套用更新。";
+    pwaUpdateStatus = "新版本已下载，可套用更新。";
     box.hidden = false;
     renderSettingsPanel();
     box.onclick = () => {
@@ -1685,7 +1685,7 @@
   }
   async function checkPwaUpdate() {
     if (!pwaRegistration || typeof pwaRegistration.update !== "function") {
-      pwaUpdateStatus = "尚未註冊離線功能，請重新整理後再試。";
+      pwaUpdateStatus = "尚未注册离线功能，请刷新后再试。";
       renderSettingsPanel();
       return false;
     }
@@ -1695,11 +1695,11 @@
         showPwaUpdatePrompt((reg && reg.waiting) || pwaWaitingWorker);
         return true;
       }
-      pwaUpdateStatus = "已檢查，目前是最新版本。";
+      pwaUpdateStatus = "已检查，目前是最新版本。";
       renderSettingsPanel();
       return false;
     } catch (e) {
-      pwaUpdateStatus = "檢查更新失敗，請確認網路後再試。";
+      pwaUpdateStatus = "检查更新失败，请确认网络后再试。";
       renderSettingsPanel();
       return false;
     }
@@ -1721,7 +1721,7 @@
   function showPwaReloadPrompt() {
     const box = $("pwaUpdate");
     pwaWaitingWorker = null;
-    pwaUpdateStatus = "新版本已套用，點擊重新載入。";
+    pwaUpdateStatus = "新版本已套用，点击重新加载。";
     if (box) {
       box.hidden = false;
       box.onclick = () => window.location.reload();
@@ -1785,27 +1785,27 @@
   function offlineReviewHtml(summary) {
     if (!summary) {
       return `<div class="offline-review" data-audit="offline-review">
-        <div class="offline-review-title">最近一次離線回顧</div>
-        <div class="offline-review-body" data-audit="offline-review-empty">尚無可回看的離線摘要。</div>
+        <div class="offline-review-title">最近一次离线回顾</div>
+        <div class="offline-review-body" data-audit="offline-review-empty">尚无可回看的离线摘要。</div>
       </div>`;
     }
     const forageCount = summary.forageReadyCount || 0;
     const lines = [
-      `離開 ${summary.minutes || Math.max(5, Math.round((summary.offlineMs || 0) / 60000))} 分鐘`,
-      `離線收益 +${summary.coins || 0} 金`,
+      `离开 ${summary.minutes || Math.max(5, Math.round((summary.offlineMs || 0) / 60000))} 分钟`,
+      `离线收益 +${summary.coins || 0} 金`,
       `作物成熟 ${summary.readyPlots || 0} 株`,
-      `採集點已刷新 ${forageCount} 處`,
+      `采集点已刷新 ${forageCount} 处`,
     ];
     const crops = Object.entries(summary.perCrop || {});
-    if (crops.length) lines.push(`自動收成 ${crops.map(([cid, n]) => `${itemName(cid)}×${n}`).join("、")}`);
+    if (crops.length) lines.push(`自动收成 ${crops.map(([cid, n]) => `${itemName(cid)}×${n}`).join("、")}`);
     const products = Object.entries(summary.products || {});
-    if (products.length) lines.push(`動物產出 ${products.map(([pid, n]) => `${itemName(pid)}×${n}`).join("、")}`);
-    if (summary.replanted > 0) lines.push(`幫手補種 ${summary.replanted} 次`);
-    if (summary.lost > 0) lines.push(`倉滿損失 ${summary.lost}`);
-    if (summary.seasonsAdvanced > 0) lines.push(`季節推進 ${summary.seasonsAdvanced} 次`);
-    if ((summary.skippedSeasonEvents || []).length) lines.push(`已結束節慶 ${summary.skippedSeasonEvents.length} 個`);
+    if (products.length) lines.push(`动物产出 ${products.map(([pid, n]) => `${itemName(pid)}×${n}`).join("、")}`);
+    if (summary.replanted > 0) lines.push(`帮手补种 ${summary.replanted} 次`);
+    if (summary.lost > 0) lines.push(`仓满损失 ${summary.lost}`);
+    if (summary.seasonsAdvanced > 0) lines.push(`季节推进 ${summary.seasonsAdvanced} 次`);
+    if ((summary.skippedSeasonEvents || []).length) lines.push(`已结束节庆 ${summary.skippedSeasonEvents.length} 个`);
     return `<div class="offline-review" data-audit="offline-review">
-      <div class="offline-review-title">最近一次離線回顧</div>
+      <div class="offline-review-title">最近一次离线回顾</div>
       <div class="offline-review-body" data-audit="offline-review-summary">${lines.map((line) => `<div>${escapeHtml(line)}</div>`).join("")}</div>
     </div>`;
   }
@@ -1813,9 +1813,9 @@
     const box = $("settingsList"); if (!box || !state) return;
     const settings = ensureSettings();
     box.innerHTML = [
-      settingRowHtml("smartAssistant", "智慧農務助手", "在地圖角落顯示即時行動建議與一鍵前往。", settings.smartAssistant !== false),
-      settingRowHtml("offlineSummary", "離線摘要", "離開 5 分鐘以上回來時顯示本次收益摘要。", settings.offlineSummary !== false),
-      settingRowHtml("soundEnabled", "音效", "首次點擊或按鍵後，主要操作會播放短促 WebAudio 回饋。", settings.soundEnabled !== false),
+      settingRowHtml("smartAssistant", "智能农务助手", "在地图角落显示即时行动建议与一键前往。", settings.smartAssistant !== false),
+      settingRowHtml("offlineSummary", "离线摘要", "离开 5 分钟以上回来时显示本次收益摘要。", settings.offlineSummary !== false),
+      settingRowHtml("soundEnabled", "音效", "首次点击或按键后，主要操作会播放短促 WebAudio 回馈。", settings.soundEnabled !== false),
       soundVolumeHtml(settings.soundVolume, settings.soundEnabled !== false),
       textSizeHtml(settings.textSize || "medium"),
       performanceModeHtml(settings.performanceMode || "auto"),
@@ -1824,7 +1824,7 @@
       offlineReviewHtml(state.lastOfflineSummary),
       settingsSeriesLinksHtml(),
       saveManagerHtml(),
-      window.FarmWorld ? `<div class="setting-row"><div><div class="setting-title">農場主角</div><div class="setting-desc">${state.gender === "m" ? "Kai" : "Miri"}</div></div><button class="btn ghost" id="settingGenderButton">切換主角</button></div><button class="btn ghost" id="settingResetButton">重置農場存檔</button>` : "",
+      window.FarmWorld ? `<div class="setting-row"><div><div class="setting-title">农场主角</div><div class="setting-desc">${state.gender === "m" ? "Kai" : "Miri"}</div></div><button class="btn ghost" id="settingGenderButton">切换主角</button></div><button class="btn ghost" id="settingResetButton">重置农场存档</button>` : "",
     ].join("");
     box.querySelectorAll("[data-setting-key]").forEach((btn) => {
       btn.onclick = (ev) => {
@@ -1875,8 +1875,8 @@
         const afterTier = document.documentElement.dataset.performanceTier || "high";
         if (beforeTier !== afterTier) {
           const reason = afterTier === "low"
-            ? (nextMode === "low" ? "手動鎖定低品質模式" : "效能自動降級")
-            : (nextMode === "high" ? "手動鎖定高品質模式" : "手動切回自動，恢復高品質");
+            ? (nextMode === "low" ? "手动锁定低品质模式" : "性能自动降级")
+            : (nextMode === "high" ? "手动锁定高品质模式" : "手动切回自动，恢复高品质");
           recordPerformanceEvent(afterTier === "low" ? "downgrade" : "restore", reason);
         }
         playSound("ui");
@@ -1906,7 +1906,7 @@
     const suggestions = G.farmActionSuggestions(state, now(), { limit: 3 });
     const primary = suggestions[0] || null;
     const assistantSkin = !primary ? "idle" : primary.priority >= 100 ? "alert" : "tip";
-    const assistantStatus = assistantSkin === "alert" ? "有可立即處理的農務" : assistantSkin === "tip" ? "有一則農務建議" : "農場狀態安穩";
+    const assistantStatus = assistantSkin === "alert" ? "有可立即处理的农务" : assistantSkin === "tip" ? "有一则农务建议" : "农场状态安稳";
     const sig = [collapsed ? "c" : "o", assistantSkin].concat(suggestions.map((s) => [s.id, s.type, s.tileId, Math.round((s.valueScore || 0) * 10), s.reason].join(":"))).join("|");
     if (!force && sig === lastAssistantSig) return;
     lastAssistantSig = sig;
@@ -1919,15 +1919,15 @@
           <div class="sa-detail">${escapeHtml(s.detail || "")}</div>
           <div class="sa-reason" data-audit="assistant-reason">${escapeHtml(s.reason || "")}</div>
         </div>
-        <button class="sa-go" data-audit="assistant-go" data-target-id="${escapeHtml(s.tileId)}" data-suggestion-type="${escapeHtml(s.type)}" aria-label="前往建議目標：${escapeHtml(s.title)}">${escapeHtml(s.actionLabel || "前往")}</button>
+        <button class="sa-go" data-audit="assistant-go" data-target-id="${escapeHtml(s.tileId)}" data-suggestion-type="${escapeHtml(s.type)}" aria-label="前往建议目标：${escapeHtml(s.title)}">${escapeHtml(s.actionLabel || "前往")}</button>
       </div>`).join("")
-      : `<div class="sa-row" data-audit="assistant-empty"><div><div class="sa-title">目前沒有急件</div><div class="sa-detail">可以整理倉庫、探索地圖或等待作物成熟。</div></div></div>`;
+      : `<div class="sa-row" data-audit="assistant-empty"><div><div class="sa-title">目前没有急件</div><div class="sa-detail">可以整理仓库、探索地图或等待作物成熟。</div></div></div>`;
     box.innerHTML = `
       <div class="sa-head">
         <span class="sa-skin sa-skin-${assistantSkin}" aria-hidden="true"></span>
-        <span class="sa-copy"><b>智慧農務助手</b><small>${assistantStatus}</small></span>
-        <button class="sa-icon-btn" data-audit="assistant-collapse" title="${collapsed ? "展開" : "收合"}" aria-label="${collapsed ? "展開智慧農務助手" : "收合智慧農務助手"}">${collapsed ? "▾" : "▴"}</button>
-        <button class="sa-icon-btn" data-audit="assistant-close" title="關閉" aria-label="關閉智慧農務助手">×</button>
+        <span class="sa-copy"><b>智能农务助手</b><small>${assistantStatus}</small></span>
+        <button class="sa-icon-btn" data-audit="assistant-collapse" title="${collapsed ? "展开" : "收合"}" aria-label="${collapsed ? "展开智能农务助手" : "收合智能农务助手"}">${collapsed ? "▾" : "▴"}</button>
+        <button class="sa-icon-btn" data-audit="assistant-close" title="关闭" aria-label="关闭智能农务助手">×</button>
       </div>
       <div class="sa-list">${rows}</div>`;
     const collapse = box.querySelector('[data-audit="assistant-collapse"]');
@@ -1979,7 +1979,7 @@
     const kicker = doneCount === 0 ? "序章" : ch5AllDone ? "第五章" : ch4AllDone ? "第五章" : ch3AllDone ? "第四章" : ch2AllDone ? "第三章" : ch1Done ? "第二章" : "第一章";
     const title = cur ? cur.title : "秋秋农场的新篇章";
     const copy = cur ? cur.desc
-      : "秋秋农场（QiuQiu Farm）重新熱鬧了起來。東林已通，繼續開墾田地、迎接更多動物與市集訂單，讓這座農場成為玩家共創的 RPG 世界。";
+      : "秋秋农场（QiuQiu Farm）重新热闹了起来。东林已通，继续开垦田地、迎接更多动物与市集订单，让这座农场成为玩家共创的 RPG 世界。";
     const quests = compactRowsHtml("story-main", QUEST_ORDER.map((id) => questRow(id, completed, cur)), 4);
     // 第二章：序章 6/6 後才顯示，獨立完成度（不影響主面板 0/6 讀值）
     const ch2Html = ch1Done ? `
@@ -1994,16 +1994,16 @@
     // 第三章：第二章 2/2 後才顯示，獨立完成度（Stage 7 動物照護）
     const ch3Html = ch2AllDone ? `
       <div class="chapter2 chapter3">
-        <div class="story-kicker">第三章 · 動物照護</div>
+        <div class="story-kicker">第三章 · 动物照护</div>
         <div class="story-progress chapter3-progress" data-progress3="${ch3Done}/${CHAPTER3_ORDER.length}">
-          <div class="story-progress-head"><span>照護完成度</span><b>${ch3Done}/${CHAPTER3_ORDER.length}</b></div>
+          <div class="story-progress-head"><span>照护完成度</span><b>${ch3Done}/${CHAPTER3_ORDER.length}</b></div>
           <div class="story-progress-track"><i style="width:${ch3Pct}%"></i></div>
         </div>
         <div class="quest-list">${compactRowsHtml("story-ch3", CHAPTER3_ORDER.map((id) => questRow(id, completed, cur)), 3)}</div>
       </div>` : "";
     const ch4Html = ch3AllDone ? `
       <div class="chapter2 chapter4">
-        <div class="story-kicker">第四章 · 四季物產</div>
+        <div class="story-kicker">第四章 · 四季物产</div>
         <div class="story-progress chapter4-progress" data-progress4="${ch4Done}/${CHAPTER4_ORDER.length}">
           <div class="story-progress-head"><span>四季完成度</span><b>${ch4Done}/${CHAPTER4_ORDER.length}</b></div>
           <div class="story-progress-track"><i style="width:${ch4Pct}%"></i></div>
@@ -2015,13 +2015,13 @@
       const read = !!mailRead[l.id];
       return `<div class="quest ${read ? "done" : ""} ${unlocked && !read ? "active" : ""}">
         <span class="qmark">${read ? "✓" : unlocked ? "●" : "🔒"}</span>
-        <span class="qtext"><span>${escapeHtml(l.title)}</span><em>${unlocked ? (read ? "已讀" : "新信") : "未送達"}</em></span></div>`;
+        <span class="qtext"><span>${escapeHtml(l.title)}</span><em>${unlocked ? (read ? "已读" : "新信") : "未送达"}</em></span></div>`;
     }).join("");
     const ch5Html = ch4AllDone ? `
       <div class="chapter2 chapter5">
-        <div class="story-kicker">第五章 · 祖母的季節信箋</div>
+        <div class="story-kicker">第五章 · 祖母的季节信笺</div>
         <div class="story-progress chapter5-progress" data-progress5="${letterDone}/${CHAPTER5_LETTER_ORDER.length}">
-          <div class="story-progress-head"><span>信箋完成度</span><b>${letterDone}/${CHAPTER5_LETTER_ORDER.length}${mail.replied ? "・已回信" : ""}</b></div>
+          <div class="story-progress-head"><span>信笺完成度</span><b>${letterDone}/${CHAPTER5_LETTER_ORDER.length}${mail.replied ? "・已回信" : ""}</b></div>
           <div class="story-progress-track"><i style="width:${letterPct}%"></i></div>
         </div>
         <div class="quest-list">${compactRowsHtml("story-ch5", chapter5Letters().map((l) => {
@@ -2029,16 +2029,16 @@
           const read = !!mailRead[l.id];
           return `<div class="quest ${read ? "done" : ""} ${unlocked && !read ? "active" : ""}">
             <span class="qmark">${read ? "✅" : unlocked ? "📬" : "🔒"}</span>
-            <span class="qtext"><span>${escapeHtml(l.title)}</span><em>${unlocked ? (read ? "已讀" : "未讀") : "未解鎖"}</em></span></div>`;
+            <span class="qtext"><span>${escapeHtml(l.title)}</span><em>${unlocked ? (read ? "已读" : "未读") : "未解锁"}</em></span></div>`;
         }), 3)}</div>
-        <button type="button" class="btn ghost small story-mail-btn" id="openLettersFromStory">打開信箱</button>
+        <button type="button" class="btn ghost small story-mail-btn" id="openLettersFromStory">打开信箱</button>
       </div>` : "";
     box.innerHTML = `<div class="story-card">
       <div class="story-kicker">${kicker}</div>
       <div class="story-title">${title}</div>
       <div class="story-copy">${copy}</div>
       <div class="story-progress" data-progress="${doneCount}/${QUEST_ORDER.length}">
-        <div class="story-progress-head"><span>任務完成度</span><b>${doneCount}/${QUEST_ORDER.length}</b></div>
+        <div class="story-progress-head"><span>任务完成度</span><b>${doneCount}/${QUEST_ORDER.length}</b></div>
         <div class="story-progress-track"><i style="width:${donePct}%"></i></div>
       </div>
       <div class="quest-list">${quests}</div>
@@ -2046,7 +2046,7 @@
       ${ch3Html}
       ${ch4Html}
       ${ch5Html}
-      ${cur ? `<div class="quest-hint">📍 ${cur.desc}　地圖上的 <b>金色箭頭</b> 會指向目標。${cur.id === "repair_bridge" ? bridgeMaterialRowsHtml(false) : ""}${cur.id === "collect_east_forage" ? forageRowsHtml(false) : ""}</div>` : ""}
+      ${cur ? `<div class="quest-hint">📍 ${cur.desc}　地图上的 <b>金色箭头</b> 会指向目标。${cur.id === "repair_bridge" ? bridgeMaterialRowsHtml(false) : ""}${cur.id === "collect_east_forage" ? forageRowsHtml(false) : ""}</div>` : ""}
       ${dialogueLogHtml()}
     </div>`;
     const openMail = $("openLettersFromStory");
@@ -2058,8 +2058,8 @@
     const log = (state.story && state.story.dialogueLog) || [];
     if (!log.length) return "";
     const rows = log.slice(-8).reverse().map((e) =>
-      `<div class="dlg-row"><span class="dlg-name">${e.name}</span><span class="dlg-line">${e.line}</span></div>`).join("");
-    return `<div class="dialogue-log"><div class="story-kicker">💬 對話記錄</div>${rows}</div>`;
+      `<div class="dlg-row"><span class="dlg-name">${escapeHtml(window.simplifyLegacyText(e.name))}</span><span class="dlg-line">${escapeHtml(window.simplifyLegacyText(e.line))}</span></div>`).join("");
+    return `<div class="dialogue-log"><div class="story-kicker">💬 对话记录</div>${rows}</div>`;
   }
 
   // Stage 11：農場圖鑑——唯讀彙總層，畫面只是把 G.journalSummary() 的資料換個角度顯示，
@@ -2078,63 +2078,63 @@
       return ((map[category] || []).find((x) => x.id === id)) || null;
     };
     const detailHtml = () => {
-      if (!journalDetailSelection) return `<div class="journal-detail muted" data-audit="journal-detail">點作物或採集物查看來源、季節、用途與首次發現時間。</div>`;
+      if (!journalDetailSelection) return `<div class="journal-detail muted" data-audit="journal-detail">点作物或采集物查看来源、季节、用途与首次发现时间。</div>`;
       const entry = findEntry(journalDetailSelection.category, journalDetailSelection.id);
       if (!entry) return "";
       const discovered = entry.discovered !== false && entry.unlocked !== false;
       if (journalDetailSelection.category === "collectible") {
         return `<div class="journal-detail" data-audit="journal-detail" data-category="collectible" data-discovered="${entry.unlocked}">
           <div class="jd-title">${entry.unlocked ? entry.emoji + " " + entry.name : "◼ 未取得收藏品"}</div>
-          <div class="jd-row"><b>來源</b><span>${entry.source}</span></div>
-          <div class="jd-row"><b>用途</b><span>純收藏，不產生收益</span></div>
-          <div class="jd-note">${entry.unlocked ? entry.desc : "先完成對應探索。"} </div>
+          <div class="jd-row"><b>来源</b><span>${entry.source}</span></div>
+          <div class="jd-row"><b>用途</b><span>纯收藏，不产生收益</span></div>
+          <div class="jd-note">${entry.unlocked ? entry.desc : "先完成对应探索。"} </div>
         </div>`;
       }
       if (!discovered) {
         return `<div class="journal-detail undiscovered" data-audit="journal-detail" data-category="${journalDetailSelection.category}" data-discovered="false">
-          <div class="jd-title">◼ 尚未發現</div>
-          <div class="jd-row"><b>來源提示</b><span>${entry.sourceHint || "繼續探索農場"}</span></div>
+          <div class="jd-title">◼ 尚未发现</div>
+          <div class="jd-row"><b>来源提示</b><span>${entry.sourceHint || "继续探索农场"}</span></div>
         </div>`;
       }
       return `<div class="journal-detail" data-audit="journal-detail" data-category="${journalDetailSelection.category}" data-discovered="true">
         <div class="jd-title">${entry.emoji || ""} ${entry.name}</div>
-        <div class="jd-row"><b>來源</b><span>${entry.source || entry.sourceHint || "農場"}</span></div>
-        <div class="jd-row"><b>季節</b><span>${entry.season || "全年"}</span></div>
+        <div class="jd-row"><b>来源</b><span>${entry.source || entry.sourceHint || "农场"}</span></div>
+        <div class="jd-row"><b>季节</b><span>${entry.season || "全年"}</span></div>
         <div class="jd-row"><b>用途</b><span>${(entry.usage || []).join("／") || "收藏"}</span></div>
         ${entry.flavor ? `<div class="jd-row jd-flavor" data-audit="journal-flavor"><b>手札</b><span>${entry.flavor}</span></div>` : ""}
-        <div class="jd-row"><b>首次發現</b><span data-audit="journal-first-seen">${fmtDate(entry.firstDiscoveredAt)}</span></div>
+        <div class="jd-row"><b>首次发现</b><span data-audit="journal-first-seen">${fmtDate(entry.firstDiscoveredAt)}</span></div>
       </div>`;
     };
     const cropRows = compactRowsHtml("journal-crops", j.crops.map((c) => {
-      if (!c.unlocked) return item(false, "🔒 未解鎖", "crop", c.id);
-      if (!c.discovered) return item(false, "❔ 尚未發現", "crop", c.id);
+      if (!c.unlocked) return item(false, "🔒 未解锁", "crop", c.id);
+      if (!c.discovered) return item(false, "❔ 尚未发现", "crop", c.id);
       return item(true, `${c.emoji} ${c.name}`, "crop", c.id);
     }), 5);
     const productRows = compactRowsHtml("journal-products", j.products.map((p) =>
-      item(p.discovered, p.discovered ? `${p.emoji} ${p.name}` : "❔ 尚未發現", "product", p.id)), 5);
+      item(p.discovered, p.discovered ? `${p.emoji} ${p.name}` : "❔ 尚未发现", "product", p.id)), 5);
     const forageRows = compactRowsHtml("journal-forage", (j.forage || []).map((f) =>
-      item(f.discovered, f.discovered ? `${f.emoji} ${f.name}${f.season ? "・" + f.season : ""}` : "◼ 未採集", "forage", f.id)), 5);
+      item(f.discovered, f.discovered ? `${f.emoji} ${f.name}${f.season ? "・" + f.season : ""}` : "◼ 未采集", "forage", f.id)), 5);
     const npcMetCount = j.npcs.filter((n) => n.met).length;
     const npcRows = compactRowsHtml("journal-npcs", j.npcs.map((n) => item(n.met,
-      n.met ? `🧑 ${n.name}・${n.title}${n.requestsCompleted > 0 ? "・已完成 " + n.requestsCompleted + " 次委託" : ""}${n.sideQuest && n.sideQuest.completed ? "・支線完成" : ""}` : "❔ 尚未遇見", "npc", n.id)), 5);
+      n.met ? `🧑 ${n.name}・${n.title}${n.requestsCompleted > 0 ? "・已完成 " + n.requestsCompleted + " 次委托" : ""}${n.sideQuest && n.sideQuest.completed ? "・支线完成" : ""}` : "❔ 尚未遇见", "npc", n.id)), 5);
     // discovered 要用 everGood||everHappy，不能只看 everHappy——不然「曾達良好」的文字
     // 顯示了，但 CSS class/data-discovered 卻標成 undiscovered，兩者互相矛盾
     const animalRows = compactRowsHtml("journal-animals", j.animals.map((a) => item(a.everGood || a.everHappy,
-      `${a.everHappy ? "💛" : a.everGood ? "🤍" : "⬜"} ${a.name}${a.everHappy ? "・曾達開心" : a.everGood ? "・曾達良好" : "・尚未達標"}`, "animal", a.id)), 5);
+      `${a.everHappy ? "💛" : a.everGood ? "🤍" : "⬜"} ${a.name}${a.everHappy ? "・曾达开心" : a.everGood ? "・曾达良好" : "・尚未达标"}`, "animal", a.id)), 5);
     const achRows = compactRowsHtml("journal-achievements", j.achievements.map((a) => item(a.unlocked,
-      a.unlocked ? `${a.icon} ${a.name}` : "❔ 未解鎖成就", "achievement", a.id)), 5);
+      a.unlocked ? `${a.icon} ${a.name}` : "❔ 未解锁成就", "achievement", a.id)), 5);
     const collectibleRows = compactRowsHtml("journal-collectibles", (j.collectibles || []).map((c) => item(c.unlocked,
       c.unlocked ? `${c.emoji} ${c.name}` : "◼ 未取得收藏品", "collectible", c.id)), 5);
     const npcSideRows = compactRowsHtml("journal-npc-sidequests", j.npcs.map((n) => {
       const sq = n.sideQuest;
       const lore = sq && sq.loreUnlocked ? `<span class="sq-lore">・${sq.lore}</span>` : "";
-      return item(!!(sq && sq.completed), sq ? `${sq.completed ? "✅" : sq.status === "active" ? "📌" : sq.status === "available" ? "📮" : "🔒"} ${n.name}・${sq.chainTitle || sq.title} ${sq.completedSteps}/${sq.totalSteps}${lore}` : "❔ 尚無支線", "npc-sidequest", n.id);
+      return item(!!(sq && sq.completed), sq ? `${sq.completed ? "✅" : sq.status === "active" ? "📌" : sq.status === "available" ? "📮" : "🔒"} ${n.name}・${sq.chainTitle || sq.title} ${sq.completedSteps}/${sq.totalSteps}${lore}` : "❔ 尚无支线", "npc-sidequest", n.id);
     }), 5);
     const chapterLine = (label, ch) => ch.unlocked
       ? `<div>${label} ${ch.done}/${ch.total}${ch.replied ? "・已回信" : ""}</div>`
-      : `<div>🔒 ${label}未解鎖</div>`;
+      : `<div>🔒 ${label}未解锁</div>`;
     box.innerHTML = `<div class="story-card journal-card">
-      <div class="story-kicker">章節完成度</div>
+      <div class="story-kicker">章节完成度</div>
       <div class="journal-chapters">
         ${chapterLine("第一章", j.chapters.chapter1)}
         ${chapterLine("第二章", j.chapters.chapter2)}
@@ -2143,17 +2143,17 @@
         ${chapterLine("第五章", j.chapters.chapter5)}
       </div>
       ${detailHtml()}
-      ${head("🌾 作物圖鑑", "crops")}<div class="journal-grid">${cropRows}</div>
-      ${head("🥚 產物與品質圖鑑", "products")}<div class="journal-grid">${productRows}</div>
-      ${head("🌲 東林採集", "forage")}<div class="journal-grid" data-audit="journal-forage">${forageRows}</div>
-      ${head("🧑 鎮民名錄（" + npcMetCount + "/" + j.npcs.length + "）", "npcs")}<div class="journal-grid">${npcRows}</div>
-      ${head("📬 鎮民支線", "npcSideQuests")}<div class="journal-grid">${npcSideRows}</div>
-      ${head("🐾 動物親密度里程碑", "animals")}<div class="journal-grid">${animalRows}</div>
-      ${head("🌉 世界旗標", "world")}
+      ${head("🌾 作物图鉴", "crops")}<div class="journal-grid">${cropRows}</div>
+      ${head("🥚 产物与品质图鉴", "products")}<div class="journal-grid">${productRows}</div>
+      ${head("🌲 东林采集", "forage")}<div class="journal-grid" data-audit="journal-forage">${forageRows}</div>
+      ${head("🧑 镇民名录（" + npcMetCount + "/" + j.npcs.length + "）", "npcs")}<div class="journal-grid">${npcRows}</div>
+      ${head("📬 镇民支线", "npcSideQuests")}<div class="journal-grid">${npcSideRows}</div>
+      ${head("🐾 动物亲密度里程碑", "animals")}<div class="journal-grid">${animalRows}</div>
+      ${head("🌉 世界旗标", "world")}
       <div class="journal-grid">
-        ${item(j.world.bridgeRepaired, j.world.bridgeRepaired ? "✅ 東橋已修復" : "🔒 東橋未修復", "world", "bridge")}
-        ${item(j.world.eastClearingClaimed, j.world.eastClearingClaimed ? "✅ 東林空地已探索" : "🔒 東林空地未探索", "world", "east_clearing")}
-        ${item(j.world.eastDeepUnlocked, j.world.eastDeepUnlocked ? "✅ 東林深處已解鎖" : "🔒 東林深處未解鎖", "world", "east_deep")}
+        ${item(j.world.bridgeRepaired, j.world.bridgeRepaired ? "✅ 东桥已修复" : "🔒 东桥未修复", "world", "bridge")}
+        ${item(j.world.eastClearingClaimed, j.world.eastClearingClaimed ? "✅ 东林空地已探索" : "🔒 东林空地未探索", "world", "east_clearing")}
+        ${item(j.world.eastDeepUnlocked, j.world.eastDeepUnlocked ? "✅ 东林深处已解锁" : "🔒 东林深处未解锁", "world", "east_deep")}
       </div>
       ${head("📜 收藏品", "collectibles")}<div class="journal-grid" data-audit="journal-collectibles">${collectibleRows}</div>
       ${head("🏆 成就", "achievements")}
@@ -2214,8 +2214,8 @@
     }
     if (btn) {
       const natural = mode === "natural";
-      btn.textContent = natural ? "原尺寸" : "整圖";
-      btn.title = natural ? "切換為整張地圖完整顯示" : "切換為原尺寸場景內捲動";
+      btn.textContent = natural ? "原尺寸" : "整图";
+      btn.title = natural ? "切换为整张地图完整显示" : "切换为原尺寸场景内卷动";
       if (btn.setAttribute) {
         btn.setAttribute("aria-pressed", natural ? "true" : "false");
         btn.setAttribute("aria-label", btn.title);
@@ -2693,7 +2693,7 @@
     state.camera.followPlayer = false;
     spawnRing(tileId, true);
     updateCamera(true);
-    toast("📍 鏡頭移到任務目標");
+    toast("📍 镜头移到任务目标");
     scheduleSave();
     return true;
   }
@@ -2798,17 +2798,17 @@
   function touchFarmActionText(action) {
     if (action === "plant") {
       const crop = window.CROPS[selectedSeed];
-      return `種植 ${crop.emoji}${crop.name}（🪙${crop.seedCost}）`;
+      return `种植 ${crop.emoji}${crop.name}（🪙${crop.seedCost}）`;
     }
-    if (action === "harvest") return "收成這格作物";
-    if (action === "water") return "澆水這格作物";
-    return "執行農作";
+    if (action === "harvest") return "收成这格作物";
+    if (action === "water") return "浇水这格作物";
+    return "运行农作";
   }
   function renderTouchFarmPreview() {
     const el = $("touchActionPreview"); if (!el) return;
     if (!pendingTouchFarmAction) { el.hidden = true; el.textContent = ""; return; }
     el.hidden = false;
-    el.textContent = "預覽：" + touchFarmActionText(pendingTouchFarmAction.action) + " · 再點同格確認";
+    el.textContent = "预览：" + touchFarmActionText(pendingTouchFarmAction.action) + " · 再点同格确认";
   }
   function clearTouchFarmPreview(repaint) {
     if (!pendingTouchFarmAction) return;
@@ -2907,7 +2907,7 @@
     const box = $("buildWheel"); if (!box || !tile) return;
     hideObjectBubble(); hideSceneActions();
     const opts = buildOptionsForTile(tile);
-    if (!opts.length) { toast("沒有可直接建造的項目"); hideBuildWheel(); return; }
+    if (!opts.length) { toast("没有可直接建造的项目"); hideBuildWheel(); return; }
     box.innerHTML = "";
     opts.forEach((type) => {
       const def = window.BUILDINGS[type];
@@ -2922,7 +2922,7 @@
     });
     box.hidden = false;
     placeSceneOverlay(box, tileViewportPoint(tile.id, 0.15));
-    onceHint("build_wheel", "🏗 點選項即建造；點空白處取消");
+    onceHint("build_wheel", "🏗 点击项即建造；点空白处取消");
   }
   function buildFromWheel(tileId, type) {
     const def = window.BUILDINGS[type];
@@ -2938,13 +2938,13 @@
       renderTileContext();
     } else {
       spawnRing(tileId, false);
-      toast(r.reason === "cost" ? "資源不足" : r.reason === "locked" ? "等級不足" : r.reason === "max_count" ? "數量已滿" : "不能建造");
+      toast(r.reason === "cost" ? "资源不足" : r.reason === "locked" ? "等级不足" : r.reason === "max_count" ? "数量已满" : "不能建造");
     }
   }
   const SCENE_ACTION_META = {
-    plant: ["🌱", "種植"], harvest: ["✂", "收成"], water: ["💧", "澆水"], clear: ["⛏", "清除"],
+    plant: ["🌱", "种植"], harvest: ["✂", "收成"], water: ["💧", "浇水"], clear: ["⛏", "清除"],
     build: ["🏗", "建造"], collect: ["🧺", "收集"], use: ["●", "使用"], deliver: ["✓", "交付"],
-    sell: ["🪙", "賣出"], talk: ["…", "交談"],
+    sell: ["🪙", "卖出"], talk: ["…", "交谈"],
   };
   function tileReadyCrop(tile) {
     if (!tile || tile.plotIndex == null || tile.plotIndex >= G.activePlotCount(state)) return false;
@@ -3029,7 +3029,7 @@
     const order = state.orders.find((o) => G.canFulfill(state, o));
     if (!order) { useStation(tile); return; }
     const plan = G.planMoveTo(state, tile.id);
-    if (!plan) { toast("走不到交付點"); return; }
+    if (!plan) { toast("走不到交付点"); return; }
     spawnRing(tile.id, true);
     walkPath(plan.path, () => {
       const stand = G.getTileById(state, plan.standId);
@@ -3042,20 +3042,20 @@
         playSound("order"); playSound("coin");
         toast("交付 +" + fmtNum(r.coins));
         afterChange(true); renderOrders();
-      } else toast("交付條件不足");
+      } else toast("交付条件不足");
     });
   }
   function sellAtStorage(tile) {
     const plan = G.planMoveTo(state, tile.id);
-    if (!plan) { toast("走不到出貨箱"); return; }
+    if (!plan) { toast("走不到出货箱"); return; }
     spawnRing(tile.id, true);
     walkPath(plan.path, () => {
       const stand = G.getTileById(state, plan.standId);
       state.player.facing = G.facingTo(stand, tile);
       playAction("carry", state.player.facing);
       const r = G.sellAll(state, now());
-      if (r.coins > 0) { spawnVfx(tile.id, "product_pop"); playSound("coin"); toast("賣出 +" + fmtNum(r.coins)); afterChange(true); renderOrders(); }
-      else toast("沒有可賣出的物品");
+      if (r.coins > 0) { spawnVfx(tile.id, "product_pop"); playSound("coin"); toast("卖出 +" + fmtNum(r.coins)); afterChange(true); renderOrders(); }
+      else toast("没有可卖出的物品");
     });
   }
   function homeTileIdForAnimal(a) {
@@ -3098,7 +3098,7 @@
     const isHome = G.buildingEffect(bld).unlockAnimal;
     add(isHome ? "collect" : "use", isHome ? "🧺" : "●", isHome ? "收集" : "使用", true);
     if (isHome) add("animals", "🐾", "动物", true);
-    add("upgrade", "⬆", "升級", true);
+    add("upgrade", "⬆", "升级", true);
     box.hidden = false;
     placeSceneOverlay(box, elementViewportPoint(anchorEl, 0.08));
   }
@@ -3109,7 +3109,7 @@
     if (r.total > 0) {
       playAction("collect"); spawnVfx(tileId, "product_pop"); toast("收集 " + r.total);
       hideObjectBubble(); afterChange(true);
-    } else toast("尚無可收集產物");
+    } else toast("尚无可收集产物");
   }
   function showAnimalBubble(animalId, anchorEl) {
     const a = state.animals.find((x) => x.id === animalId); if (!a) return;
@@ -3120,8 +3120,8 @@
     const canFeed = Object.keys(def.feedCost || {}).every((k) => (state.storage.items[k] || 0) >= def.feedCost[k]) && t - (a.lastFedAt || 0) >= window.CARE_COOLDOWN_MS;
     const buttons = [
       ...(def.product ? [{ action: "collect", icon: "🧺", label: "收集", enabled: prog.ready }] : []),
-      { action: "feed", icon: "🌾", label: "餵食", enabled: canFeed },
-      { action: "water", icon: "💧", label: "澆水", enabled: t - (a.lastWateredAt || 0) >= window.CARE_COOLDOWN_MS },
+      { action: "feed", icon: "🌾", label: "喂食", enabled: canFeed },
+      { action: "water", icon: "💧", label: "浇水", enabled: t - (a.lastWateredAt || 0) >= window.CARE_COOLDOWN_MS },
       { action: "groom", icon: def.pet ? "💛" : "🧹", label: def.pet ? "抚摸" : "梳理", enabled: t - (a.lastGroomedAt || 0) >= window.CARE_COOLDOWN_MS },
     ];
     box.innerHTML = "";
@@ -3141,7 +3141,7 @@
     if (window.FarmWorld && !arrived) {
       hideObjectBubble();
       const animation = action === "water" ? "water" : action === "feed" ? "sow" : "collect";
-      if (!window.__farm.travelAndDo(tileId, animation, () => careAnimalFromBubble(animalId, action, true))) toast("先走完這段路，再照顧動物。");
+      if (!window.__farm.travelAndDo(tileId, animation, () => careAnimalFromBubble(animalId, action, true))) toast("先走完这段路，再照顾动物。");
       return;
     }
     let r = null;
@@ -3149,10 +3149,10 @@
     else if (action === "feed") r = G.feedAnimal(state, animalId, now());
     else if (action === "water") r = G.waterAnimal(state, animalId, now());
     else if (action === "groom") r = G.groomAnimal(state, animalId, now());
-    if (!r || !r.ok) { toast("現在不能執行"); renderSceneActionsForSelection(); return; }
+    if (!r || !r.ok) { toast("现在不能运行"); renderSceneActionsForSelection(); return; }
     if (action === "collect") { playAction("carry"); playSound("coin"); spawnVfx(tileId, "product_pop"); toast("收集 " + (r.added || 0) + " " + itemName(r.product)); }
-    if (action === "feed") { playAction("sow"); playSound("feed"); spawnVfx(tileId, "feed_bits", { sheet: "care_vfx" }); toast(r.product ? "餵食 +" + itemName(r.product) : "吃饱啦・亲密度 " + r.affinity.toFixed(0)); G.advanceStory(state, "care_animal", now()); }
-    if (action === "water") { playAction("water"); playSound("water"); spawnVfx(tileId, "water_splash", { sheet: "care_vfx" }); toast("澆水"); G.advanceStory(state, "care_animal", now()); }
+    if (action === "feed") { playAction("sow"); playSound("feed"); spawnVfx(tileId, "feed_bits", { sheet: "care_vfx" }); toast(r.product ? "喂食 +" + itemName(r.product) : "吃饱啦・亲密度 " + r.affinity.toFixed(0)); G.advanceStory(state, "care_animal", now()); }
+    if (action === "water") { playAction("water"); playSound("water"); spawnVfx(tileId, "water_splash", { sheet: "care_vfx" }); toast("浇水"); G.advanceStory(state, "care_animal", now()); }
     if (action === "groom") { playAction("build"); playSound("groom"); spawnVfx(tileId, "groom_sparkle", { sheet: "care_vfx" }); toast(window.ANIMALS[a.type].pet ? "抚摸・亲密度 " + r.affinity.toFixed(0) : "梳理"); G.advanceStory(state, "care_animal", now()); }
     hideObjectBubble();
     afterChange(true);
@@ -3174,7 +3174,7 @@
     pendingTouchFarmAction = signature;
     renderTouchFarmPreview();
     paintGround();
-    toast("👆 " + touchFarmActionText(action) + "；再點同格確認");
+    toast("👆 " + touchFarmActionText(action) + "；再点同格确认");
     return false;
   }
   // 點地圖磚：桌機保留點擊即操作；觸控先給地圖內 action dock。
@@ -3222,7 +3222,7 @@
     // 無動作：若可走就走過去
     if (G.isWalkable(state, tile)) {
       const path = G.bfsPath(state, state.player.tileId, tileId);
-      if (path) { spawnRing(tileId, true); walkPath(path); } else toast("走不到那裡");
+      if (path) { spawnRing(tileId, true); walkPath(path); } else toast("走不到那里");
     } else {
       spawnRing(tileId, false); toast(blockedReason(tile));
     }
@@ -3259,20 +3259,20 @@
       const b = state.buildings.find((x) => x.structureId === s.id);
       if (b) {
         const r = G.collectHome(state, b.id, t);
-        if (r.total > 0) { playAction("collect"); spawnVfx(state.player.tileId, "product_pop"); toast("🧺 收集 " + r.total + " 份產物"); afterChange(true); }
-        else { playAction("use"); toast("還沒有可收集的產物（可在面板買動物/餵食）"); }
+        if (r.total > 0) { playAction("collect"); spawnVfx(state.player.tileId, "product_pop"); toast("🧺 收集 " + r.total + " 份产物"); afterChange(true); }
+        else { playAction("use"); toast("还没有可收集的产物（可在面板买动物/喂食）"); }
       }
     } else if (s.interaction === "shop") {
       playAction("collect");
       if (window.FarmWorld) { window.FarmWorld.openMarket(); return; }
       const r = G.sellAll(state, t);
-      if (r.coins > 0) { spawnVfx(state.player.tileId, "product_pop"); const c = tileCenter(state.player.tileId); flyCoinsToHud(c.x, c.y, 6); playSound("coin"); toast("🪙 市集賣出 " + r.qty + " 個 → +" + fmtNum(r.coins) + " 金"); afterChange(true); renderOrders(); }
-      else toast("倉庫沒有可賣的東西");
+      if (r.coins > 0) { spawnVfx(state.player.tileId, "product_pop"); const c = tileCenter(state.player.tileId); flyCoinsToHud(c.x, c.y, 6); playSound("coin"); toast("🪙 市集卖出 " + r.qty + " 个 → +" + fmtNum(r.coins) + " 金"); afterChange(true); renderOrders(); }
+      else toast("仓库没有可卖的东西");
     } else { // home（農舍）
       playAction("use");
       if (window.FarmWorld) { window.FarmWorld.openKitchen(); return; }
       const cap = G.storageCapacity(state), used = G.storageUsed(state);
-      toast("🏠 農舍・Lv " + state.level + "・🪙 " + fmtNum(state.coins) + "・📦 " + used + "/" + cap);
+      toast("🏠 农舍・Lv " + state.level + "・🪙 " + fmtNum(state.coins) + "・📦 " + used + "/" + cap);
     }
     updateMap(now());
   }
@@ -3280,31 +3280,31 @@
   function useBridge(tile) {
     if (state.flags.bridgeRepaired) {
       const path = G.bfsPath(state, state.player.tileId, tile.id);
-      if (path) { spawnRing(tile.id, true); walkPath(path); } else toast("走不到橋上");
+      if (path) { spawnRing(tile.id, true); walkPath(path); } else toast("走不到桥上");
       return;
     }
     const plan = G.planMoveTo(state, tile.id); // 橋未修不可走 → 走到西岸相鄰磚
-    if (!plan) { toast("走不到斷橋邊"); return; }
+    if (!plan) { toast("走不到断桥边"); return; }
     spawnRing(tile.id, true);
     walkPath(plan.path, () => {
       const stand = G.getTileById(state, plan.standId);
       state.player.facing = G.facingTo(stand, tile);
       const chk = G.canRepairBridge(state);
       if (!chk.ok) {
-        if (chk.reason === "chapter") toast(window.FarmWorld ? "先把第一餐帶給班伯，再來修橋。" : "⛓️ 先完成序章任務（清開舊路 6/6）才能修橋");
-        else if (chk.reason === "materials") toast("🪵 修橋材料不足，跟著任務 Dock 清大樹與巨石");
-        else toast("目前無法修橋");
+        if (chk.reason === "chapter") toast(window.FarmWorld ? "先把第一餐带给班伯，再来修桥。" : "⛓️ 先完成序章任务（清开旧路 6/6）才能修桥");
+        else if (chk.reason === "materials") toast("🪵 修桥材料不足，跟着任务 Dock 清大树与巨石");
+        else toast("目前无法修桥");
         spawnRing(tile.id, false); renderTileContext(); renderQuestDock(); return;
       }
       playAction("build", state.player.facing); spawnVfx(state.player.tileId, "soil_dust");
       const r = G.repairBridge(state, now());
-      if (r.ok) { toast("🌉 斷橋修好了！東林空地解鎖"); buildStaticObjects(); paintGround(); afterChange(true); renderTileContext(); renderQuestDock(); }
+      if (r.ok) { toast("🌉 断桥修好了！东林空地解锁"); buildStaticObjects(); paintGround(); afterChange(true); renderTileContext(); renderQuestDock(); }
     });
   }
   // Stage 5：事件點 — 走過去觸發，首次給一次性獎勵 + 推進故事
   function useEvent(tile) {
     const plan = G.planMoveTo(state, tile.id);
-    if (!plan) { toast("先修好斷橋才能過去東林"); spawnRing(tile.id, false); return; }
+    if (!plan) { toast("先修好断桥才能过去东林"); spawnRing(tile.id, false); return; }
     spawnRing(tile.id, true);
     walkPath(plan.path, () => {
       const ev = window.EVENTS[tile.event];
@@ -3312,19 +3312,19 @@
         const st = G.eastDeepStatus ? G.eastDeepStatus(state) : null;
         if (st && st.unlocked) {
           playAction("use", state.player.facing);
-          toast("🌲 東林深處小徑已開通");
+          toast("🌲 东林深处小径已开通");
           renderTileContext(); updateMap(now()); return;
         }
         const r = G.unlockEastDeep ? G.unlockEastDeep(state, now()) : { ok: false, reason: "unknown" };
         if (r.ok) {
           playAction("build", state.player.facing);
           spawnVfx(tile.id, "valid_ring");
-          toast("🌲 東林深處開通，收藏「東林年輪拓印」");
+          toast("🌲 东林深处开通，收藏「东林年轮拓印」");
           buildStaticObjects(); paintGround(); afterChange(true); renderTileContext(); return;
         }
-        if (r.reason === "story") toast("先完成東林採集回報，再整理深處小徑。");
-        else if (r.reason === "cost") toast("東林深處材料不足，查看缺口清單。");
-        else toast("目前無法整理東林深處。");
+        if (r.reason === "story") toast("先完成东林采集回报，再整理深处小径。");
+        else if (r.reason === "cost") toast("东林深处材料不足，查看缺口清单。");
+        else toast("目前无法整理东林深处。");
         renderTileContext(); renderQuestDock(); return;
       }
       const r = G.triggerEvent(state, tile.event, now());
@@ -3343,7 +3343,7 @@
     const node = (window.FORAGE_NODES || []).find((n) => n.id === tile.forage);
     if (!node) return;
     const plan = G.planMoveTo(state, tile.id);
-    if (!plan) { toast("要先修好橋才能靠近採集點"); spawnRing(tile.id, false); return; }
+    if (!plan) { toast("要先修好桥才能靠近采集点"); spawnRing(tile.id, false); return; }
     spawnRing(tile.id, true);
     walkPath(plan.path, () => {
       const cur = G.currentQuest(state);
@@ -3352,7 +3352,7 @@
         if (r.ok) {
           playAction("use", state.player.facing);
           spawnVfx(tile.id, "valid_ring");
-          toast("📍 已記下採集點：" + node.name);
+          toast("📍 已记下采集点：" + node.name);
           afterChange(true); renderTileContext(); return;
         }
       }
@@ -3360,16 +3360,16 @@
       if (r.ok) {
         playAction("collect", state.player.facing);
         spawnVfx(tile.id, "product_pop");
-        toast("🌿 採集 +" + r.added + " " + itemName(node.itemId) + (r.lost ? "（倉庫滿，遺失 " + r.lost + "）" : ""));
+        toast("🌿 采集 +" + r.added + " " + itemName(node.itemId) + (r.lost ? "（仓库满，遗失 " + r.lost + "）" : ""));
         afterChange(true); renderTileContext();
       } else if (r.reason === "undiscovered") {
-        toast("先辨認這個採集點。");
+        toast("先辨认这个采集点。");
       } else if (r.reason === "cooldown") {
-        toast("採集點還在恢復，稍後再來。");
+        toast("采集点还在恢复，稍后再来。");
       } else if (r.reason === "locked_deep") {
-        toast("先整理東林深處小徑，才能採這裡。");
+        toast("先整理东林深处小径，才能采这里。");
       } else {
-        toast("現在還不能採集。");
+        toast("现在还不能采集。");
       }
     });
   }
@@ -3429,12 +3429,12 @@
   function resolveStation(st) {
     const t = now();
     if (st.effect === "orders") {
-      switchTab("orders"); renderOrders(); toast("📜 " + st.name + "：查看市集訂單");
+      switchTab("orders"); renderOrders(); toast("📜 " + st.name + "：查看市集订单");
       if (window.FarmWorld) window.FarmWorld.openPanel("orders");
     } else if (st.effect === "sell") {
       const r = G.sellAll(state, t);
-      if (r.coins > 0) { const sid = stationTileOf("storage"); spawnVfx(sid, "product_pop"); const c = tileCenter(sid); flyCoinsToHud(c.x, c.y, 6); playSound("coin"); toast("🪙 賣出 " + r.qty + " 個 → +" + fmtNum(r.coins) + " 金"); afterChange(true); renderOrders(); }
-      else toast("倉庫沒有可賣的東西");
+      if (r.coins > 0) { const sid = stationTileOf("storage"); spawnVfx(sid, "product_pop"); const c = tileCenter(sid); flyCoinsToHud(c.x, c.y, 6); playSound("coin"); toast("🪙 卖出 " + r.qty + " 个 → +" + fmtNum(r.coins) + " 金"); afterChange(true); renderOrders(); }
+      else toast("仓库没有可卖的东西");
     } else if (st.effect === "mail") {
       G.advanceStory(state, "read_sign");
       checkNewLetters(t, true);
@@ -3444,7 +3444,7 @@
       // 告示牌：推進序章任務
       const adv = G.advanceStory(state, "read_sign");
       const q = window.QUESTS[adv.completed === "intro_reopen_farm" ? "plant_wheat" : (state.story.questId || "intro_reopen_farm")];
-      toast("📖 告示牌：" + (q ? q.title : "秋秋农场的近況"));
+      toast("📖 告示牌：" + (q ? q.title : "秋秋农场的近况"));
       renderStory(); renderQuestDock(); updateMap(now());
     } else if (st.effect === "well") {
       let n = 0;
@@ -3457,13 +3457,13 @@
           if (p && p.cropId && G.isWet(p)) spawnVfx(c.tileId, "water_droplets", { scale: 0.8 });
         }
       }
-      toast(n > 0 ? "💧 水井替 " + n + " 格作物澆水" : "目前沒有需要澆水的作物");
+      toast(n > 0 ? "💧 水井替 " + n + " 格作物浇水" : "目前没有需要浇水的作物");
       let seasonEventClaimed = false;
       if (G.seasonEventStatus && G.claimSeasonEvent) {
         const ev = G.seasonEventStatus(state, t);
         if (ev && ev.eventId === "summer_well_bless" && ev.canClaim) {
           const r = G.claimSeasonEvent(state, "summer_well_bless", t);
-          if (r.ok) { seasonEventClaimed = true; toast("💧 " + r.message + (r.watered ? "，額外濕潤 " + r.watered + " 格" : "")); }
+          if (r.ok) { seasonEventClaimed = true; toast("💧 " + r.message + (r.watered ? "，额外湿润 " + r.watered + " 格" : "")); }
         }
       }
       if (n > 0 || seasonEventClaimed) { if (n > 0) G.advanceStory(state, "water"); afterChange(false); }
@@ -3471,31 +3471,31 @@
     updateMap(now());
   }
   function blockedReason(tile) {
-    if (tile.terrain === "water") return "🌊 水域擋路（需架橋）";
-    if (tile.region === "east_deep" && !(state.flags && state.flags.eastDeepUnlocked)) return "🌲 東林深處尚未開通";
-    if (tile.object) return window.OBSTACLES[tile.object].emoji + " 障礙擋路（用清除工具）";
-    if (tile.buildingId) return "這裡有建築";
-    return "無法前往";
+    if (tile.terrain === "water") return "🌊 水域挡路（需架桥）";
+    if (tile.region === "east_deep" && !(state.flags && state.flags.eastDeepUnlocked)) return "🌲 东林深处尚未开通";
+    if (tile.object) return window.OBSTACLES[tile.object].emoji + " 障碍挡路（用清除工具）";
+    if (tile.buildingId) return "这里有建筑";
+    return "无法前往";
   }
   function inspectTile(tile) {
     const terr = window.TERRAIN[tile.terrain];
     if (tile.plotIndex != null) {
       const plot = state.plots[tile.plotIndex];
-      if (tile.plotIndex >= G.activePlotCount(state)) { toast("🔒 升級「開墾農地」解鎖此農土"); return; }
-      if (!plot.cropId) { toast("🟫 農土・空地，用手種植"); return; }
+      if (tile.plotIndex >= G.activePlotCount(state)) { toast("🔒 升级「开垦农地」解锁此农土"); return; }
+      if (!plot.cropId) { toast("🟫 农土・空地，用手种植"); return; }
       const prog = G.getCropProgress(state, plot, now()); const crop = window.CROPS[plot.cropId];
-      toast(`${crop.emoji}${crop.name}・${prog.ready ? "✅可收成" : "⏳" + fmtTime(prog.remainingMs)}${prog.wet ? "・💧濕土" : ""}`);
+      toast(`${crop.emoji}${crop.name}・${prog.ready ? "✅可收成" : "⏳" + fmtTime(prog.remainingMs)}${prog.wet ? "・💧湿土" : ""}`);
     } else if (tile.station) { const s = window.STATIONS[tile.station]; toast("🏷️ " + s.name + "・" + s.desc); }
-    else if (tile.structureId) { const s = G.structureAt(state, tile.id); toast("🏠 " + (s ? s.name : "建築") + "・點一下走過去互動"); }
-    else if (tile.npc) { const n = window.NPCS[tile.npc]; toast("🧑 " + n.name + "・" + n.title + "・走過去交談"); }
-    else if (tile.bridge) { toast(state.flags.bridgeRepaired ? "🌉 木橋・通往東林空地" : "🌉 斷橋・走過去用木材石頭修復"); }
+    else if (tile.structureId) { const s = G.structureAt(state, tile.id); toast("🏠 " + (s ? s.name : "建筑") + "・点一下走过去交互"); }
+    else if (tile.npc) { const n = window.NPCS[tile.npc]; toast("🧑 " + n.name + "・" + n.title + "・走过去交谈"); }
+    else if (tile.bridge) { toast(state.flags.bridgeRepaired ? "🌉 木桥・通往东林空地" : "🌉 断桥・走过去用木材石头修复"); }
     else if (tile.event) { const ev = window.EVENTS[tile.event]; toast("🌳 " + ev.name + "・" + ev.desc); }
     else if (tile.forage) {
       const node = (window.FORAGE_NODES || []).find((n) => n.id === tile.forage);
-      toast("🌿 " + (node ? node.name : "採集點") + "・走過去採集");
+      toast("🌿 " + (node ? node.name : "采集点") + "・走过去采集");
     }
-    else if (tile.region === "east_deep" && !(state.flags && state.flags.eastDeepUnlocked)) { toast("🌲 東林深處未開通・先整理入口小徑"); }
-    else if (tile.region === "east" && !state.flags.bridgeRepaired) { toast("⛓️ 東林封鎖中・先修好斷橋才能進入"); }
+    else if (tile.region === "east_deep" && !(state.flags && state.flags.eastDeepUnlocked)) { toast("🌲 东林深处未开通・先整理入口小径"); }
+    else if (tile.region === "east" && !state.flags.bridgeRepaired) { toast("⛓️ 东林封锁中・先修好断桥才能进入"); }
     else if (tile.object) { const o = window.OBSTACLES[tile.object]; toast(`${o.emoji}${o.name}・${o.desc}`); }
     else { toast(`${terr.name}・${terr.desc}`); }
   }
@@ -3504,10 +3504,10 @@
     const active = G.activePlotCount(state);
     if (tool === "hand") {
       if (tile.plotIndex != null) {
-        if (tile.plotIndex >= active) return { invalid: "🔒 此農土未解鎖（升級開墾）" };
+        if (tile.plotIndex >= active) return { invalid: "🔒 此农土未解锁（升级开垦）" };
         const plot = state.plots[tile.plotIndex];
         if (!plot.cropId) return { action: "plant" };
-        return G.getCropProgress(state, plot, now()).ready ? { action: "harvest" } : { invalid: "⏳ 還沒成熟" };
+        return G.getCropProgress(state, plot, now()).ready ? { action: "harvest" } : { invalid: "⏳ 还没成熟" };
       }
       if (tile.buildingId) return { action: "collect" };
       return {}; // 草地/步道 → 移動
@@ -3516,19 +3516,19 @@
       if (tile.plotIndex != null && tile.plotIndex < active && state.plots[tile.plotIndex].cropId) {
         const eligibility = G.canWaterPlot(state, tile.plotIndex, now());
         if (eligibility.ok) return { action: "water" };
-        if (eligibility.reason === "ready") return { invalid: "已成熟，不需澆水" };
-        if (eligibility.reason === "already_wet") return { invalid: "💧 已是濕土" };
+        if (eligibility.reason === "ready") return { invalid: "已成熟，不需浇水" };
+        if (eligibility.reason === "already_wet") return { invalid: "💧 已是湿土" };
       }
-      return { invalid: "💧 只能澆種了作物的農土" };
+      return { invalid: "💧 只能浇种了作物的农土" };
     }
     if (tool === "clear") {
       if (tile.object) return { action: "clear" };
-      return { invalid: "這裡沒有障礙可清除" };
+      return { invalid: "这里没有障碍可清除" };
     }
     if (tool === "build") {
-      if (tile.buildingId) return { invalid: "這裡已有建築" };
-      if (tile.object) return { invalid: "先清除障礙才能蓋" };
-      if (tile.terrain !== "grass") return { invalid: "只能蓋在草地" };
+      if (tile.buildingId) return { invalid: "这里已有建筑" };
+      if (tile.object) return { invalid: "先清除障碍才能盖" };
+      if (tile.terrain !== "grass") return { invalid: "只能盖在草地" };
       return { action: "build" };
     }
     return {};
@@ -3536,7 +3536,7 @@
   // 走到目標（或相鄰）後播動作 + 結算
   function moveAndAct(tileId, action) {
     const plan = G.planMoveTo(state, tileId);
-    if (!plan) { toast("走不到那裡"); return; }
+    if (!plan) { toast("走不到那里"); return; }
     const target = G.getTileById(state, tileId);
     walkPath(plan.path, () => {
       const stand = G.getTileById(state, plan.standId);
@@ -3559,33 +3559,33 @@
     if (action === "plant") {
       const r = G.plant(state, tile.plotIndex, selectedSeed, t);
       if (r.ok) { if (!animationStarted) playAction("sow", face); playSound("plant"); spawnVfx(tileId, "seed_scatter"); G.advanceStory(state, "plant"); afterChange(true); }
-      else { spawnRing(tileId, false); toast(r.reason === "no_coins" ? "🪙 金幣不足" : r.reason === "locked_crop" ? "🔒 作物未解鎖" : "無法種植"); }
+      else { spawnRing(tileId, false); toast(r.reason === "no_coins" ? "🪙 金币不足" : r.reason === "locked_crop" ? "🔒 作物未解锁" : "无法种植"); }
     } else if (action === "harvest") {
       const r = G.harvest(state, tile.plotIndex, t);
       if (r.ok) { if (!animationStarted) playAction("harvest", face); spawnVfx(tileId, "harvest_pop"); G.advanceStory(state, "harvest"); const crop = window.CROPS[r.cropId];
         cropHarvestFx(tileId, crop, r.added); playSound("harvest"); playSound("coin");
-        toast("🧺 收成 " + r.added + " " + crop.name); if (r.lost) toast("📦 倉滿損失 " + r.lost); if (r.leveled) { levelUpFx(tileElOf(tileId)); playSound("level"); toast("🎉 升 Lv " + state.level); } afterChange(true); }
+        toast("🧺 收成 " + r.added + " " + crop.name); if (r.lost) toast("📦 仓满损失 " + r.lost); if (r.leveled) { levelUpFx(tileElOf(tileId)); playSound("level"); toast("🎉 升 Lv " + state.level); } afterChange(true); }
     } else if (action === "water") {
       const r = G.waterPlot(state, tile.plotIndex, t);
-      if (r.ok) { if (!animationStarted) playAction("water", face); spawnVfx(tileId, "water_droplets"); waterSplashFx(tileId); playSound("water"); G.advanceStory(state, "water"); toast("💧 澆水變濕土加速"); afterChange(false); }
+      if (r.ok) { if (!animationStarted) playAction("water", face); spawnVfx(tileId, "water_droplets"); waterSplashFx(tileId); playSound("water"); G.advanceStory(state, "water"); toast("💧 浇水变湿土加速"); afterChange(false); }
     } else if (action === "clear") {
       const r = G.clearObstacle(state, tileId);
       if (r.ok) { if (!animationStarted) playAction("hoe", face); playSound("ui"); spawnVfx(tileId, "soil_dust"); G.advanceStory(state, "clear"); toast("⛏️ 清除 " + window.OBSTACLES[r.cleared].name + "，得建材"); afterChange(true); buildStaticObjects(); paintGround(); renderTileContext(); }
-      else if (r.reason === "no_coins") { spawnRing(tileId, false); toast("🪙 金幣不足"); }
+      else if (r.reason === "no_coins") { spawnRing(tileId, false); toast("🪙 金币不足"); }
     } else if (action === "build") {
       if (!animationStarted) playAction("hoe", face); spawnVfx(tileId, "soil_dust"); renderTileContext();
-      toast("🏗️ 選一個建築蓋在這裡");
+      toast("🏗️ 选一个建筑盖在这里");
     } else if (action === "collect") {
       const b = state.buildings.find((x) => x.id === tile.buildingId);
       if (b) { const r = G.collectHome(state, b.id, t); // 只收「這一家」（per-building）
-        if (r.total > 0) { playAction("collect", face); spawnVfx(tileId, "product_pop"); toast("🧺 收集 " + r.total + " 份產物"); afterChange(true); }
-        else { spawnRing(tileId, false); toast("這裡還沒有可收集的產物"); } renderTileContext(); }
+        if (r.total > 0) { playAction("collect", face); spawnVfx(tileId, "product_pop"); toast("🧺 收集 " + r.total + " 份产物"); afterChange(true); }
+        else { spawnRing(tileId, false); toast("这里还没有可收集的产物"); } renderTileContext(); }
     }
     updateMap(now());
   }
   function renderTileContext() {
     const box = $("tileContext"); if (!box) return;
-    if (!selectedTileId) { box.innerHTML = `<div class="tc-empty">點一個地圖磚查看資訊與動作</div>`; return; }
+    if (!selectedTileId) { box.innerHTML = `<div class="tc-empty">点一个地图砖查看信息与动作</div>`; return; }
     const tile = state.map.tiles.find((x) => x.id === selectedTileId);
     const terr = window.TERRAIN[tile.terrain];
 
@@ -3593,16 +3593,16 @@
     if (tile.station) {
       const st = window.STATIONS[tile.station];
       box.innerHTML = `<div class="tc-title">🏷️ ${st.name}</div><div class="tc-desc">${st.desc}</div>
-        <div class="tc-actions"><button class="btn buy small" id="useStBtn">走過去使用</button></div>`;
+        <div class="tc-actions"><button class="btn buy small" id="useStBtn">走过去使用</button></div>`;
       $("useStBtn").onclick = () => useStation(tile);
       return;
     }
     // 0.5) 多格結構（農舍/市集，無動物）→ 走過去互動
     if (tile.structureId && !tile.buildingId) {
       const s = G.structureAt(state, tile.id);
-      box.innerHTML = `<div class="tc-title">🏠 ${s ? s.name : "建築"}</div>
-        <div class="tc-desc">${s && s.interaction === "shop" ? "走過去把庫存賣給市集攤。" : "走過去看看農場概況、稍作歇息。"}</div>
-        <div class="tc-actions"><button class="btn buy small" id="useStrBtn">走過去</button></div>`;
+      box.innerHTML = `<div class="tc-title">🏠 ${s ? s.name : "建筑"}</div>
+        <div class="tc-desc">${s && s.interaction === "shop" ? "走过去把库存卖给市集摊。" : "走过去看看农场概况、稍作歇息。"}</div>
+        <div class="tc-actions"><button class="btn buy small" id="useStrBtn">走过去</button></div>`;
       $("useStrBtn").onclick = () => useStructure(tile);
       return;
     }
@@ -3617,10 +3617,10 @@
       const doneCount = (log && log.fulfilledCount) || 0;
       const sq = G.npcSideQuestStatus ? G.npcSideQuestStatus(state, tile.npc) : null;
       const sqProg = sq && sq.totalSteps ? `（${sq.status === "done" ? sq.totalSteps : sq.stepIndex}/${sq.totalSteps}）` : "";
-      const sqText = sq ? (sq.status === "done" ? "支線完成：" + (sq.chainTitle || sq.title) + sqProg
-        : sq.status === "active" ? "支線進行中：" + sq.title + sqProg
-        : sq.status === "available" ? "支線可接：" + sq.title + sqProg
-        : "支線未解鎖：" + sq.title + sqProg) : "";
+      const sqText = sq ? (sq.status === "done" ? "支线完成：" + (sq.chainTitle || sq.title) + sqProg
+        : sq.status === "active" ? "支线进行中：" + sq.title + sqProg
+        : sq.status === "available" ? "支线可接：" + sq.title + sqProg
+        : "支线未解锁：" + sq.title + sqProg) : "";
       const reqHtml = req ? `<div class="npc-request" data-audit="npc-request" data-npc="${tile.npc}">
           <div class="nr-wants">${Object.entries(req.wants).map(([id, q]) => {
             const have = state.storage.items[id] || 0;
@@ -3628,32 +3628,32 @@
           }).join("")}</div>
           <div class="nr-reward">🪙 ${fmtNum(req.rewardCoins)} · ⭐ ${req.rewardXp}</div>
           <div class="nr-actions">
-            <button class="btn buy small" id="fulfillReqBtn" ${req.canDeliver ? "" : "disabled"}>交付委託</button>
-            <button class="btn small ghost" id="declineReqBtn">放棄</button>
+            <button class="btn buy small" id="fulfillReqBtn" ${req.canDeliver ? "" : "disabled"}>交付委托</button>
+            <button class="btn small ghost" id="declineReqBtn">放弃</button>
           </div>
         </div>` : "";
       box.innerHTML = `<div class="tc-title">🧑 ${npc.name}</div>
-        <div class="tc-desc">${npc.title}${seen && d ? "：「" + d.line + "」" : "・走過去聽聽他要說什麼"}</div>
+        <div class="tc-desc">${npc.title}${seen && d ? "：「" + d.line + "」" : "・走过去听听他要说什么"}</div>
         ${sq ? `<div class="nr-history" data-audit="npc-sidequest" data-status="${sq.status}">${sqText}</div>` : ""}
         ${reqHtml}
-        ${doneCount > 0 ? `<div class="nr-history">已幫忙完成 ${doneCount} 次委託</div>` : ""}
-        <div class="tc-actions"><button class="btn buy small" id="talkNpcBtn">${seen ? "再聊一句" : "走過去交談"}</button></div>`;
+        ${doneCount > 0 ? `<div class="nr-history">已帮忙完成 ${doneCount} 次委托</div>` : ""}
+        <div class="tc-actions"><button class="btn buy small" id="talkNpcBtn">${seen ? "再聊一句" : "走过去交谈"}</button></div>`;
       $("talkNpcBtn").onclick = () => useNpc(tile);
       if (req) {
         $("fulfillReqBtn").onclick = () => {
           const r = G.fulfillNpcRequest(state, tile.npc, now());
           if (r.ok) {
             const cfg = (window.NPC_REQUESTS || {})[tile.npc];
-            const doneLine = r.doneLine || (cfg && cfg.flavorDone && cfg.flavorDone[0]) || "謝謝你！";
+            const doneLine = r.doneLine || (cfg && cfg.flavorDone && cfg.flavorDone[0]) || "谢谢你！";
             orderCompleteFx($("tileContext"), r.coins); playSound("order"); playSound("coin");
             toast("🎁 " + npc.name + "：「" + doneLine + "」+" + fmtNum(r.coins) + " 🪙");
             pushDialogueLog({ name: npc.name, line: doneLine });
             playAction("use", state.player.facing); afterChange(true); renderTileContext();
-          } else toast("作物/產物不足，無法交付");
+          } else toast("作物/产物不足，无法交付");
         };
         $("declineReqBtn").onclick = () => {
           G.declineNpcRequest(state, tile.npc, now());
-          toast("已放棄這張委託");
+          toast("已放弃这张委托");
           afterChange(true); renderTileContext();
         };
       }
@@ -3662,17 +3662,17 @@
     // 0.7) Stage 5：斷橋（修橋 / 過橋）
     if (tile.bridge) {
       if (state.flags.bridgeRepaired) {
-        box.innerHTML = `<div class="tc-title">🌉 木橋</div><div class="tc-desc">已修復，通往東林空地。點一下走過去。</div>
-          <div class="tc-actions"><button class="btn buy small" id="useBridgeBtn">走過去</button></div>`;
+        box.innerHTML = `<div class="tc-title">🌉 木桥</div><div class="tc-desc">已修复，通往东林空地。点一下走过去。</div>
+          <div class="tc-actions"><button class="btn buy small" id="useBridgeBtn">走过去</button></div>`;
       } else {
         const chk = G.canRepairBridge(state);
         const cost = window.BRIDGE_COST;
         const costTxt = `🪵${cost.wood} 🪨${cost.stone}`;
         const why = chk.ok ? "" : chk.reason === "chapter" ? "（需先完成序章 6/6）" : chk.reason === "materials" ? "（建材不足）" : "";
-        box.innerHTML = `<div class="tc-title">🌉 斷橋</div>
-          <div class="tc-desc">河上的橋斷了。走過去用建材修復，打通東林封鎖區。需 ${costTxt}${why}</div>
+        box.innerHTML = `<div class="tc-title">🌉 断桥</div>
+          <div class="tc-desc">河上的桥断了。走过去用建材修复，打通东林封锁区。需 ${costTxt}${why}</div>
           ${bridgeMaterialRowsHtml(false)}
-          <div class="tc-actions"><button class="btn buy small" id="useBridgeBtn" ${chk.ok ? "" : "disabled"}>走過去修橋（${costTxt}）</button></div>`;
+          <div class="tc-actions"><button class="btn buy small" id="useBridgeBtn" ${chk.ok ? "" : "disabled"}>走过去修桥（${costTxt}）</button></div>`;
       }
       $("useBridgeBtn").onclick = () => useBridge(tile);
       return;
@@ -3682,17 +3682,17 @@
       const ev = window.EVENTS[tile.event];
       if (tile.event === "east_deep_gate") {
         const st = G.eastDeepStatus ? G.eastDeepStatus(state) : null;
-        const lockedWhy = st && !st.prerequisites ? "（需先完成東林採集回報）" : "";
+        const lockedWhy = st && !st.prerequisites ? "（需先完成东林采集回报）" : "";
         box.innerHTML = `<div class="tc-title">🌲 ${ev.name}</div>
-          <div class="tc-desc">${ev.desc}${st && st.unlocked ? "（已開通）" : lockedWhy}</div>
-          ${st && !st.unlocked ? eastDeepCostRowsHtml(false) : `<div class="nr-history">稀有採集點已開放，收藏品已登錄。</div>`}
-          <div class="tc-actions"><button class="btn buy small" id="useEventBtn" ${st && (st.ready || st.unlocked) ? "" : "disabled"}>${st && st.unlocked ? "走過去" : "整理小徑"}</button></div>`;
+          <div class="tc-desc">${ev.desc}${st && st.unlocked ? "（已开通）" : lockedWhy}</div>
+          ${st && !st.unlocked ? eastDeepCostRowsHtml(false) : `<div class="nr-history">稀有采集点已开放，收藏品已登录。</div>`}
+          <div class="tc-actions"><button class="btn buy small" id="useEventBtn" ${st && (st.ready || st.unlocked) ? "" : "disabled"}>${st && st.unlocked ? "走过去" : "整理小径"}</button></div>`;
         $("useEventBtn").onclick = () => useEvent(tile);
         return;
       }
       const claimed = state.flags.eventsClaimed && state.flags.eventsClaimed[tile.event];
       box.innerHTML = `<div class="tc-title">🌳 ${ev.name}</div><div class="tc-desc">${ev.desc}${claimed ? "（已探索）" : ""}</div>
-        <div class="tc-actions"><button class="btn buy small" id="useEventBtn">走過去</button></div>`;
+        <div class="tc-actions"><button class="btn buy small" id="useEventBtn">走过去</button></div>`;
       $("useEventBtn").onclick = () => useEvent(tile);
       return;
     }
@@ -3704,27 +3704,27 @@
       const locked = !(state.flags && state.flags.bridgeRepaired);
       const deepLocked = status && status.unlocked === false;
       const undiscovered = !locked && !(state.flags && state.flags.eastForageDiscovered);
-      const desc = locked ? "先修好斷橋才能靠近東林採集點。"
-        : deepLocked ? "這是東林深處的稀有採集點，先整理深處入口。"
-        : undiscovered ? "先辨認這處採集點，之後就能定期採樣。"
-        : status && !status.ready ? "採集點正在恢復，還要 " + fmtTime(status.remainingMs) + "。"
-        : "可採集 " + (def ? def.name : "東林材料") + "，回報後會進入鎮民委託池。";
-      box.innerHTML = `<div class="tc-title">${def ? def.emoji : "🌿"} ${node ? node.name : "東林採集點"}</div>
+      const desc = locked ? "先修好断桥才能靠近东林采集点。"
+        : deepLocked ? "这是东林深处的稀有采集点，先整理深处入口。"
+        : undiscovered ? "先辨认这处采集点，之后就能定期采样。"
+        : status && !status.ready ? "采集点正在恢复，还要 " + fmtTime(status.remainingMs) + "。"
+        : "可采集 " + (def ? def.name : "东林材料") + "，回报后会进入镇民委托池。";
+      box.innerHTML = `<div class="tc-title">${def ? def.emoji : "🌿"} ${node ? node.name : "东林采集点"}</div>
         <div class="tc-desc">${desc}</div>
-        <div class="tc-actions"><button class="btn buy small" id="useForageBtn" ${locked || deepLocked ? "disabled" : ""}>${undiscovered ? "走過去辨認" : "走過去採集"}</button></div>`;
+        <div class="tc-actions"><button class="btn buy small" id="useForageBtn" ${locked || deepLocked ? "disabled" : ""}>${undiscovered ? "走过去辨认" : "走过去采集"}</button></div>`;
       $("useForageBtn").onclick = () => useForage(tile);
       return;
     }
     // 0.9) Stage 5：東林封鎖區（未修橋）
     if (tile.region === "east_deep" && !(state.flags && state.flags.eastDeepUnlocked)) {
-      box.innerHTML = `<div class="tc-title">🌲 東林深處（未開通）</div>
-        <div class="tc-desc">枝葉和舊踏板擋住路線，先到深處入口整理小徑。</div>
+      box.innerHTML = `<div class="tc-title">🌲 东林深处（未开通）</div>
+        <div class="tc-desc">枝叶和旧踏板挡住路线，先到深处入口整理小径。</div>
         ${eastDeepCostRowsHtml(false)}`;
       return;
     }
     if (tile.region === "east" && !state.flags.bridgeRepaired) {
-      box.innerHTML = `<div class="tc-title">⛓️ 東林（封鎖中）</div>
-        <div class="tc-desc">這片東邊的林地被河隔開了。先修好斷橋才能進入探索。</div>`;
+      box.innerHTML = `<div class="tc-title">⛓️ 东林（封锁中）</div>
+        <div class="tc-desc">这片东边的林地被河隔开了。先修好断桥才能进入探索。</div>`;
       return;
     }
     // 1) 有建築（雞舍/畜舍）→ 建築/動物管理
@@ -3738,21 +3738,21 @@
         && Object.keys(ob.grants || {}).some((k) => ((G.bridgeMaterialStatus(state).missing || {})[k] || 0) > 0);
       box.innerHTML = `
         <div class="tc-title">${ob.emoji} ${ob.name}</div>
-        <div class="tc-desc">${ob.desc}。清除後變草地可興建。${bridgeNeed ? "這是目前修橋材料來源。" : ""}</div>
+        <div class="tc-desc">${ob.desc}。清除后变草地可兴建。${bridgeNeed ? "这是目前修桥材料来源。" : ""}</div>
         ${bridgeNeed ? bridgeMaterialRowsHtml(false) : ""}
         <div class="tc-actions">
           <button class="btn buy small" id="clearBtn" ${canClear ? "" : "disabled"}>清除（🪙${ob.clearCost} → ${grantsTxt}）</button>
         </div>`;
       $("clearBtn").onclick = () => {
         const r = G.clearObstacle(state, tile.id);
-        if (r.ok) { playAction("hoe"); toast("⛏️ 已清除，獲得建材"); afterChange(true); renderTileContext(); renderQuestDock(); }
-        else if (r.reason === "no_coins") toast("🪙 金幣不足");
+        if (r.ok) { playAction("hoe"); toast("⛏️ 已清除，获得建材"); afterChange(true); renderTileContext(); renderQuestDock(); }
+        else if (r.reason === "no_coins") toast("🪙 金币不足");
       };
       return;
     }
     // 3) 水域 → 說明
     if (tile.terrain === "water") {
-      box.innerHTML = `<div class="tc-title">🌊 ${terr.name}</div><div class="tc-desc">${terr.desc}（MVP2 暫不可用）。</div>`;
+      box.innerHTML = `<div class="tc-title">🌊 ${terr.name}</div><div class="tc-desc">${terr.desc}（MVP2 暂不可用）。</div>`;
       return;
     }
     // 4) 空草地 → 建築選單
@@ -3769,26 +3769,26 @@
         <div class="build-opt ${unlocked && afford && !atMax ? "" : "locked"}">
           <span class="bo-ic">${def.emoji}</span>
           <span class="bo-body"><span class="bo-name">${def.name}</span><br>
-            <span class="bo-cost">${def.desc} · ${costTxt}${atMax ? " · 已達上限" : unlocked ? "" : " · 🔒Lv" + def.unlockLevel}</span></span>
-          <button class="btn buy small bbtn" data-type="${type}" ${unlocked && afford && !atMax ? "" : "disabled"}>蓋</button>
+            <span class="bo-cost">${def.desc} · ${costTxt}${atMax ? " · 已达上限" : unlocked ? "" : " · 🔒Lv" + def.unlockLevel}</span></span>
+          <button class="btn buy small bbtn" data-type="${type}" ${unlocked && afford && !atMax ? "" : "disabled"}>盖</button>
         </div>`;
     }).join("");
     box.innerHTML = `<div class="tc-title">🟩 ${window.TERRAIN.grass.name}</div>
-      <div class="tc-desc">可興建建築（影響成長/倉容/解鎖動物）。</div>
+      <div class="tc-desc">可兴建建筑（影响成长/仓容/解锁动物）。</div>
       <div class="tc-actions">${opts}</div>`;
     box.querySelectorAll(".bbtn").forEach((b) => {
       b.onclick = () => {
         const r = G.buildBuilding(state, tile.id, b.dataset.type, now());
-        if (r.ok) { playAction("hoe"); playSound("ui"); toast(window.BUILDINGS[b.dataset.type].emoji + " 已興建 " + window.BUILDINGS[b.dataset.type].name); afterChange(true); buildMap(); renderTileContext(); }
-        else if (r.reason === "cost") toast("資源不足");
-        else if (r.reason === "locked") toast("🔒 等級不足");
-        else if (r.reason === "max_count") toast("這種建築已達上限");
+        if (r.ok) { playAction("hoe"); playSound("ui"); toast(window.BUILDINGS[b.dataset.type].emoji + " 已兴建 " + window.BUILDINGS[b.dataset.type].name); afterChange(true); buildMap(); renderTileContext(); }
+        else if (r.reason === "cost") toast("资源不足");
+        else if (r.reason === "locked") toast("🔒 等级不足");
+        else if (r.reason === "max_count") toast("这种建筑已达上限");
       };
     });
   }
   // Stage 7：動物照護狀態顯示文案
   const ANIMAL_STATUS_EMOJI = { happy: "😊", hungry: "🍽️", thirsty: "💧", needs_groom: "🧹" };
-  const ANIMAL_STATUS_LABEL = { happy: "開心", hungry: "飢餓", thirsty: "口渴", needs_groom: "待梳理" };
+  const ANIMAL_STATUS_LABEL = { happy: "开心", hungry: "饥饿", thirsty: "口渴", needs_groom: "待梳理" };
   function renderBuildingContext(box, tile) {
     // Animal actions rebuild their buttons synchronously; keep the original click
     // inside this panel even after its target has been detached by afterChange().
@@ -3817,12 +3817,12 @@
             <span class="a-body"><b>${adef.name}</b> ${adef.product ? "→ " + itemEmoji(adef.product) : "・农场小伙伴"}
               <div class="a-prog"><div class="a-fill" style="width:${(prog.ratio * 100).toFixed(0)}%"></div></div>
               <span class="bo-cost">${prog.companion ? "💛 长久陪伴" : prog.growing ? "🐷 幼年・" + fmtTime(prog.remainingMs) + "后成年" : prog.ready ? "✅ 可收集" : "⏳ " + fmtTime(prog.remainingMs)}</span>
-              <div class="a-affinity" title="親密度 ${affinity.toFixed(0)}/100"><div class="a-affinity-fill" style="width:${affinity.toFixed(0)}%"></div></div>
-              <span class="bo-cost">${ANIMAL_STATUS_EMOJI[status]} ${ANIMAL_STATUS_LABEL[status]}・親密度 ${affinity.toFixed(0)}</span></span>
+              <div class="a-affinity" title="亲密度 ${affinity.toFixed(0)}/100"><div class="a-affinity-fill" style="width:${affinity.toFixed(0)}%"></div></div>
+              <span class="bo-cost">${ANIMAL_STATUS_EMOJI[status]} ${ANIMAL_STATUS_LABEL[status]}・亲密度 ${affinity.toFixed(0)}</span></span>
             <span class="a-actions-col">
               ${adef.product ? `<button class="btn buy small acol" data-id="${a.id}" ${prog.ready ? "" : "disabled"}>收集</button>` : ""}
-              <button class="btn ghost small afeed" data-id="${a.id}" ${canFeed ? "" : "disabled"}>餵食</button>
-              <button class="btn ghost small awater" data-id="${a.id}" ${canWater ? "" : "disabled"}>澆水</button>
+              <button class="btn ghost small afeed" data-id="${a.id}" ${canFeed ? "" : "disabled"}>喂食</button>
+              <button class="btn ghost small awater" data-id="${a.id}" ${canWater ? "" : "disabled"}>浇水</button>
               <button class="btn ghost small agroom" data-id="${a.id}" ${canGroom ? "" : "disabled"}>${adef.pet ? "抚摸" : "梳理"}</button>
             </span>
           </div>`;
@@ -3834,12 +3834,12 @@
           const adef = window.ANIMALS[animalType];
           if (adef.maxCount && state.animals.filter((a) => a.type === animalType).length >= adef.maxCount) return "";
           if (state.level >= adef.unlockLevel) {
-            return `<button class="btn buy small abuy" data-bid="${b.id}" data-type="${animalType}">＋ 買一隻${adef.name}（🪙${adef.cost}）</button>`;
+            return `<button class="btn buy small abuy" data-bid="${b.id}" data-type="${animalType}">＋ 买一只${adef.name}（🪙${adef.cost}）</button>`;
           }
-          return `<div class="bo-cost">🔒 ${adef.emoji} ${adef.name}・Lv${adef.unlockLevel} 解鎖</div>`;
+          return `<div class="bo-cost">🔒 ${adef.emoji} ${adef.name}・Lv${adef.unlockLevel} 解锁</div>`;
         }).join("");
       } else {
-        html += `<div class="bo-cost">已達容量上限 ${cap} 隻</div>`;
+        html += `<div class="bo-cost">已达容量上限 ${cap} 只</div>`;
       }
       html += `</div>`;
     }
@@ -3860,36 +3860,36 @@
       if (r.ok) {
         playAction("sow"); playSound("feed"); spawnVfx(tile.id, "feed_bits", { sheet: "care_vfx" });
         const extra = r.collectedFirst && r.collectedFirst.added ? "（另收 " + r.collectedFirst.added + " 份已成熟的）" : "";
-        toast((r.product ? "🌾 餵食 → +1 " + itemName(r.product) + extra : "🌾 吃饱啦") + "・親密度 " + r.affinity.toFixed(0));
+        toast((r.product ? "🌾 喂食 → +1 " + itemName(r.product) + extra : "🌾 吃饱啦") + "・亲密度 " + r.affinity.toFixed(0));
         G.advanceStory(state, "care_animal", now());
         afterChange(true); renderTileContext();
-      } else if (r.reason === "cooldown") toast("剛餵過，牠還吃得很飽（稍後再來）");
-      else toast("飼料不足（需作物）");
+      } else if (r.reason === "cooldown") toast("刚喂过，牠还吃得很饱（稍后再来）");
+      else toast("饲料不足（需作物）");
     });
     box.querySelectorAll(".awater").forEach((btn) => btn.onclick = () => {
       const r = G.waterAnimal(state, btn.dataset.id, now());
       if (r.ok) {
         playAction("water"); playSound("water"); spawnVfx(tile.id, "water_splash", { sheet: "care_vfx" });
-        toast("💧 澆水 → 親密度 " + r.affinity.toFixed(0));
+        toast("💧 浇水 → 亲密度 " + r.affinity.toFixed(0));
         G.advanceStory(state, "care_animal", now());
         afterChange(true); renderTileContext();
-      } else if (r.reason === "cooldown") toast("這隻剛澆過水，等一下再來");
+      } else if (r.reason === "cooldown") toast("这只刚浇过水，等一下再来");
     });
     box.querySelectorAll(".agroom").forEach((btn) => btn.onclick = () => {
       const r = G.groomAnimal(state, btn.dataset.id, now());
       if (r.ok) {
         playAction("build"); playSound("groom"); spawnVfx(tile.id, "groom_sparkle", { sheet: "care_vfx" });
-        toast((window.ANIMALS[state.animals.find((a) => a.id === btn.dataset.id).type].pet ? "💛 抚摸" : "🧹 梳理") + " → 親密度 " + r.affinity.toFixed(0));
+        toast((window.ANIMALS[state.animals.find((a) => a.id === btn.dataset.id).type].pet ? "💛 抚摸" : "🧹 梳理") + " → 亲密度 " + r.affinity.toFixed(0));
         G.advanceStory(state, "care_animal", now());
         afterChange(true); renderTileContext();
-      } else if (r.reason === "cooldown") toast("這隻剛梳理過，等一下再來");
+      } else if (r.reason === "cooldown") toast("这只刚梳理过，等一下再来");
     });
     box.querySelectorAll(".abuy").forEach((btn) => btn.onclick = () => {
       const r = G.buyAnimal(state, btn.dataset.bid, btn.dataset.type, now());
-      if (r.ok) { playSound("ui"); toast("🐣 新動物入住！"); afterChange(true); renderTileContext(); }
-      else if (r.reason === "no_coins") toast("🪙 金幣不足");
-      else if (r.reason === "full") toast("已達容量上限");
-      else if (r.reason === "locked") { toast("🔒 尚未達到解鎖等級"); renderTileContext(); }
+      if (r.ok) { playSound("ui"); toast("🐣 新动物入住！"); afterChange(true); renderTileContext(); }
+      else if (r.reason === "no_coins") toast("🪙 金币不足");
+      else if (r.reason === "full") toast("已达容量上限");
+      else if (r.reason === "locked") { toast("🔒 尚未达到解锁等级"); renderTileContext(); }
     });
   }
 
@@ -4062,7 +4062,7 @@
   function activateFacingTile() {
     if (hasOpenModal()) return;
     const tile = facingTile();
-    if (!tile) { toast("前方沒有目標"); return; }
+    if (!tile) { toast("前方没有目标"); return; }
     selectedTileId = tile.id;
     state.interaction.selectedTileId = tile.id;
     renderTileContext();
@@ -4150,16 +4150,16 @@
     const lines = [];
     const minutes = Math.max(5, Math.round(summary.offlineMs / 60000));
     const forageCount = summary.forageReadyCount || (summary.forageReady || []).length || 0;
-    lines.push(`<div class="ml" data-audit="offline-head">你離開的 ${minutes} 分鐘：離線收益 <span class="v">+${summary.coins || 0} 金</span></div>`);
+    lines.push(`<div class="ml" data-audit="offline-head">你离开的 ${minutes} 分钟：离线收益 <span class="v">+${summary.coins || 0} 金</span></div>`);
     lines.push(`<div class="ml" data-audit="offline-mature">作物成熟 <span class="v">${summary.readyPlots || 0} 株</span></div>`);
-    if (forageCount > 0) lines.push(`<div class="ml" data-audit="offline-forage">採集點已刷新 <span class="v">${forageCount} 處</span></div>`);
+    if (forageCount > 0) lines.push(`<div class="ml" data-audit="offline-forage">采集点已刷新 <span class="v">${forageCount} 处</span></div>`);
     if (summary.seasonsAdvanced > 0) {
       const reached = (summary.seasonsReached || []).map((id) => {
         const s = (window.SEASONS || []).find((x) => x.id === id);
         return s ? s.name : id;
       });
       const label = reached.length ? `（${reached.join("、")}）` : "";
-      lines.push(`<div class="ml" data-audit="offline-seasons">季節推進 <span class="v">${summary.seasonsAdvanced} 次</span>${escapeHtml(label)}</div>`);
+      lines.push(`<div class="ml" data-audit="offline-seasons">季节推进 <span class="v">${summary.seasonsAdvanced} 次</span>${escapeHtml(label)}</div>`);
       // R71（B-03 第二 commit）：離線期間有換季時，附上「回來時這一季」的晨光鎮廣播句。
       // 只掛在 seasonsAdvanced > 0 之下——沿用 R70 修正後的 P2-08 條件，勿回退成無條件顯示。
       const curSeasonId = state && G && G.currentSeason ? G.currentSeason(state, now()) : (state && state.season && state.season.id);
@@ -4171,20 +4171,20 @@
         const ev = Object.values(window.SEASON_EVENTS || {}).find((x) => x.id === sk.eventId);
         return ev ? ev.name : sk.eventId;
       });
-      lines.push(`<div class="ml" data-audit="offline-skipped-events">已結束節慶 <span class="v">${names.map(escapeHtml).join("、")}</span></div>`);
+      lines.push(`<div class="ml" data-audit="offline-skipped-events">已结束节庆 <span class="v">${names.map(escapeHtml).join("、")}</span></div>`);
     }
     const crops = Object.entries(summary.perCrop || {});
     if (crops.length) {
-      crops.forEach(([cid, n]) => lines.push(`<div class="ml">${window.CROPS[cid].emoji} ${window.CROPS[cid].name} 自動收成 <span class="v">+${n}</span></div>`));
+      crops.forEach(([cid, n]) => lines.push(`<div class="ml">${window.CROPS[cid].emoji} ${window.CROPS[cid].name} 自动收成 <span class="v">+${n}</span></div>`));
     }
     const products = Object.entries(summary.products || {});
     if (products.length) {
-      products.forEach(([pid, n]) => lines.push(`<div class="ml">${itemEmoji(pid)} ${itemName(pid)} 動物產出 <span class="v">+${n}</span></div>`));
+      products.forEach(([pid, n]) => lines.push(`<div class="ml">${itemEmoji(pid)} ${itemName(pid)} 动物产出 <span class="v">+${n}</span></div>`));
     }
-    if (summary.replanted > 0) lines.push(`<div class="ml">🤖 幫手補種 <span class="v">${summary.replanted} 次</span></div>`);
-    if (summary.lost > 0) lines.push(`<div class="ml" style="color:var(--bad)">📦 倉滿損失 <span class="v">${summary.lost}</span></div>`);
-    if (!crops.length && !products.length && !summary.readyPlots && !forageCount && !(summary.coins > 0) && !(summary.seasonsAdvanced > 0) && !((summary.skippedSeasonEvents || []).length)) lines.push(`<div class="ml">農場靜悄悄，沒有新進度</div>`);
-    if (summary.cappedFromMs > 0) lines.push(`<div class="tip">（離線收益上限 8 小時，實際離開 ${fmtTime(summary.cappedFromMs)}）</div>`);
+    if (summary.replanted > 0) lines.push(`<div class="ml">🤖 帮手补种 <span class="v">${summary.replanted} 次</span></div>`);
+    if (summary.lost > 0) lines.push(`<div class="ml" style="color:var(--bad)">📦 仓满损失 <span class="v">${summary.lost}</span></div>`);
+    if (!crops.length && !products.length && !summary.readyPlots && !forageCount && !(summary.coins > 0) && !(summary.seasonsAdvanced > 0) && !((summary.skippedSeasonEvents || []).length)) lines.push(`<div class="ml">农场静悄悄，没有新进度</div>`);
+    if (summary.cappedFromMs > 0) lines.push(`<div class="tip">（离线收益上限 8 小时，实际离开 ${fmtTime(summary.cappedFromMs)}）</div>`);
     $("offlineBody").innerHTML = lines.join("");
     openModal("offlineModal", "#offlineOk");
     return true;
@@ -4246,7 +4246,7 @@
       const s = (window.SEASONS || []).find((x) => x.id === sid);
       const bias = G.seasonOrderBiasToast ? G.seasonOrderBiasToast(state, t) : "";
       // R71（B-03 第二 commit）：換季 toast 附帶「晨光鎮廣播」一句（純文案，可整段回退）
-      if (s) toast(`${s.icon} ${s.name}到了，當季作物收購價提升。${s.broadcast ? " 📻 " + s.broadcast : ""}${bias ? " " + bias : ""}`);
+      if (s) toast(`${s.icon} ${s.name}到了，当季作物收购价提升。${s.broadcast ? " 📻 " + s.broadcast : ""}${bias ? " " + bias : ""}`);
       if (G.seasonEventStatus) {
         const ev = G.seasonEventStatus(state, t);
         if (ev && ev.event && ev.available) toast(`${ev.event.icon} 本季小事：${ev.event.name} 可在信箱查看。`);
@@ -4393,7 +4393,7 @@
     if (lettersClose) lettersClose.onclick = () => closeModal("lettersModal");
 
     // sprite 切換鈕初始文字
-    $("spriteToggle").textContent = state.useSprites ? "像素圖" : "符號圖";
+    $("spriteToggle").textContent = state.useSprites ? "像素图" : "符号图";
 
     // 首次玩顯示引導；否則顯示離線摘要
     function showInitialModal() {
@@ -4505,13 +4505,13 @@
   function bindToolbar() {
     $("harvestAllBtn").onclick = () => {
       const r = G.harvestAll(state, now());
-      if (r.totalAdded > 0) { const c = elementCenter($("mapScene")); screenBurst(c.x, c.y, ["\ud83c\udf3e", "\ud83e\udd55", "\ud83c\udf45"], { count: 16, distance: 88 }); flyCoinsToHud(c.x, c.y, 5); harvestComboText(c.x, c.y); playSound("harvest"); playSound("coin"); toast("🧺 收成 " + r.totalAdded + " 個作物"); if (r.totalLost) toast("📦 倉滿損失 " + r.totalLost); afterChange(true); }
-      else toast("沒有成熟的作物");
+      if (r.totalAdded > 0) { const c = elementCenter($("mapScene")); screenBurst(c.x, c.y, ["\ud83c\udf3e", "\ud83e\udd55", "\ud83c\udf45"], { count: 16, distance: 88 }); flyCoinsToHud(c.x, c.y, 5); harvestComboText(c.x, c.y); playSound("harvest"); playSound("coin"); toast("🧺 收成 " + r.totalAdded + " 个作物"); if (r.totalLost) toast("📦 仓满损失 " + r.totalLost); afterChange(true); }
+      else toast("没有成熟的作物");
     };
     $("sellAllBtn").onclick = () => {
       const r = G.sellAll(state, now());
-      if (r.coins > 0) { playAction("carry"); const c = elementCenter($("sellAllBtn")); flyCoinsToHud(c.x, c.y, 6); playSound("coin"); toast("🪙 賣出 " + r.qty + " 個，得 " + fmtNum(r.coins) + " 金"); afterChange(true); renderOrders(); }
-      else toast("倉庫沒有可賣的作物");
+      if (r.coins > 0) { playAction("carry"); const c = elementCenter($("sellAllBtn")); flyCoinsToHud(c.x, c.y, 6); playSound("coin"); toast("🪙 卖出 " + r.qty + " 个，得 " + fmtNum(r.coins) + " 金"); afterChange(true); renderOrders(); }
+      else toast("仓库没有可卖的作物");
     };
     // 澆水（全部）：對所有可澆的乾土作物澆水變濕土加速（綁角色澆水動畫）
     $("waterAllBtn").onclick = () => {
@@ -4521,18 +4521,18 @@
       }
       playAction("water");
       if (n > 0) { const c = elementCenter($("mapScene")); screenBurst(c.x, c.y, ["\ud83d\udca7"], { count: Math.min(16, 4 + n), distance: 82, className: "water-drop-particle" }); playSound("water"); }
-      toast(n > 0 ? "💧 澆水 " + n + " 格，變濕土加速成長" : "沒有需要澆水的作物");
+      toast(n > 0 ? "💧 浇水 " + n + " 格，变湿土加速成长" : "没有需要浇水的作物");
       if (n > 0) afterChange(false);
     };
     // 收集全部動物產物
     $("collectAllBtn").onclick = () => {
       const r = G.collectAllAnimals(state, now());
-      if (r.total > 0) { playAction("carry"); const c = elementCenter($("collectAllBtn")); screenBurst(c.x, c.y, ["\u2b50"], { count: 10, distance: 58 }); playSound("coin"); toast("🧺 收集 " + r.total + " 份產物"); afterChange(true); renderTileContext(); updateMap(now()); }
-      else toast("目前沒有可收集的產物");
+      if (r.total > 0) { playAction("carry"); const c = elementCenter($("collectAllBtn")); screenBurst(c.x, c.y, ["\u2b50"], { count: 10, distance: 58 }); playSound("coin"); toast("🧺 收集 " + r.total + " 份产物"); afterChange(true); renderTileContext(); updateMap(now()); }
+      else toast("目前没有可收集的产物");
     };
     $("spriteToggle").onclick = () => {
       state.useSprites = !state.useSprites;
-      $("spriteToggle").textContent = state.useSprites ? "像素圖" : "符號圖";
+      $("spriteToggle").textContent = state.useSprites ? "像素图" : "符号图";
       updateFarm(now()); scheduleSave();
     };
     // Stage 6：主角性別切換（女 Miri ↔ 男 Kai），即時換 sprite
@@ -4553,7 +4553,7 @@
     if ($("errorContinue")) $("errorContinue").onclick = () => { $("errorRecovery").hidden = true; syncBottomBanners(); };
     if ($("errorReload")) $("errorReload").onclick = () => window.location.reload();
     $("resetBtn").onclick = () => {
-      if (confirm("確定重置存檔？所有進度會消失。")) {
+      if (confirm("确定重置存档？所有进度会消失。")) {
         window.reset(); state = window.defaultState(now());
         if (moveTimer) { clearTimeout(moveTimer); moveTimer = null; }
         window.__farmJourney = null; player.oneShot = false;

@@ -161,9 +161,9 @@ function lineCol(text, idx) {
 
 const badTextPatterns = [
   ["U+FFFD replacement", /\uFFFD/u],
-  ["連續問號", /\?{3,}/u],
+  ["连续问号", /\?{3,}/u],
   ["UTF-8/Latin-1 mojibake", /[\u00c2\u00c3][\u0080-\u00bf]|[\u00e0-\u00ff][\u00a0-\u00bf]/u],
-  ["Big5/私用區 mojibake", /[\uE000-\uF8FF]|[嚗蝝銝撠雿憭摮蝔頝瘞鞈韏閮璅皜蝺摰甈銋隤銴頛餈閬頞霈撟蝡摨暺脣]/u],
+  ["Big5/私用区 mojibake", /[\uE000-\uF8FF]|[嚗蝝銝撠雿憭摮蝔頝瘗鞈韏閮璅皜蝺摰甈銋𬯎銴頛糍阆頞霈挢蝡摨暺唇]/u],
 ];
 
 function checkTextQuality(label, fileText, value, startIdx, hits) {

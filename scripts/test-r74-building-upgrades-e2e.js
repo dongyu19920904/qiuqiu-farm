@@ -93,8 +93,8 @@ async function testAt(browser, base, config) {
     const siloCard = page.locator(`[data-building-upgrade-card="${ids.siloId}"]`);
     await compostCard.scrollIntoViewIfNeeded();
     const content = await compostCard.innerText();
-    assert(/堆肥場/.test(content) && /Lv 1\/3/.test(content) && /目前.*×0\.90/s.test(content)
-      && /下一級.*×0\.84/s.test(content) && /升級成本/.test(content) && /可負擔/.test(content),
+    assert(/堆肥场/.test(content) && /Lv 1\/3/.test(content) && /目前.*×0\.90/s.test(content)
+      && /下一级.*×0\.84/s.test(content) && /升级成本/.test(content) && /可负担/.test(content),
     `${tag} 升級分頁顯示堆肥場目前等級、下一級效果、成本與可負擔徽章`);
     assert((await page.locator("#buildingUpgrades .building-upgrade-card").count()) === 4,
       `${tag} 已放置建物清單包含預置 2 棟與本次新建堆肥場／筒倉`);
@@ -114,7 +114,7 @@ async function testAt(browser, base, config) {
     }), ids.compostId);
     assert(feedback.level === 2 && Math.abs(feedback.aura - 0.84) < 1e-9,
       `${tag} 真實 click 後堆肥場升到 Lv2 並套用 ×0.84`);
-    assert(feedback.toast.includes("堆肥場 升到 Lv 2") && feedback.fanfare && feedback.mapFx,
+    assert(feedback.toast.includes("堆肥场 升到 Lv 2") && feedback.fanfare && feedback.mapFx,
       `${tag} 成功回饋同時有 toast、level-up 粒子與建物地圖 sparkle`);
 
     await page.waitForTimeout(2400); // 證據截圖保留乾淨卡面；toast/粒子已在上方即時斷言。
@@ -146,8 +146,8 @@ async function testAt(browser, base, config) {
     }, ids.siloId);
     const contextCard = page.locator(`#tileContext [data-building-upgrade-card="${ids.siloId}"]`);
     await contextCard.scrollIntoViewIfNeeded();
-    assert(/筒倉/.test(await contextCard.innerText()) && /倉庫容量 \+90/.test(await contextCard.innerText())
-      && /倉庫容量 \+170/.test(await contextCard.innerText()),
+    assert(/筒仓/.test(await contextCard.innerText()) && /仓库容量 \+90/.test(await contextCard.innerText())
+      && /仓库容量 \+170/.test(await contextCard.innerText()),
     `${tag} 建物點選流程顯示筒倉目前與下一級容量`);
     const contextButton = contextCard.locator(".building-upgrade-btn");
     const contextMetric = await metric(contextButton);

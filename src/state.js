@@ -548,7 +548,7 @@
       if (!raw) return null;
       return migrate(JSON.parse(raw));
     } catch (e) {
-      console.warn("讀檔失敗，將開新檔：", e);
+      console.warn("读档失败，将开新档：", e);
       return null;
     }
   }
@@ -563,7 +563,7 @@
       localStorage.setItem(C.GAME.saveKey, raw);
       return { ok: true };
     } catch (e) {
-      console.warn("存檔失敗：", e);
+      console.warn("存档失败：", e);
       return { ok: false, reason: "exception", error: e };
     }
   }

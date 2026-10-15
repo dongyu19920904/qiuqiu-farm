@@ -14,54 +14,54 @@
   const FISH_COOLDOWN_MS = 30000;
   const EVENTS = ["plant", "water", "harvest", "talk", "forage", "fish", "cook", "restore", "order", "care"];
   const CHAPTERS = [
-    { id: "home", name: "回家與第一餐" },
-    { id: "river", name: "河畔復興" },
-    { id: "picnic", name: "收穫野餐" },
+    { id: "home", name: "回家与第一餐" },
+    { id: "river", name: "河畔复兴" },
+    { id: "picnic", name: "收获野餐" },
   ];
   const PROJECTS = [
-    { id: "fishing_dock", name: "河畔釣台", description: "補好河邊踏板，班伯會借你一支魚竿。", target: { kind: "river", id: "fishing_dock", tileId: "t2_9" },
+    { id: "fishing_dock", name: "河畔钓台", description: "补好河边踏板，班伯会借你一支鱼竿。", target: { kind: "river", id: "fishing_dock", tileId: "t2_9" },
       cost: { wood: 4, stone: 2 }, unlockQuest: "c1_first_meal", unlocks: ["fishing", "fishing_rod"] },
-    { id: "picnic_table", name: "野餐桌", description: "鋪好桌面，讓大家帶著料理來河邊坐坐。", target: { kind: "station", id: "picnic_table", tileId: "t10_10" },
+    { id: "picnic_table", name: "野餐桌", description: "铺好桌面，让大家带着料理来河边坐坐。", target: { kind: "station", id: "picnic_table", tileId: "t10_10" },
       cost: { wood: 6, wheat: 4 }, unlockQuest: "c2_river_basket", unlocks: ["baked_carrot", "mint_tea", "meal_gifts"] },
-    { id: "garden", name: "花園", description: "整理一片小花圃，留下壓花和野餐後的留言。", target: { kind: "station", id: "garden", tileId: "t6_2" },
+    { id: "garden", name: "花园", description: "整理一片小花圃，留下压花和野餐后的留言。", target: { kind: "station", id: "garden", tileId: "t6_2" },
       cost: { coins: 80, wood: 4 }, unlockQuest: "c3_good_neighbors", unlocks: ["pressed_flower", "garden_guestbook"] },
   ];
   const RECIPES = [
-    { id: "rustic_bread", name: "農家麥餅", description: "把剛收的小麥烤成第一餐。", ingredients: { wheat: 2 }, unlockQuest: "c1_first_harvest" },
-    { id: "baked_carrot", name: "胡蘿蔔烤餅", description: "加上胡蘿蔔，烤一份能帶去野餐的點心。", ingredients: { wheat: 1, carrot: 2 }, unlockProject: "picnic_table" },
-    { id: "mint_tea", name: "溪畔薄荷茶", description: "用溪畔薄荷泡茶，配上一小片麥餅。", ingredients: { river_mint: 1, wheat: 1 }, unlockProject: "picnic_table" },
+    { id: "rustic_bread", name: "农家麦饼", description: "把刚收的小麦烤成第一餐。", ingredients: { wheat: 2 }, unlockQuest: "c1_first_harvest" },
+    { id: "baked_carrot", name: "胡萝卜烤饼", description: "加上胡萝卜，烤一份能带去野餐的点心。", ingredients: { wheat: 1, carrot: 2 }, unlockProject: "picnic_table" },
+    { id: "mint_tea", name: "溪畔薄荷茶", description: "用溪畔薄荷泡茶，配上一小片麦饼。", ingredients: { river_mint: 1, wheat: 1 }, unlockProject: "picnic_table" },
   ];
   const FISH = [
-    { id: "river_carp", name: "河鯉" },
-    { id: "silver_dace", name: "銀鯽" },
-    { id: "river_perch", name: "溪鱸" },
+    { id: "river_carp", name: "河鲤" },
+    { id: "silver_dace", name: "银鲫" },
+    { id: "river_perch", name: "溪鲈" },
   ];
   const COLLECTIBLES = {
-    pressed_flower: { id: "pressed_flower", name: "河畔壓花", description: "花園整理好後留下的第一朵小花。" },
-    picnic_memory: { id: "picnic_memory", name: "收穫野餐合照", description: "麥餅、薄荷茶和鎮民一起入鏡的那個下午。" },
+    pressed_flower: { id: "pressed_flower", name: "河畔压花", description: "花园整理好后留下的第一朵小花。" },
+    picnic_memory: { id: "picnic_memory", name: "收获野餐合照", description: "麦饼、薄荷茶和镇民一起入镜的那个下午。" },
   };
   const goal = (type, count, name, id) => ({ type, count, name, id: id || null });
   const reward = (coins, xp, materials, extra) => Object.assign({ coins, xp, materials: materials || {} }, extra || {});
   const QUESTS = [
-    { id: "c1_homecoming", chapter: 1, name: "把田叫醒", npcId: "mayor", description: "跟葛瑞打聲招呼，再種下三格作物，替它們澆水。", target: { kind: "npc", id: "mayor" }, wants: {},
-      goals: [goal("talk", 1, "和葛瑞交談", "mayor"), goal("plant", 3, "播種農地"), goal("water", 3, "澆水農地")], reward: reward(12, 2, { wood: 6, stone: 2 }) },
-    { id: "c1_first_harvest", chapter: 1, name: "留一把小麥", npcId: "elder", description: "收下第一批作物，找班伯聊聊，把兩份小麥留給他的灶台。", target: { kind: "npc", id: "elder" }, wants: { wheat: 2 },
-      goals: [goal("harvest", 6, "收穫作物數量"), goal("talk", 1, "和班伯交談", "elder")], reward: reward(16, 6, { wood: 4, stone: 4 }) },
-    { id: "c1_first_meal", chapter: 1, name: "回家的第一餐", npcId: "elder", description: "在野餐廚房做一份農家麥餅，帶給班伯嚐嚐。他準備好了修釣台的木料。", target: { kind: "station", id: "kitchen", tileId: "t10_10" }, wants: {}, wantsMeals: { rustic_bread: 1 },
-      goals: [goal("cook", 1, "烹調農家麥餅", "rustic_bread")], reward: reward(20, 4, { wood: 6 }, { fishingRod: true }) },
-    { id: "c2_fishing_dock", chapter: 2, name: "河邊有個落腳處", npcId: "elder", description: "用四份木材、兩份石材修好釣台，再試試班伯的魚竿。", target: { kind: "river", id: "fishing_dock", tileId: "t2_9" }, wants: {},
-      goals: [goal("restore", 1, "修復河畔釣台", "fishing_dock")], reward: reward(16, 4) },
-    { id: "c2_river_basket", chapter: 2, name: "河風裡的提籃", npcId: "merchant", description: "釣兩尾魚，採一份溪畔薄荷。蘿拉收一尾魚和薄荷，替野餐桌備好木料。", target: { kind: "river", id: "fishing_dock", tileId: "t2_9" }, wants: { river_mint: 1 }, wantsCatch: 1,
-      goals: [goal("fish", 2, "釣獲魚隻"), goal("forage", 1, "採集溪畔薄荷", "river_mint")], reward: reward(24, 6, { wood: 6 }) },
-    { id: "c2_picnic_table", chapter: 2, name: "多放幾張椅子", npcId: "merchant", description: "修好野餐桌，找蘿拉確認座位，再交兩份胡蘿蔔試做點心。", target: { kind: "station", id: "picnic_table", tileId: "t10_10" }, wants: { carrot: 2 },
-      goals: [goal("restore", 1, "修復野餐桌", "picnic_table"), goal("talk", 1, "和蘿拉交談", "merchant")], reward: reward(32, 8) },
-    { id: "c3_good_neighbors", chapter: 3, name: "鄰居都到齊", npcId: "elder", description: "照顧動物三次、完成兩張訂單，把兩份小麥帶給班伯。野餐前先把日常顧好。", target: { kind: "npc", id: "elder" }, wants: { wheat: 2 },
-      goals: [goal("care", 3, "照顧動物"), goal("order", 2, "完成訂單"), goal("talk", 1, "和班伯交談", "elder")], reward: reward(40, 8, { wood: 4 }) },
-    { id: "c3_garden", chapter: 3, name: "桌邊的小花園", npcId: "child", description: "整理花園，烤胡蘿蔔餅、泡薄荷茶。圖圖想把第一朵小花壓進筆記本。", target: { kind: "station", id: "garden", tileId: "t6_2" }, wants: {},
-      goals: [goal("restore", 1, "整理花園", "garden"), goal("cook", 1, "烹調胡蘿蔔烤餅", "baked_carrot"), goal("cook", 1, "烹調溪畔薄荷茶", "mint_tea")], reward: reward(0, 8, {}, { collectible: "pressed_flower" }) },
-    { id: "c3_harvest_picnic", chapter: 3, name: "把收穫端上桌", npcId: "child", description: "找圖圖一起開飯。帶一份麥餅、一份胡蘿蔔烤餅、一壺薄荷茶和兩尾魚，留張野餐合照。", target: { kind: "npc", id: "child" }, wants: {},
+    { id: "c1_homecoming", chapter: 1, name: "把田叫醒", npcId: "mayor", description: "跟葛瑞打声招呼，再种下三格作物，替它们浇水。", target: { kind: "npc", id: "mayor" }, wants: {},
+      goals: [goal("talk", 1, "和葛瑞交谈", "mayor"), goal("plant", 3, "播种农地"), goal("water", 3, "浇水农地")], reward: reward(12, 2, { wood: 6, stone: 2 }) },
+    { id: "c1_first_harvest", chapter: 1, name: "留一把小麦", npcId: "elder", description: "收下第一批作物，找班伯聊聊，把两份小麦留给他的灶台。", target: { kind: "npc", id: "elder" }, wants: { wheat: 2 },
+      goals: [goal("harvest", 6, "收获作物数量"), goal("talk", 1, "和班伯交谈", "elder")], reward: reward(16, 6, { wood: 4, stone: 4 }) },
+    { id: "c1_first_meal", chapter: 1, name: "回家的第一餐", npcId: "elder", description: "在野餐厨房做一份农家麦饼，带给班伯尝尝。他准备好了修钓台的木料。", target: { kind: "station", id: "kitchen", tileId: "t10_10" }, wants: {}, wantsMeals: { rustic_bread: 1 },
+      goals: [goal("cook", 1, "烹调农家麦饼", "rustic_bread")], reward: reward(20, 4, { wood: 6 }, { fishingRod: true }) },
+    { id: "c2_fishing_dock", chapter: 2, name: "河边有个落脚处", npcId: "elder", description: "用四份木材、两份石材修好钓台，再试试班伯的鱼竿。", target: { kind: "river", id: "fishing_dock", tileId: "t2_9" }, wants: {},
+      goals: [goal("restore", 1, "修复河畔钓台", "fishing_dock")], reward: reward(16, 4) },
+    { id: "c2_river_basket", chapter: 2, name: "河风里的提篮", npcId: "merchant", description: "钓两尾鱼，采一份溪畔薄荷。萝拉收一尾鱼和薄荷，替野餐桌备好木料。", target: { kind: "river", id: "fishing_dock", tileId: "t2_9" }, wants: { river_mint: 1 }, wantsCatch: 1,
+      goals: [goal("fish", 2, "钓获鱼只"), goal("forage", 1, "采集溪畔薄荷", "river_mint")], reward: reward(24, 6, { wood: 6 }) },
+    { id: "c2_picnic_table", chapter: 2, name: "多放几张椅子", npcId: "merchant", description: "修好野餐桌，找萝拉确认座位，再交两份胡萝卜试做点心。", target: { kind: "station", id: "picnic_table", tileId: "t10_10" }, wants: { carrot: 2 },
+      goals: [goal("restore", 1, "修复野餐桌", "picnic_table"), goal("talk", 1, "和萝拉交谈", "merchant")], reward: reward(32, 8) },
+    { id: "c3_good_neighbors", chapter: 3, name: "邻居都到齐", npcId: "elder", description: "照顾动物三次、完成两张订单，把两份小麦带给班伯。野餐前先把日常顾好。", target: { kind: "npc", id: "elder" }, wants: { wheat: 2 },
+      goals: [goal("care", 3, "照顾动物"), goal("order", 2, "完成订单"), goal("talk", 1, "和班伯交谈", "elder")], reward: reward(40, 8, { wood: 4 }) },
+    { id: "c3_garden", chapter: 3, name: "桌边的小花园", npcId: "child", description: "整理花园，烤胡萝卜饼、泡薄荷茶。图图想把第一朵小花压进笔记本。", target: { kind: "station", id: "garden", tileId: "t6_2" }, wants: {},
+      goals: [goal("restore", 1, "整理花园", "garden"), goal("cook", 1, "烹调胡萝卜烤饼", "baked_carrot"), goal("cook", 1, "烹调溪畔薄荷茶", "mint_tea")], reward: reward(0, 8, {}, { collectible: "pressed_flower" }) },
+    { id: "c3_harvest_picnic", chapter: 3, name: "把收获端上桌", npcId: "child", description: "找图图一起开饭。带一份麦饼、一份胡萝卜烤饼、一壶薄荷茶和两尾鱼，留张野餐合照。", target: { kind: "npc", id: "child" }, wants: {},
       wantsMeals: { rustic_bread: 1, baked_carrot: 1, mint_tea: 1 }, wantsCatch: 2,
-      goals: [goal("talk", 1, "和圖圖交談", "child"), goal("restore", 1, "修復河畔釣台", "fishing_dock"), goal("restore", 1, "修復野餐桌", "picnic_table"), goal("restore", 1, "整理花園", "garden")],
+      goals: [goal("talk", 1, "和图图交谈", "child"), goal("restore", 1, "修复河畔钓台", "fishing_dock"), goal("restore", 1, "修复野餐桌", "picnic_table"), goal("restore", 1, "整理花园", "garden")],
       reward: reward(24, 12, {}, { collectible: "picnic_memory", guestbook: true }) },
   ];
 
@@ -124,12 +124,12 @@
     const inventory = source === "meals" ? state.adventure.meals : source === "materials" ? state.materials : source === "coins" ? { coins: state.coins } : (state.storage && state.storage.items);
     return Object.entries(wants || {}).map(([id, required]) => {
       const current = qty(inventory && inventory[id], Number.MAX_SAFE_INTEGER);
-      return { source, id, name: id === "coins" ? "金幣" : itemName(id), current, required, complete: current >= required, consume: true };
+      return { source, id, name: id === "coins" ? "金币" : itemName(id), current, required, complete: current >= required, consume: true };
     });
   }
   function questRequirements(state, q) {
     const rows = requirements(state, q.wants, "inventory").concat(requirements(state, q.wantsMeals, "meals"));
-    if (q.wantsCatch) rows.push({ source: "catch", id: "any", name: "河魚", current: sum(state.adventure.catch), required: q.wantsCatch, complete: sum(state.adventure.catch) >= q.wantsCatch, consume: true });
+    if (q.wantsCatch) rows.push({ source: "catch", id: "any", name: "河鱼", current: sum(state.adventure.catch), required: q.wantsCatch, complete: sum(state.adventure.catch) >= q.wantsCatch, consume: true });
     return rows;
   }
   function costRequirements(state, cost) {
@@ -149,9 +149,9 @@
     });
   }
   function ensure(state, now) {
-    if (!object(state)) return fail("bad_state", "存檔資料不完整。");
+    if (!object(state)) return fail("bad_state", "存档数据不完整。");
     now = at(state, now);
-    if (now === null) return fail("bad_time", "時間資料無效。");
+    if (now === null) return fail("bad_time", "时间数据无效。");
     if (!object(state.adventure)) state.adventure = {};
     const a = state.adventure;
     a.version = VERSION;
@@ -189,25 +189,25 @@
     if (restored(a, "fishing_dock") || claimed(a, "c1_first_meal")) a.unlocks.fishingRod = true;
     if (restored(a, "garden")) a.collectibles.pressed_flower = true;
     sync(state, now);
-    return ok("冒險資料已就緒。", { adventure: a });
+    return ok("冒险数据已就绪。", { adventure: a });
   }
   function record(state, event, now) {
     const e = typeof event === "string" ? { type: event } : event;
-    if (!object(e) || !EVENTS.includes(e.type)) return fail("unknown_event", "沒有這個冒險事件。");
-    if (e.ok === false) return fail("failed_event", "未完成的行動不會計入任務。");
+    if (!object(e) || !EVENTS.includes(e.type)) return fail("unknown_event", "没有这个冒险事件。");
+    if (e.ok === false) return fail("failed_event", "未完成的行动不会计入任务。");
     const raw = e.count !== undefined ? e.count : e.qty !== undefined ? e.qty : e.added !== undefined ? e.added : 1;
-    if (!Number.isSafeInteger(raw) || raw <= 0) return fail("bad_count", "事件數量必須是正整數。");
+    if (!Number.isSafeInteger(raw) || raw <= 0) return fail("bad_count", "事件数量必须是正整数。");
     const candidates = e.type === "talk" ? [e.npcId, e.id] : e.type === "cook" ? [e.recipeId, e.id] : e.type === "restore" ? [e.projectId, e.id] : [e.itemId, e.cropId, e.id];
     const id = candidates.find((value) => value !== undefined && value !== null);
     const allowed = e.type === "talk" ? Object.keys(C.NPCS || {}) : e.type === "cook" ? RECIPES.map((r) => r.id) : e.type === "restore" ? PROJECTS.map((p) => p.id) : e.type === "forage" ? Object.keys(C.FORAGE_ITEMS || {}) : ["plant", "water", "harvest"].includes(e.type) ? Object.keys(C.CROPS || {}) : e.type === "fish" ? FISH.map((f) => f.id) : null;
-    if ((id !== undefined && allowed && (typeof id !== "string" || !allowed.includes(id))) || (e.type === "talk" && id === undefined)) return fail("unknown_target", "找不到事件對象。");
+    if ((id !== undefined && allowed && (typeof id !== "string" || !allowed.includes(id))) || (e.type === "talk" && id === undefined)) return fail("unknown_target", "找不到事件对象。");
     const init = ensure(state, now); if (!init.ok) return init;
     const a = state.adventure;
     const count = Math.min(EVENT_CAP, raw);
     a.counts[e.type] = Math.min(COUNT_CAP, a.counts[e.type] + count);
     if (id && a.byTarget[e.type]) a.byTarget[e.type][id] = Math.min(COUNT_CAP, (a.byTarget[e.type][id] || 0) + count);
     sync(state, at(state, now));
-    return ok("已記下這次行動。", { type: e.type, count, total: a.counts[e.type] });
+    return ok("已记下这次行动。", { type: e.type, count, total: a.counts[e.type] });
   }
   function quests(state, now) {
     if (!ensure(state, now).ok) return [];
@@ -251,14 +251,14 @@
   }
   function claim(state, id, now) {
     const index = QUESTS.findIndex((q) => q.id === id);
-    if (index < 0) return fail("unknown_quest", "找不到這個任務。");
+    if (index < 0) return fail("unknown_quest", "找不到这个任务。");
     const init = ensure(state, now); if (!init.ok) return init;
     const a = state.adventure; const q = QUESTS[index];
-    if (claimed(a, id)) return fail("already_claimed", "這份獎勵已經領過了。");
-    if (!unlockedQuest(a, index)) return fail("locked", "先完成前一個任務。");
-    if (!q.goals.every((g) => goalCount(a, g) >= g.count)) return fail("not_ready", "任務目標還沒完成。");
+    if (claimed(a, id)) return fail("already_claimed", "这份奖励已经领过了。");
+    if (!unlockedQuest(a, index)) return fail("locked", "先完成前一个任务。");
+    if (!q.goals.every((g) => goalCount(a, g) >= g.count)) return fail("not_ready", "任务目标还没完成。");
     const rows = questRequirements(state, q);
-    if (!rows.every((r) => r.complete)) return fail("missing_resources", "要交付的物品還沒備齊。", { requirements: rows });
+    if (!rows.every((r) => r.complete)) return fail("missing_resources", "要交付的物品还没备齐。", { requirements: rows });
     consume(state, rows);
     a.claimed[id] = true;
     a.quests[id].status = "claimed";
@@ -279,12 +279,12 @@
   }
   function restore(state, id, now) {
     const p = PROJECTS.find((entry) => entry.id === id);
-    if (!p) return fail("unknown_project", "找不到這個修復計畫。");
+    if (!p) return fail("unknown_project", "找不到这个修复计划。");
     const init = ensure(state, now); if (!init.ok) return init;
-    if (restored(state.adventure, id)) return fail("already_restored", "這裡已經修好了。");
-    if (!claimed(state.adventure, p.unlockQuest)) return fail("locked", "先完成前面的鎮民任務。");
+    if (restored(state.adventure, id)) return fail("already_restored", "这里已经修好了。");
+    if (!claimed(state.adventure, p.unlockQuest)) return fail("locked", "先完成前面的镇民任务。");
     const rows = costRequirements(state, p.cost);
-    if (!rows.every((r) => r.complete)) return fail("missing_resources", "修復材料還沒備齊。", { requirements: rows });
+    if (!rows.every((r) => r.complete)) return fail("missing_resources", "修复材料还没备齐。", { requirements: rows });
     consume(state, rows);
     state.adventure.projects[id] = { restored: true, restoredAt: at(state, now) };
     if (id === "fishing_dock") state.adventure.unlocks.fishingRod = true;
@@ -303,12 +303,12 @@
   }
   function cook(state, id, now) {
     const r = RECIPES.find((entry) => entry.id === id);
-    if (!r) return fail("unknown_recipe", "找不到這道料理。");
+    if (!r) return fail("unknown_recipe", "找不到这道料理。");
     const init = ensure(state, now); if (!init.ok) return init;
-    if (!recipeUnlocked(state.adventure, r)) return fail("locked", "這道料理還沒解鎖。");
-    if (state.adventure.meals[id] >= MEAL_CAP) return fail("meals_full", "這道料理已經備得夠多了。");
+    if (!recipeUnlocked(state.adventure, r)) return fail("locked", "这道料理还没解锁。");
+    if (state.adventure.meals[id] >= MEAL_CAP) return fail("meals_full", "这道料理已经备得够多了。");
     const rows = requirements(state, r.ingredients, "inventory");
-    if (!rows.every((need) => need.complete)) return fail("missing_resources", "料理食材還沒備齊。", { requirements: rows });
+    if (!rows.every((need) => need.complete)) return fail("missing_resources", "料理食材还没备齐。", { requirements: rows });
     consume(state, rows);
     state.adventure.meals[id]++;
     record(state, { type: "cook", recipeId: id }, now);
@@ -317,21 +317,21 @@
   function fish(state, now, rng) {
     const init = ensure(state, now); if (!init.ok) return init;
     const a = state.adventure; now = at(state, now);
-    if (!restored(a, "fishing_dock")) return fail("locked", "先修好河畔釣台。");
+    if (!restored(a, "fishing_dock")) return fail("locked", "先修好河畔钓台。");
     const remainingMs = a.lastFishAt === null ? 0 : Math.max(0, FISH_COOLDOWN_MS - (now - a.lastFishAt));
-    if (remainingMs > 0) return fail("cooldown", "魚還沒靠近，等一下再拋竿。", { remainingMs });
-    if (sum(a.catch) >= CATCH_CAP) return fail("catch_full", "魚簍滿了，先把魚交給鎮民。");
+    if (remainingMs > 0) return fail("cooldown", "鱼还没靠近，等一下再抛竿。", { remainingMs });
+    if (sum(a.catch) >= CATCH_CAP) return fail("catch_full", "鱼篓满了，先把鱼交给镇民。");
     let pick, qualityRoll;
     try { const random = rng === undefined ? Math.random : rng; pick = random(); qualityRoll = random(); }
-    catch (_) { return fail("bad_rng", "這次拋竿沒有成功。"); }
-    if (!Number.isFinite(pick) || !Number.isFinite(qualityRoll)) return fail("bad_rng", "這次拋竿沒有成功。");
+    catch (_) { return fail("bad_rng", "这次抛竿没有成功。"); }
+    if (!Number.isFinite(pick) || !Number.isFinite(qualityRoll)) return fail("bad_rng", "这次抛竿没有成功。");
     const unit = (n) => Math.max(0, Math.min(1 - Number.EPSILON, n));
     const def = FISH[Math.floor(unit(pick) * FISH.length)];
     const quality = unit(qualityRoll) < 0.7 ? "normal" : unit(qualityRoll) < 0.95 ? "good" : "premium";
     a.catch[def.id]++;
     a.lastFishAt = now;
     record(state, { type: "fish" }, now);
-    return ok("釣到了" + def.name + "。", { catch: { id: def.id, name: def.name, quality, qty: 1, caughtAt: now }, cooldownMs: FISH_COOLDOWN_MS, nextFishAt: now + FISH_COOLDOWN_MS });
+    return ok("钓到了" + def.name + "。", { catch: { id: def.id, name: def.name, quality, qty: 1, caughtAt: now }, cooldownMs: FISH_COOLDOWN_MS, nextFishAt: now + FISH_COOLDOWN_MS });
   }
   function summary(state, now) {
     const init = ensure(state, now); if (!init.ok) return init;
@@ -341,7 +341,7 @@
       const done = list.filter((q) => q.chapter === i + 1 && q.status === "claimed").length;
       return Object.assign({}, c, { number: i + 1, claimed: done, total: 3, status: done === 3 ? "complete" : current && current.chapter === i + 1 ? "active" : "locked" });
     });
-    return ok(current ? "下一件事：" + current.name : "鎮民已經到齊，野餐開始了。", { chapter: current ? current.chapter : 3, chapters, currentQuest: current, claimed: list.filter((q) => q.status === "claimed").length, total: 9, complete: current === null,
+    return ok(current ? "下一件事：" + current.name : "镇民已经到齐，野餐开始了。", { chapter: current ? current.chapter : 3, chapters, currentQuest: current, claimed: list.filter((q) => q.status === "claimed").length, total: 9, complete: current === null,
       counts: copy(a.counts), meals: copy(a.meals), catch: copy(a.catch),
       collectibles: Object.values(COLLECTIBLES).filter((entry) => a.collectibles[entry.id]).map(copy),
       unlocks: { kitchen: claimed(a, "c1_first_harvest"), fishing: restored(a, "fishing_dock"), fishingRod: a.unlocks.fishingRod === true, mealGifts: restored(a, "picnic_table"), gardenGuestbook: restored(a, "garden") && claimed(a, "c3_harvest_picnic") },
@@ -349,20 +349,20 @@
   }
   function buyMaterial(state, id, count, now) {
     const prices = { wood: 6, stone: 8 };
-    if (!own(prices, id) || !Number.isSafeInteger(count) || count < 1 || count > 10) return fail("bad_purchase", "找不到這筆建材訂購。");
+    if (!own(prices, id) || !Number.isSafeInteger(count) || count < 1 || count > 10) return fail("bad_purchase", "找不到这笔建材订购。");
     const init = ensure(state, now); if (!init.ok) return init;
     const cost = prices[id] * count;
-    if (!Number.isFinite(state.coins) || state.coins < cost) return fail("missing_resources", "金幣不夠，先交一張訂單吧。");
+    if (!Number.isFinite(state.coins) || state.coins < cost) return fail("missing_resources", "金币不够，先交一张订单吧。");
     if (!object(state.materials)) state.materials = {};
     const previous = qty(state.materials[id], Number.MAX_SAFE_INTEGER);
-    if (!Number.isSafeInteger(previous + count)) return fail("materials_full", "建材已經備得夠多了。");
+    if (!Number.isSafeInteger(previous + count)) return fail("materials_full", "建材已经备得够多了。");
     state.coins -= cost; state.materials[id] = previous + count;
-    return ok("買到 " + count + " 份" + itemName(id) + "。", { id, count, cost });
+    return ok("买到 " + count + " 份" + itemName(id) + "。", { id, count, cost });
   }
   const COMMISSIONS = [
-    { id: "river_market", name: "蘿拉的河鮮籃", npcId: "merchant", wantsCatch: 2, reward: reward(18, 3) },
-    { id: "elder_supper", name: "班伯的灶邊晚餐", npcId: "elder", wantsCatch: 1, wantsMeals: { rustic_bread: 1 }, reward: reward(14, 3, { wood: 2 }) },
-    { id: "child_tea", name: "圖圖的野餐茶", npcId: "child", wantsMeals: { mint_tea: 1 }, reward: reward(12, 3) },
+    { id: "river_market", name: "萝拉的河鲜篮", npcId: "merchant", wantsCatch: 2, reward: reward(18, 3) },
+    { id: "elder_supper", name: "班伯的灶边晚餐", npcId: "elder", wantsCatch: 1, wantsMeals: { rustic_bread: 1 }, reward: reward(14, 3, { wood: 2 }) },
+    { id: "child_tea", name: "图图的野餐茶", npcId: "child", wantsMeals: { mint_tea: 1 }, reward: reward(12, 3) },
   ];
   function commissions(state, now) {
     if (!ensure(state, now).ok) return [];
@@ -378,12 +378,12 @@
     });
   }
   function deliverCommission(state, id, now) {
-    if (!COMMISSIONS.some((c) => c.id === id)) return fail("unknown_commission", "找不到這份河畔委託。");
+    if (!COMMISSIONS.some((c) => c.id === id)) return fail("unknown_commission", "找不到这份河畔委托。");
     const entry = commissions(state, now).find((c) => c.id === id);
-    if (!entry) return fail("bad_state", "委託資料還沒準備好。");
-    if (!entry.unlocked) return fail("locked", "先修好河畔釣台和需要的餐桌。");
-    if (entry.completed) return fail("already_claimed", "這批委託已經交付了，等下一批吧。");
-    if (!entry.canClaim) return fail("missing_resources", "先把餐籃裡的東西備齊。");
+    if (!entry) return fail("bad_state", "委托数据还没准备好。");
+    if (!entry.unlocked) return fail("locked", "先修好河畔钓台和需要的餐桌。");
+    if (entry.completed) return fail("already_claimed", "这批委托已经交付了，等下一批吧。");
+    if (!entry.canClaim) return fail("missing_resources", "先把餐篮里的东西备齐。");
     consume(state, entry.requirements);
     state.adventure.commissions.completed.push(id);
     grant(state, entry.reward);

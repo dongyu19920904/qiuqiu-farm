@@ -29,7 +29,7 @@
       }));
       state.ready = true;
     } catch (e) {
-      state.error = e; console.warn("atlas 載入失敗（將用 fallback）：", e);
+      state.error = e; console.warn("atlas 加载失败（将用 fallback）：", e);
     }
     readyResolve(state.ready);
   }

@@ -556,20 +556,20 @@
   const ORDER_NPC_IDS = ["mayor", "merchant", "elder", "child"];
   const ORDER_COPY = {
     mayor: {
-      offer: "鎮公所要補一批 {item}，麻煩你送到看板登記。",
-      thanks: "交付得很準時，鎮上的餐桌會記得這份幫忙。",
+      offer: "镇公所要补一批 {item}，麻烦你送到看板登记。",
+      thanks: "交付得很准时，镇上的餐桌会记得这份帮忙。",
     },
     merchant: {
-      offer: "市集缺 {item}，我想先試一小批貨。",
-      thanks: "品質不錯，這批我會好好賣。",
+      offer: "市集缺 {item}，我想先试一小批货。",
+      thanks: "品质不错，这批我会好好卖。",
     },
     elder: {
       offer: "我想收些 {item} 做家常料理，份量不用多。",
-      thanks: "辛苦了，這正合用。",
+      thanks: "辛苦了，这正合用。",
     },
     child: {
-      offer: "可以幫我準備 {item} 嗎？我想帶去野餐。",
-      thanks: "謝謝你！野餐袋變得好豐盛。",
+      offer: "可以帮我准备 {item} 吗？我想带去野餐。",
+      thanks: "谢谢你！野餐袋变得好丰盛。",
     },
   };
   function hashString(s) {
@@ -586,18 +586,18 @@
   }
   function orderNarrative(state, order) {
     const npcId = orderNpcIdFor(order);
-    const npc = (C.NPCS || {})[npcId] || { name: "鎮民", title: "委託人" };
+    const npc = (C.NPCS || {})[npcId] || { name: "镇民", title: "委托人" };
     const copy = ORDER_COPY[npcId] || ORDER_COPY.mayor;
     const firstId = Object.keys(order.wants || {})[0];
-    const firstDef = getItemDef(firstId) || { name: firstId || "物資" };
+    const firstDef = getItemDef(firstId) || { name: firstId || "物资" };
     const qty = firstId ? order.wants[firstId] : 0;
-    const itemText = firstId ? `${firstDef.name} x${qty}` : "物資";
+    const itemText = firstId ? `${firstDef.name} x${qty}` : "物资";
     return {
       npcId,
       npcName: npc.name,
       npcTitle: npc.title,
-      offer: order.flavor || copy.offer.replace("{item}", itemText),
-      thanks: order.thanks || copy.thanks,
+      offer: C.simplifyLegacyText(order.flavor || copy.offer.replace("{item}", itemText)),
+      thanks: C.simplifyLegacyText(order.thanks || copy.thanks),
     };
   }
   function tutorialDeliveryOrderNeeded(state) {
@@ -618,8 +618,8 @@
       expiresAt: now + GAME.orderTtlMs,
       tutorial: true,
       npcId: "mayor",
-      flavor: "鎮長先替你掛一張首收小麥委託，交付 2 份就能拿到開墾補助。",
-      thanks: "第一批小麥收到了，農場重新開張有個好開始。",
+      flavor: "镇长先替你挂一张首收小麦委托，交付 2 份就能拿到开垦补助。",
+      thanks: "第一批小麦收到了，农场重新开张有个好开始。",
     };
   }
   function makeOrder(state, now, rng, idSeed) {
@@ -1863,33 +1863,33 @@
   function itemSourceHint(itemId) {
     if (CROPS[itemId]) {
       const c = CROPS[itemId];
-      return `Lv${c.unlockLevel} 解鎖，在農土種植並收成`;
+      return `Lv${c.unlockLevel} 解锁，在农土种植并收成`;
     }
     if (PRODUCTS[itemId]) {
       const p = PRODUCTS[itemId];
       const animal = Object.values(ANIMALS || {}).find((a) => a.product === p.baseProduct || a.product === itemId);
-      return animal ? `${animal.name} 產出` : "動物照護產出";
+      return animal ? `${animal.name} 产出` : "动物照护产出";
     }
     if ((C.FORAGE_ITEMS || {})[itemId]) {
       const nodes = (C.FORAGE_NODES || []).filter((n) => n.itemId === itemId);
       const deep = nodes.some((n) => n.requiresFlag === "eastDeepUnlocked");
-      return `${deep ? "解鎖東林深處後" : "修橋探索東林後"}採集${nodes.length ? "：" + nodes.map((n) => n.name).join("、") : ""}`;
+      return `${deep ? "解锁东林深处后" : "修桥探索东林后"}采集${nodes.length ? "：" + nodes.map((n) => n.name).join("、") : ""}`;
     }
-    return "尚未發現來源";
+    return "尚未发现来源";
   }
   function itemUsageSummary(itemId) {
     const def = getItemDef(itemId);
     const usage = [];
     if (def && def.sellValue != null) usage.push(`直售 ${def.sellValue} 金`);
-    if (CROPS[itemId] || (C.FORAGE_ITEMS || {})[itemId] || PRODUCTS[itemId]) usage.push("市集訂單");
+    if (CROPS[itemId] || (C.FORAGE_ITEMS || {})[itemId] || PRODUCTS[itemId]) usage.push("市集订单");
     const npcUsers = Object.entries(C.NPC_REQUESTS || {})
       .filter(([, cfg]) => (cfg.pool || []).indexOf(itemId) !== -1)
       .map(([npcId]) => ((C.NPCS || {})[npcId] || {}).name || npcId);
-    if (npcUsers.length) usage.push("鎮民委託：" + npcUsers.join("、"));
+    if (npcUsers.length) usage.push("镇民委托：" + npcUsers.join("、"));
     const sideUsers = Object.entries(C.NPC_SIDE_QUESTS || {}).filter(([, defn]) =>
       sideQuestSteps(defn).some((step) => Object.prototype.hasOwnProperty.call(step.wants || {}, itemId)))
       .map(([npcId]) => ((C.NPCS || {})[npcId] || {}).name || npcId);
-    if (sideUsers.length) usage.push("支線：" + sideUsers.join("、"));
+    if (sideUsers.length) usage.push("支线：" + sideUsers.join("、"));
     return usage;
   }
   function journalCrops(state) {
@@ -1925,7 +1925,7 @@
       return { id, name: f.name, emoji: f.emoji, region: f.region, season: f.season || "",
         discovered: (collected[id] || 0) > 0,
         sourceHint: itemSourceHint(id),
-        source: nodes.map((n) => n.name).join("、") || (f.region === "east_deep" ? "東林深處" : "東林"),
+        source: nodes.map((n) => n.name).join("、") || (f.region === "east_deep" ? "东林深处" : "东林"),
         sellValue: f.sellValue,
         usage: itemUsageSummary(id),
         flavor: f.flavor || "", // R71：祖母手札；空字串＝尚無手札，UI 不顯示該列
@@ -2104,7 +2104,7 @@
         priority: 120,
         valueScore,
         title: `${crop ? crop.name : cropId}已成熟 ×${count}`,
-        detail: "先收成可釋放田地並避免空等。",
+        detail: "先收成可释放田地并避免空等。",
         reason: `${crop ? crop.name : cropId}收成 +${Math.round(valueScore)} 金`,
         actionLabel: "前往",
         tileId: readyTiles[cropId],
@@ -2119,9 +2119,9 @@
         type: "order",
         priority: 108,
         valueScore: pay.coins,
-        title: `委託「${wantsText(order.wants)}」可交付`,
-        detail: `交付可得 ${pay.coins} 金與 ${pay.xp} XP。`,
-        reason: `委託交付 +${Math.round(pay.coins)} 金 / ${pay.xp} XP`,
+        title: `委托「${wantsText(order.wants)}」可交付`,
+        detail: `交付可得 ${pay.coins} 金与 ${pay.xp} XP。`,
+        reason: `委托交付 +${Math.round(pay.coins)} 金 / ${pay.xp} XP`,
         actionLabel: "前往",
         tileId: stationTileId(state, "order_board"),
       });
@@ -2136,9 +2136,9 @@
         type: "npc-request",
         priority: 112,
         valueScore,
-        title: `${npc.name}的委託可交付`,
+        title: `${npc.name}的委托可交付`,
         detail: `${wantsText(req.wants)} → ${req.rewardCoins || 0} 金。`,
-        reason: `鎮民委託 +${Math.round(req.rewardCoins || 0)} 金 / ${req.rewardXp || 0} XP`,
+        reason: `镇民委托 +${Math.round(req.rewardCoins || 0)} 金 / ${req.rewardXp || 0} XP`,
         actionLabel: "前往",
         tileId: npcTileId(state, npcId),
       });
@@ -2151,8 +2151,8 @@
       const waterReady = now - (a.lastWateredAt || 0) >= CARE_COOLDOWN_MS;
       const groomReady = now - (a.lastGroomedAt || 0) >= CARE_COOLDOWN_MS;
       const actions = [];
-      if (feedReady) actions.push("餵食");
-      if (waterReady) actions.push("補水");
+      if (feedReady) actions.push("喂食");
+      if (waterReady) actions.push("补水");
       if (groomReady) actions.push("梳理");
       if (!actions.length) continue;
       const careGain = (feedReady ? CARE_GAIN.feed : 0) + (waterReady ? CARE_GAIN.water : 0) + (groomReady ? CARE_GAIN.groom : 0);
@@ -2161,9 +2161,9 @@
         type: "animal-care",
         priority: 86,
         valueScore: careGain,
-        title: `${def.name}照護冷卻已好`,
-        detail: actions.join("、") + "可提升親密度。",
-        reason: `照護 +${careGain} 親密度，品質提升`,
+        title: `${def.name}照护冷却已好`,
+        detail: actions.join("、") + "可提升亲密度。",
+        reason: `照护 +${careGain} 亲密度，品质提升`,
         actionLabel: "前往",
         tileId: home ? home.tileId : null,
       });
@@ -2182,8 +2182,8 @@
           priority: node.requiresFlag ? 78 : 72,
           valueScore,
           title: `${node.name}已刷新`,
-          detail: `可採集${item.name || node.itemId}${item.season ? "（" + item.season + "）" : ""}。`,
-          reason: `${item.name || node.itemId}採集 +${Math.round(valueScore)} 金`,
+          detail: `可采集${item.name || node.itemId}${item.season ? "（" + item.season + "）" : ""}。`,
+          reason: `${item.name || node.itemId}采集 +${Math.round(valueScore)} 金`,
           actionLabel: "前往",
           tileId: tile ? tile.id : null,
         });
@@ -2206,9 +2206,9 @@
           type: "plant",
           priority: 55,
           valueScore: best.score,
-          title: `空田 ×${emptyPlots.length} → 種 ${best.crop.name}`,
-          detail: `本季${season}，預估淨值 ${best.net} 金。`,
-          reason: `預估 ${best.score.toFixed(1)} 金/分鐘，淨值 +${Math.round(best.net)} 金`,
+          title: `空田 ×${emptyPlots.length} → 种 ${best.crop.name}`,
+          detail: `本季${season}，预估净值 ${best.net} 金。`,
+          reason: `预估 ${best.score.toFixed(1)} 金/分钟，净值 +${Math.round(best.net)} 金`,
           actionLabel: "前往",
           tileId: plotTileId(state, emptyPlots[0]),
         });

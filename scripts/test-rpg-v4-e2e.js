@@ -34,7 +34,7 @@ async function dismissOpenModal(page) {
     const modal = document.querySelector(".modal.show");
     if (!modal) return;
     const close = modal.querySelector("#howToOk, #offlineOk, #settingsOk, #lettersClose");
-    if (!close) throw new Error(`modal ${modal.id || "unknown"} 缺正式關閉控制`);
+    if (!close) throw new Error(`modal ${modal.id || "unknown"} 缺正式关闭控制`);
     close.click();
   });
   await page.waitForFunction(() => !document.querySelector(".modal.show"));
@@ -354,7 +354,7 @@ async function run() {
   await runShortDesktopLayoutTest(browser, base);
   await runTouchFarmConfirmationTest(browser, base);
   await runTrueServiceWorkerOfflineTest(browser, base);
-  for (const vp of [{ w: 1280, h: 900, name: "桌面 1280x900" }, { w: 390, h: 844, name: "手機 390x844" }]) {
+  for (const vp of [{ w: 1280, h: 900, name: "桌面 1280x900" }, { w: 390, h: 844, name: "手机 390x844" }]) {
     console.log("\n== 視窗 " + vp.name + " ==");
     const page = await browser.newPage({ viewport: { width: vp.w, height: vp.h } });
     const errors = [];
@@ -405,7 +405,7 @@ async function run() {
         webdriver: navigator.webdriver === true,
       };
     });
-    assert(pwaFiles.manifestOk && pwaFiles.manifestName === "像素農場 RPG" && pwaFiles.orientation === "any" && pwaFiles.iconSizes.includes("192x192") && pwaFiles.iconSizes.includes("512x512"),
+    assert(pwaFiles.manifestOk && pwaFiles.manifestName === "像素农场 RPG" && pwaFiles.orientation === "any" && pwaFiles.iconSizes.includes("192x192") && pwaFiles.iconSizes.includes("512x512"),
       `PWA manifest 可取且含名稱/任意方向/icon（${pwaFiles.manifestName}, ${pwaFiles.iconSizes}）`);
     assert(pwaFiles.swOk && pwaFiles.swSyntax === true && pwaFiles.swHasVersion && pwaFiles.swHasStrategies && pwaFiles.swHasSkipWaiting &&
       pwaFiles.swHasInstallSkipWaiting && pwaFiles.swHasClientsClaim && pwaFiles.swHasCacheVersioned && pwaFiles.swHasFallback &&
@@ -456,11 +456,11 @@ async function run() {
         mature: body.querySelector('[data-audit="offline-mature"]')?.textContent || "",
         forage: body.querySelector('[data-audit="offline-forage"]')?.textContent || "" };
     });
-    assert(offlineSummary.shown && offlineSummary.head.includes("你離開的 6 分鐘") && offlineSummary.head.includes("離線收益 +0 金"),
+    assert(offlineSummary.shown && offlineSummary.head.includes("你离开的 6 分钟") && offlineSummary.head.includes("离线收益 +0 金"),
       `離線 >=5 分鐘重開顯示摘要與收益（${offlineSummary.head}）`);
     assert(offlineSummary.mature.includes("作物成熟") && offlineSummary.mature.includes("1"),
       `離線摘要列出成熟作物數（${offlineSummary.mature}）`);
-    assert(offlineSummary.forage.includes("採集點已刷新") && offlineSummary.forage.includes("1"),
+    assert(offlineSummary.forage.includes("采集点已刷新") && offlineSummary.forage.includes("1"),
       `離線摘要列出採集點刷新（${offlineSummary.forage}）`);
     await page.click("#offlineOk");
     await page.click("#settingsBtn");
@@ -496,18 +496,18 @@ async function run() {
     });
     assert(r27Settings.shown && r27Settings.keys.includes("smartAssistant") && r27Settings.keys.includes("offlineSummary") && r27Settings.keys.includes("soundEnabled"),
       `設定面板集中助手與離線摘要偏好（keys=${r27Settings.keys.join(",")}）`);
-    assert(r27Settings.reviewText.includes("離開 6 分鐘") && r27Settings.reviewText.includes("離線收益 +0 金") &&
-      r27Settings.reviewText.includes("作物成熟 1 株") && r27Settings.reviewText.includes("採集點已刷新 1 處") &&
+    assert(r27Settings.reviewText.includes("离开 6 分钟") && r27Settings.reviewText.includes("离线收益 +0 金") &&
+      r27Settings.reviewText.includes("作物成熟 1 株") && r27Settings.reviewText.includes("采集点已刷新 1 处") &&
       r27Settings.saved && r27Settings.saved.readyPlots === 1 && r27Settings.saved.forageReadyCount === 1,
       `設定面板可回看最近一次離線摘要（${r27Settings.reviewText.replace(/\n/g, " / ")}）`);
     assert(r27Settings.focusInside && r27Settings.textSizes.join(",") === "small,medium,large" && r27Settings.versionText.includes("r74-20260722-1") &&
-      r27Settings.pwaButton.includes("檢查更新") && r27Settings.diagnostics.includes("FPS") && r27Settings.diagnostics.includes("實際"),
+      r27Settings.pwaButton.includes("检查更新") && r27Settings.diagnostics.includes("FPS") && r27Settings.diagnostics.includes("实际"),
       `設定面板含焦點移入/文字大小/PWA 版本/效能診斷（${r27Settings.diagnostics}）`);
     assert(r27Settings.soundVolume === "55" && r27Settings.soundVolumeText === "55%",
       `設定面板含程序化音效音量控制（${r27Settings.soundVolumeText}）`);
-    assert(r27Settings.perfHistoryEmpty.includes("尚無") && Object.values(r27Settings.liveAttrs).every((v) => v === "polite"),
+    assert(r27Settings.perfHistoryEmpty.includes("尚无") && Object.values(r27Settings.liveAttrs).every((v) => v === "polite"),
       `動態通知容器具 aria-live=polite 且效能歷史有空狀態（${JSON.stringify(r27Settings.liveAttrs)}）`);
-    assert(r27Settings.settingsAria === "開啟設定" && r27Settings.tabAria.every((label) => label.includes("切換到")),
+    assert(r27Settings.settingsAria === "打开设置" && r27Settings.tabAria.every((label) => label.includes("切换到")),
       `主要設定與分頁 aria-label 完整（tabs=${r27Settings.tabAria.join(" / ")}）`);
     assert(r27Settings.gearTap.h >= 44 && r27Settings.overflow <= 2,
       `設定入口可點且無水平溢出（h=${Math.round(r27Settings.gearTap.h)}, overflow=${r27Settings.overflow}）`);
@@ -636,7 +636,7 @@ async function run() {
       sameRaw: localStorage.getItem(window.GAME.saveKey) === rawBefore,
       status: document.getElementById("saveStatus")?.textContent || "",
     }), rawBeforeBadImport);
-    assert(badImport.sameRaw && badImport.status.includes("匯入失敗"),
+    assert(badImport.sameRaw && badImport.status.includes("导入失败"),
       `壞代碼被拒且不覆蓋存檔（${badImport.status}）`);
     await page.keyboard.press("Escape");
     const escClosed = await page.evaluate(() => !document.getElementById("settingsModal").classList.contains("show"));
@@ -662,9 +662,9 @@ async function run() {
       heading: document.querySelector(".title") ? document.querySelector(".title").innerText : "",
       story: document.getElementById("storyPanel") ? document.getElementById("storyPanel").innerText : "",
     }));
-    assert(chrome.title === "阿軒割割陽光農場開源遊戲世界", "文件標題已改為新遊戲名");
-    assert(chrome.heading.includes("阿軒割割陽光農場開源遊戲世界"), "頁首顯示新遊戲名");
-    assert(chrome.story.includes("任務完成度") && chrome.story.includes("0/6"), "故事面板初始顯示 0/6 完成度");
+    assert(chrome.title === "阿轩割割阳光农场开源游戏世界", "文件標題已改為新遊戲名");
+    assert(chrome.heading.includes("阿轩割割阳光农场开源游戏世界"), "頁首顯示新遊戲名");
+    assert(chrome.story.includes("任务完成度") && chrome.story.includes("0/6"), "故事面板初始顯示 0/6 完成度");
     const dockInitial = await page.evaluate(() => {
       const el = document.getElementById("questDock");
       const r = el.getBoundingClientRect();
@@ -673,9 +673,9 @@ async function run() {
         overflow: document.documentElement.scrollWidth - window.innerWidth };
     });
     assert(dockInitial.visible && dockInitial.h >= 44, `任務 Dock 常駐且 tap target >=44px（${Math.round(dockInitial.h)}px）`);
-    assert(dockInitial.quest === "intro_reopen_farm" && dockInitial.text.includes("主動作"),
+    assert(dockInitial.quest === "intro_reopen_farm" && dockInitial.text.includes("主动作"),
       `任務 Dock 顯示當前任務與主動作（${dockInitial.quest}）`);
-    assert(dockInitial.goAria.includes("前往") || dockInitial.goAria.includes("目標"), `Dock 前往按鈕具 aria-label（${dockInitial.goAria}）`);
+    assert(dockInitial.goAria.includes("前往") || dockInitial.goAria.includes("目标"), `Dock 前往按鈕具 aria-label（${dockInitial.goAria}）`);
     assert(dockInitial.overflow <= 2, `任務 Dock 不造成水平溢出（${dockInitial.overflow}）`);
 
     // 1. R66：整圖模式預設完整可見 + 原尺寸模式可切換
@@ -812,7 +812,7 @@ async function run() {
       const log = (window.__farm.state().story.dialogueLog || []).length;
       return { has: !!b, npc: b ? b.dataset.npc : null, text: b ? b.innerText.replace(/\s+/g, " ").trim() : "", log };
     });
-    assert(bubble.has && bubble.npc === "child" && bubble.text.includes("圖圖"), `走近孩童出現對話泡泡（${bubble.text}）`);
+    assert(bubble.has && bubble.npc === "child" && bubble.text.includes("图图"), `走近孩童出現對話泡泡（${bubble.text}）`);
     assert(bubble.log >= 1, `對話進入側欄記錄（${bubble.log} 則）`);
 
     const gender = await page.evaluate(() => {
@@ -872,11 +872,11 @@ async function run() {
     });
     assert(dockAfterMapClick.tileTab === "tile" && dockAfterMapClick.h >= 44,
       `點地圖切到磚資訊後 Dock 仍可見且 >=44px（tab=${dockAfterMapClick.tileTab}, h=${Math.round(dockAfterMapClick.h)}）`);
-    assert(dockAfterMapClick.quest === "first_water" && dockAfterMapClick.text.includes("主動作"),
+    assert(dockAfterMapClick.quest === "first_water" && dockAfterMapClick.text.includes("主动作"),
       "點地圖後 Dock 仍顯示當前任務與下一動作");
     assert(dockAfterMapClick.overflow <= 2, `點地圖後 Dock 無水平溢出（${dockAfterMapClick.overflow}）`);
     const sowProgress = await storyProgress(page);
-    assert(sowProgress.progress === "2/6" && sowProgress.text.includes("種下第一批小麥") && sowProgress.text.includes("1/1"),
+    assert(sowProgress.progress === "2/6" && sowProgress.text.includes("种下第一批小麦") && sowProgress.text.includes("1/1"),
       `種麥後完成度 2/6 並顯示作物 1/1（${sowProgress.progress}）`);
 
     // 7. 站點水井：走過去汲水 → 麥田變濕 + 故事推進到 first_harvest
@@ -932,7 +932,7 @@ async function run() {
       `智慧助手第一建議為成熟作物收成並指向麥田（type=${harvest.assistantType}, target=${harvest.assistantTarget}）`);
     assert(harvest.assistantTap.w >= 44 && harvest.assistantTap.h >= 44 && harvest.assistantOverflow <= 2,
       `助手前往按鈕 tap target >=44px 且無水平溢出（${Math.round(harvest.assistantTap.w)}×${Math.round(harvest.assistantTap.h)}, overflow=${harvest.assistantOverflow}）`);
-    assert(harvest.assistantAria.includes("前往建議目標"), `助手前往按鈕具 aria-label（${harvest.assistantAria}）`);
+    assert(harvest.assistantAria.includes("前往建议目标"), `助手前往按鈕具 aria-label（${harvest.assistantAria}）`);
     assert(harvest.assistantAfter.focus === harvest.soilId &&
       (harvest.assistantAfter.x !== harvest.assistantBefore.x || harvest.assistantAfter.y !== harvest.assistantBefore.y || harvest.assistantAfter.focus !== harvest.assistantBefore.focus),
       `助手前往可用並設定鏡頭 focus（${harvest.assistantBefore.focus}→${harvest.assistantAfter.focus}）`);
@@ -969,7 +969,7 @@ async function run() {
       "首收後生成 2 小麥新手保底訂單");
     assert(firstOrderReady.canFulfillCount >= 1,
       `新存檔首輪收成後至少 1 張訂單可交付（可交 ${firstOrderReady.canFulfillCount}，小麥 ${firstOrderReady.wheat}）`);
-    assert(firstOrderReady.npcText.includes("鎮長") && firstOrderReady.flavorText.includes("首收小麥"),
+    assert(firstOrderReady.npcText.includes("镇长") && firstOrderReady.flavorText.includes("首收小麦"),
       `訂單顯示 NPC 名字與委託語境（${firstOrderReady.npcText}｜${firstOrderReady.flavorText}）`);
     const orderBoard = await page.evaluate(() => {
       const F = window.__farm; const board = F.state().map.tiles.find((t) => t.station === "order_board");
@@ -1043,7 +1043,7 @@ async function run() {
         targetObject: target && target.object, targetId: target && target.id,
         overflow: document.documentElement.scrollWidth - window.innerWidth };
     });
-    assert(matStart.dockQuest === "repair_bridge" && matStart.dockText.includes("木材") && matStart.dockText.includes("石頭"),
+    assert(matStart.dockQuest === "repair_bridge" && matStart.dockText.includes("木材") && matStart.dockText.includes("石头"),
       "修橋任務 Dock 顯示材料清單");
     assert(matStart.status.have.wood === 2 && matStart.status.missing.wood === 4 && matStart.status.missing.stone === 4,
       `清樹樁後材料缺口正確（木 ${matStart.status.have.wood}/6，石缺 ${matStart.status.missing.stone}）`);
@@ -1072,7 +1072,7 @@ async function run() {
     });
     assert(matReady.status.ready && matReady.status.have.wood === 6 && matReady.status.have.stone === 4,
       "依 UI 材料導引清障後湊齊木6石4");
-    assert(matReady.marker === matReady.bridgeId && matReady.dockText.includes("材料已齊"),
+    assert(matReady.marker === matReady.bridgeId && matReady.dockText.includes("材料已齐"),
       "材料齊後 marker 回到斷橋，Dock 提示修復");
 
     // 12b. 走過去修橋（消耗真資源後解鎖）
@@ -1368,7 +1368,7 @@ async function run() {
     });
     assert(reqGen.hasReq === true && !!reqGen.sideQuestId && reqGen.sideStatus === "active" && reqGen.stepIndex === 1 && reqGen.totalSteps === 3,
       `走近老農後自動生成 R19 支線第 1/3 段（sideQuest=${reqGen.sideQuestId} status=${reqGen.sideStatus}）`);
-    assert(!!reqGen.bubbleText && reqGen.bubbleText.includes("雞蛋"), `對話泡泡顯示支線委託內容（${reqGen.bubbleText}）`);
+    assert(!!reqGen.bubbleText && reqGen.bubbleText.includes("鸡蛋"), `對話泡泡顯示支線委託內容（${reqGen.bubbleText}）`);
 
     // 21. 開啟磚資訊面板：委託卡顯示、庫存不足時交付按鈕 disabled
     await page.evaluate((id) => window.__farm.clickTile(id), elderTile2);
@@ -1382,7 +1382,7 @@ async function run() {
     });
     assert(cardBefore.hasCard === true, "磚資訊側欄出現 NPC 委託卡");
     assert(cardBefore.disabled === true, "庫存不足時交付按鈕為 disabled");
-    assert(cardBefore.sideStatus === "active" && cardBefore.text.includes("雞舍巡查") && cardBefore.text.includes("1/3"),
+    assert(cardBefore.sideStatus === "active" && cardBefore.text.includes("鸡舍巡查") && cardBefore.text.includes("1/3"),
       `磚資訊側欄顯示支線狀態（${cardBefore.sideStatus}）`);
 
     // 22. 補足庫存後完成老農三段支線：coins 增加、3/3 完成、背景文本解鎖
@@ -1416,7 +1416,7 @@ async function run() {
     assert(fulfillResult.fulfilledCount === 3, `npcRequestLog 完成次數為 3（實際 ${fulfillResult.fulfilledCount}）`);
     assert(fulfillResult.sideDone === true && fulfillResult.completedSteps === 3 && fulfillResult.totalSteps === 3,
       `老農 R19 支線 3/3 完成（steps=${fulfillResult.doneSteps.join(">")}）`);
-    assert(fulfillResult.loreUnlocked === true && fulfillResult.lore.includes("照護筆記"),
+    assert(fulfillResult.loreUnlocked === true && fulfillResult.lore.includes("照护笔记"),
       "完成三段後解鎖老農小鎮背景文本");
 
     // 23. 交付後立刻再走近老農：仍在冷卻中，不會生成新委託，磚資訊不顯示委託卡
@@ -1590,23 +1590,23 @@ async function run() {
       };
       return {
         totalItems: items.length,
-        cropFoundHasWheat: crop.some((el) => el.dataset.discovered === "true" && el.textContent.includes("小麥")),
+        cropFoundHasWheat: crop.some((el) => el.dataset.discovered === "true" && el.textContent.includes("小麦")),
         cropHasUndiscovered: crop.some((el) => el.dataset.discovered === "false"),
         productFound: product.some((el) => el.dataset.discovered === "true"),
         forageCount: forage.length,
         forageFound: forage.filter((el) => el.dataset.discovered === "true").length,
-        forageHidden: forage.filter((el) => el.dataset.discovered === "false" && el.textContent.includes("未採集")).length,
+        forageHidden: forage.filter((el) => el.dataset.discovered === "false" && el.textContent.includes("未采集")).length,
         forageCompletion: completion("forage"),
         cropCompletion: completion("crops"),
-        sideDone: side.some((el) => el.dataset.discovered === "true" && el.textContent.includes("老農") && el.textContent.includes("3/3")),
+        sideDone: side.some((el) => el.dataset.discovered === "true" && el.textContent.includes("老农") && el.textContent.includes("3/3")),
         sideCompletion: completion("npcSideQuests"),
-        collectibleDone: collectible.some((el) => el.dataset.discovered === "true" && el.textContent.includes("東林年輪拓印")),
+        collectibleDone: collectible.some((el) => el.dataset.discovered === "true" && el.textContent.includes("东林年轮拓印")),
         collectibleCompletion: completion("collectibles"),
         npcMetCount: npc.filter((el) => el.dataset.discovered === "true").length,
         npcUnmetCount: npc.filter((el) => el.dataset.discovered === "false").length,
         merchantMet: npc.some((el) => el.dataset.discovered === "true" && el.textContent.includes("商人")),
-        chickenHappy: [...document.querySelectorAll('[data-category="animal"]')].some((el) => el.textContent.includes("曾達開心")),
-        bridgeFlag: [...document.querySelectorAll('[data-category="world"]')].some((el) => el.textContent.includes("東橋已修復")),
+        chickenHappy: [...document.querySelectorAll('[data-category="animal"]')].some((el) => el.textContent.includes("曾达开心")),
+        bridgeFlag: [...document.querySelectorAll('[data-category="world"]')].some((el) => el.textContent.includes("东桥已修复")),
         overflow: document.documentElement.scrollWidth - window.innerWidth,
       };
     });
@@ -1643,11 +1643,11 @@ async function run() {
       const collectible = clickAndText('[data-category="collectible"][data-journal-id="east_deep_rubbing"]');
       return { wheat, hiddenMint, collectible, overflow: document.documentElement.scrollWidth - window.innerWidth };
     });
-    assert(journalDetailState.wheat.includes("來源") && journalDetailState.wheat.includes("首次發現") && journalDetailState.wheat.includes("市集訂單"),
+    assert(journalDetailState.wheat.includes("来源") && journalDetailState.wheat.includes("首次发现") && journalDetailState.wheat.includes("市集订单"),
       "收藏冊詳情頁顯示作物來源/用途/首次發現時間");
-    assert(journalDetailState.hiddenMint.includes("尚未發現") && journalDetailState.hiddenMint.includes("來源提示") && !journalDetailState.hiddenMint.includes("直售"),
+    assert(journalDetailState.hiddenMint.includes("尚未发现") && journalDetailState.hiddenMint.includes("来源提示") && !journalDetailState.hiddenMint.includes("直售"),
       "未發現採集物詳情只顯示剪影與來源提示");
-    assert(journalDetailState.collectible.includes("純收藏") && journalDetailState.collectible.includes("東林年輪拓印"),
+    assert(journalDetailState.collectible.includes("纯收藏") && journalDetailState.collectible.includes("东林年轮拓印"),
       "收藏品詳情顯示非通膨用途");
     assert(journalDetailState.overflow <= 2, `收藏冊詳情頁無水平溢出（${journalDetailState.overflow}）`);
 

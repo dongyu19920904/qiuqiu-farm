@@ -129,7 +129,7 @@ async function auditViewport(browser, base, vp, closeOverlays) {
       await page.waitForTimeout(300);
     }
     const res = await auditPage(page);
-    const tag = `${vp.w}x${vp.h}(${vp.kind}${closeOverlays ? "" : ", overlay 未關"})`;
+    const tag = `${vp.w}x${vp.h}(${vp.kind}${closeOverlays ? "" : ", overlay 未关"})`;
     assert(res.total > 10, `${tag} 可互動元素已載入（${res.total} 個）`);
     assert(res.violations.length === 0, `${tag} 互動元素零出界（違規 ${res.violations.length}）` + (res.violations.length ? "：\n    " + res.violations.join("\n    ") : ""));
     assert(res.pageScrollY <= 8, `${tag} 頁級捲動歸零（scrollHeight - innerHeight = ${res.pageScrollY} <= 8）`);

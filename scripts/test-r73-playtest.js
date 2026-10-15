@@ -93,7 +93,7 @@ async function assertToolbarAtCurrentSize(page, tag) {
       page.once("dialog", async (dialog) => { dialogText = dialog.message(); await dialog.dismiss(); });
       await page.locator(selector).click();
       await page.waitForTimeout(50);
-      assert(dialogText.includes("確定重置存檔"), `${tag} #resetBtn 真實 click 進入重置確認且已取消`);
+      assert(dialogText.includes("确定重置存档"), `${tag} #resetBtn 真實 click 進入重置確認且已取消`);
     }
   }
   const inset = await page.evaluate(() => {
@@ -113,10 +113,10 @@ async function testLandscapeToolbarAndRotation(browser, base) {
     await assertToolbarAtCurrentSize(page, "844×390 fresh");
     await page.setViewportSize({ width: 390, height: 844 });
     await page.waitForTimeout(120);
-    await assertToolbarAtCurrentSize(page, "旋轉後 390×844");
+    await assertToolbarAtCurrentSize(page, "旋转后 390×844");
     await page.setViewportSize({ width: 844, height: 390 });
     await page.waitForTimeout(120);
-    await assertToolbarAtCurrentSize(page, "再旋轉 844×390");
+    await assertToolbarAtCurrentSize(page, "再旋转 844×390");
     await page.setViewportSize({ width: 390, height: 844 });
     await page.waitForTimeout(120);
     await assertToolbarAtCurrentSize(page, "回到 390×844");

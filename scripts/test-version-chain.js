@@ -20,14 +20,14 @@ for (const [name, value] of [
   ["index.html runtime VERSION", indexVersion],
   ["src/ui.js PWA fallback", uiFallback],
 ]) {
-  if (value !== version) bad.push(`${name}: ${value || "missing"}（應為 ${version}）`);
+  if (value !== version) bad.push(`${name}: ${value || "missing"}（应为 ${version}）`);
 }
 for (const file of ["index.html", "manifest.webmanifest"]) {
   const text = file === "index.html" ? index : fs.readFileSync(file, "utf8");
   const refs = [...text.matchAll(/([\w./-]+)\?v=([\w.-]+)/g)];
   for (const [, path, v] of refs) {
     if (path.includes("assets/generated/r68/")) continue; // SHA-8 內容定址豁免
-    if (v !== version) bad.push(`${file}: ${path}?v=${v}（應為 ${version}）`);
+    if (v !== version) bad.push(`${file}: ${path}?v=${v}（应为 ${version}）`);
   }
 }
 if (bad.length) {
