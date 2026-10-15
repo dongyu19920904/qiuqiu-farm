@@ -1,13 +1,15 @@
 # GitHub Pages 与域名
 
 仓库：<https://github.com/dongyu19920904/qiuqiu-farm>
-默认入口：<https://dongyu19920904.github.io/qiuqiu-farm/>
+主入口：<https://qiuqiu.aibioo.cn/>
+
+原默认入口：<https://dongyu19920904.github.io/qiuqiu-farm/>，域名绑定后会跳转。
 
 原生静态游戏无需构建。main 推送触发 `.github/workflows/ci.yml`：原有规则、atlas、主线/手机测试与新增动物回归通过后，打包 runtime 到 Pages。原上游许可证与 CREDITS 随网站发布；未修改账号内其他仓库或网站。
 
-## 自定义域名待 DNS
+## 自定义域名已绑定（2026-10-16）
 
-本次查询 `qiuqiu.aibioo.cn` 返回 NXDOMAIN，当前无 DNS 配置权限。暂保留默认 HTTPS 入口，避免提前绑定使用户被重定向到尚不存在的域名。
+用户已添加 DNS。复核 `qiuqiu.aibioo.cn CNAME dongyu19920904.github.io` 正确，已在仓库 Pages 中绑定该子域名。正在等待 GitHub 证书签发并验证 HTTPS；完成证据见 PROGRESS.md。
 
 在 `aibioo.cn` 的 DNS 服务商添加**仅此子域名**：
 
@@ -29,7 +31,7 @@ gh api repos/dongyu19920904/qiuqiu-farm/pages
 gh api -X PUT repos/dongyu19920904/qiuqiu-farm/pages -F https_enforced=true
 ```
 
-域名确认后，把 `index.html` 的 canonical / og:url / og:image 与 README 主入口更新为自定义域名。资源路径为相对路径，支持 Pages 子目录和域名根路径，不需要替换地图/图集 URL。
+`index.html` 的 canonical / og:url / og:image 与 README 主入口已更新为自定义域名。资源路径保持相对路径，支持 Pages 子目录和域名根路径，无需替换地图/图集 URL。
 
 DNS 生效可能需要时间。以真实 HTTPS 访问、无资源错误、动物照护及刷新恢复为验收，不能只看 Pages 构建成功。
 

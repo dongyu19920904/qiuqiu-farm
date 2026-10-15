@@ -2,8 +2,8 @@
 
 在《阳光农场》R79 的原有像素世界中，种菜、照顾鸡鸭，与小刺猬、小猪一起经营农场。原地图、布局、主角动作、任务、料理、钓鱼、商店、金币与离线成长保留。
 
-**在线游玩：<https://dongyu19920904.github.io/qiuqiu-farm/>**
-计划域名：`qiuqiu.aibioo.cn`，配置与验证见 [域名说明](docs/DEPLOYMENT.md)。
+**在线游玩：<https://qiuqiu.aibioo.cn/>**
+已绑定自定义域名，配置与验证见 [域名说明](docs/DEPLOYMENT.md)。原 GitHub Pages 地址将跳转至新域名；旧存档需导出/导入迁移。
 
 ## 迎接小伙伴
 

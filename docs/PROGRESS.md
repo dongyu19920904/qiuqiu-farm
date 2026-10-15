@@ -42,7 +42,7 @@
 
 已上线：<https://dongyu19920904.github.io/qiuqiu-farm/>。阶段代码与最后验收记录均已提交；最后纯文档/证据同步使用 `[skip ci]`，不重复部署已验证的相同 runtime。
 
-自定义域名依赖 DNS，当前记录不存在。本版允许明确配置步骤交付；暂不提前绑定，保持默认 Pages 可直接游玩。后续添加 `qiuqiu CNAME dongyu19920904.github.io`，按 DEPLOYMENT.md 绑定并验证证书。
+2026-10-16 域名跟进：用户已添加 DNS，复核 `qiuqiu CNAME dongyu19920904.github.io` 生效；已完成 Pages 域名绑定，并将 canonical、分享地址和 README 主入口更新为 `https://qiuqiu.aibioo.cn/`。HTTPS 证书与新域名根路径的游戏/存档正在验证。旧 origin 的本地存档不会自动迁移，旧标签保持不动，可从设置导出后在新地址导入。
 
 公网首次完整离线缓存的额外检查尚未通过，后续可在网络较好时等待缓存激活再断网复验；这与已通过的离线时间成长不同。
 
