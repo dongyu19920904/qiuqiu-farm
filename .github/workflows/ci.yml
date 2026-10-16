@@ -72,6 +72,8 @@ jobs:
         run: npm run test:e2e
       - name: 秋秋农场桌面/手机领养、照护、精灵与刷新存档
         run: npm run test:qiuqiu:e2e
+      - name: 手机长按防选字与存档输入框复制编辑
+        run: npm run test:touch
 
   deploy:
     name: 部署 GitHub Pages

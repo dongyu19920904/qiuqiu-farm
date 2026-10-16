@@ -1,10 +1,11 @@
 {
   "name": "qiuqiu-farm",
   "version": "0.1.12",
-  "appVersion": "qiuqiu-20261016-zh-hans-2",
+  "appVersion": "qiuqiu-20261016-touch-1",
   "description": "秋秋农场（QiuQiu Farm）— 保留阳光农场像素世界，照顾刺猬、小猪与鸡鸭的网页版农场。",
   "type": "commonjs",
   "scripts": {
+    "test:touch": "node scripts/test-touch-selection.js",
     "test:qiuqiu": "node scripts/test-qiuqiu-animals.js",
     "test:qiuqiu:e2e": "node scripts/test-qiuqiu-e2e.js",
     "test": "node scripts/test-version-chain.js && node scripts/test-guards.js && node scripts/test-economy.js && node scripts/test-systems.js && node scripts/test-adventure.js && node scripts/test-world-migration.js && node scripts/test-r74-building-upgrades.js && node scripts/test-ui-smoke.js && node scripts/validate-v3-atlas.js && node scripts/validate-v4-atlas.js && python tools/generate-r66-ui.py --check && node scripts/test-r66-ui-art.js && python tools/process-r68-visuals.py && node scripts/test-r68-visuals.js",

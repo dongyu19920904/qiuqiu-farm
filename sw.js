@@ -1,4 +1,4 @@
-const CACHE_VERSION = "qiuqiu-20261016-zh-hans-2";
+const CACHE_VERSION = "qiuqiu-20261016-touch-1";
 const CACHE_PREFIX = "pixel-farm-rpg-";
 const HTML_CACHE = CACHE_PREFIX + CACHE_VERSION + "-html";
 const STATIC_CACHE = CACHE_PREFIX + CACHE_VERSION + "-static";

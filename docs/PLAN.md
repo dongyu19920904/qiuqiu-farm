@@ -45,3 +45,9 @@
 按用户要求将游戏内所有文字统一为简体中文：转换 index/offline 及 src 中实际显示的字符串，设置 zh-Hans/zh-CN 与简体系统字体后备。保留原字号、布局、美术、动画和规则；无新增运行时依赖。旧存档的历史对话与订单文案只在显示时转换，原存档内容不改写。同步 PWA 缓存版本及原测试中的文字断言，复验规则、手机/桌面、刷新恢复后发布到现有域名。
 
 已完成并通过本地、云端与公网三视口验收，发布记录及证据见 PROGRESS.md。
+
+## 2026-10-16 手机误选字
+
+用户反馈触摸时出现“复制 / 全选”。最小修复为 index.html 的页面防选字样式（标准与 WebKit user-select、iOS touch-callout），仅为 input/textarea/contenteditable 恢复文本选择及长按菜单。保持所有触摸监听、滚动、玩法与存档逻辑。更新缓存版本，增加桌面/390px/320px 的重复点击、900ms 原生触摸长按及真实存档框全选/替换回归，接入原 CI 后部署现有域名。
+
+依据：[MDN user-select](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/user-select)、[Apple Safari CSS touch-callout](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariCSSRef/Articles/StandardCSSProperties.html)。真机的系统菜单无法由桌面 Chromium 模拟直接验证，实际手机表现需用户刷新后反馈。
