@@ -51,3 +51,5 @@
 用户反馈触摸时出现“复制 / 全选”。最小修复为 index.html 的页面防选字样式（标准与 WebKit user-select、iOS touch-callout），仅为 input/textarea/contenteditable 恢复文本选择及长按菜单。保持所有触摸监听、滚动、玩法与存档逻辑。更新缓存版本，增加桌面/390px/320px 的重复点击、900ms 原生触摸长按及真实存档框全选/替换回归，接入原 CI 后部署现有域名。
 
 依据：[MDN user-select](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/user-select)、[Apple Safari CSS touch-callout](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariCSSRef/Articles/StandardCSSProperties.html)。真机的系统菜单无法由桌面 Chromium 模拟直接验证，实际手机表现需用户刷新后反馈。
+
+已上线并通过本地、原云端门禁与公网触摸回归；记录见 PROGRESS.md。

@@ -63,5 +63,7 @@
 
 - 用户反馈手机触摸出现选字菜单。原版未限制页面文字选择，仅控制地图手势；真实浏览器重复点击任务文字复现选中“田”。
 - 最小 CSS 修复：游戏页面关闭 user-select / WebKit touch-callout，存档框、留言输入与可编辑区域显式恢复 text/default。未增加全局触摸 preventDefault，保留原按钮和手势行为。
-- 新增 `test:touch` 并接入原 Actions 浏览器任务；本地桌面/390px/320px 均通过重复点击不选字、900ms 原生触摸长按无选区、真实存档框全选/替换及设置按钮点击，零脚本/资源错误。测试使用隔离存档，没有访问用户日常标签或系统剪贴板。
-- 缓存版本 `qiuqiu-20261016-touch-1`；发布和公网验收待完成。iPhone/具体手机的系统浮层不能通过桌面 Chromium 模拟直接确认，最终真机表现需刷新后反馈。
+- 新增 `test:touch` 并接入原 Actions 浏览器任务；本地桌面/390px/320px 均通过重复点击不选字、真实存档框全选/替换及设置按钮点击；两种手机尺寸另通过 900ms CDP 原生触摸长按无选区，零脚本/资源错误。测试使用隔离存档，没有访问用户日常标签或系统剪贴板。
+- 缓存版本 `qiuqiu-20261016-touch-1`。运行时提交 `601be67bd04cbb261065aaf855dbe1a456d757db`，Actions [38848582193](https://github.com/dongyu19920904/qiuqiu-farm/actions/runs/38848582193) 的规则、原完整浏览器玩法、新动物、手机误选字回归与部署全部成功。
+- 公网 <https://qiuqiu.aibioo.cn/> 最新版本的桌面/390px/320px 同样通过上述检查，证据 `docs/evidence/qiuqiu/touch-selection.json`。Pages 自定义域名和强制 HTTPS 保持正常；测试服务器/浏览器已关闭，包装器清理 per-run 缓存，脱敏日志留在 D 盘。
+- iPhone/具体手机的系统浮层不能通过桌面 Chromium 模拟直接确认，最终真机表现需刷新后反馈。

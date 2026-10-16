@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-16T04:08:42.1458027+00:00",
+  "testUsesIsolatedSaves": true,
+  "beforeFixSelectedText": "田",
+  "version": "qiuqiu-20261016-touch-1",
+  "results": [
+    "desktop 1440x900: repeat click, save text selection/replacement, normal taps",
+    "mobile 390x844: repeat click and 900ms CDP touch hold, save editing, normal taps",
+    "small 320x568: repeat click and 900ms CDP touch hold, save editing, normal taps"
+  ],
+  "ci": "https://github.com/dongyu19920904/qiuqiu-farm/actions/runs/38848582193",
+  "nativeHandsetPopupVerified": false,
+  "badResources": [],
+  "pageErrors": [],
+  "url": "https://qiuqiu.aibioo.cn/"
+}
